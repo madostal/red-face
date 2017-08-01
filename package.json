@@ -1,10 +1,14 @@
 {
   "name": "red-face",
   "version": "1.0.0",
-  "description": "",
+  "description": "SECURITY TESTING OF WEB APPLICATIONS - Diploma thesis - Faculty of Applied Sciences of the University of West Bohemia in Pilsen",
   "scripts": {
     "build": "rm -rf ./dist && webpack --progress",
     "start": "webpack-dev-server --hot --inline --history-api-fallback --port 3000 --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JaLe29/red-face"
   },
   "dependencies": {
     "async": "^2.2.0",
@@ -40,5 +44,11 @@
       "public/**",
       "scripts/*"
     ]
-  }
+  },
+  "keywords": [
+    "security",
+    "web"
+  ],
+  "author": "Jakub Löffelmann",
+  "license": "ISC"
 }
