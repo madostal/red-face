@@ -48,8 +48,10 @@ export default class CreateTaskSection extends Component {
       'controller': 'create-task',
       data: {
         'task-name': document.getElementById(this.idTaskName).value,
-        'BruteForceTab': bruteForceTab,
-        'OtherTab': otherTab
+        'task-data': {
+          'BruteForceTab': bruteForceTab,
+          'OtherTab': otherTab
+        }
       }
     });
     Api.socketRequest("create-task", json);
