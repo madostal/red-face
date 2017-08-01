@@ -1,9 +1,5 @@
 # Red Face - security testing of web applications
 
-<p align="center">
-  <img src="https://lh3.googleusercontent.com/NHgh995H5JyKxPPjLv1cEzj5OapIzhWVcPT3Q0rW0LN0lbLOg3vG5KS5zH1Iu9T3ilOVtE1HzfeYr9o=w1920-h925">
-</p>
-
 ## What is Red Face
 
 * It's my diploma thesis - [Faculty of Applied Sciences of the University of West Bohemia in Pilsen](http://www.fav.zcu.cz/en/)
@@ -79,11 +75,3 @@ node script/api.js
 ## Contact
 Bc. Jakub Löffelmann <<jakubloffelmann@gmail.com>>
 
-##
-<br>
-<p align="center">   
-  <img src="https://lh4.googleusercontent.com/k3bywm9_uMDHrRm9a7oHX3mciBBWeu87KRNus1tfmw4jFWpxgREGEYJLJd6Q1BNu7PYNfGonnz0-Dqs=w1920-h925">
-</p>
-<p align="center">  
-  <img src="https://lh4.googleusercontent.com/5B3j0PfGDVC8TyNFvm9SeOfAgAvQg8tReMS5WTQyXgWxgEugbBQSVC3xDmHmZmyxyKqkt6-P8G49A_Q=w1920-h925">
-</p>
