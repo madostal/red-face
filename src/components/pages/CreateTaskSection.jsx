@@ -45,16 +45,15 @@ export default class CreateTaskSection extends Component {
     }
 
     var json = JSON.stringify({
-      'controller': 'create-task',
       data: {
-        'task-name': document.getElementById(this.idTaskName).value,
+        'taskname': document.getElementById(this.idTaskName).value,
         'task-data': {
           'BruteForceTab': bruteForceTab,
           'OtherTab': otherTab
         }
       }
     });
-    Api.socketRequest("create-task", json);
+    Api.socketRequest("taskcreate", json);
     this.setState({ setUpVisible: !this.state.setUpVisible });
   }
 

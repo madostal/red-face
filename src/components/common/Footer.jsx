@@ -27,12 +27,18 @@ export default class Footer extends Component {
         this._handleSocket();
 
         this._toastInfo = this._toastInfo.bind(this);
+        this._toastSuccess = this._toastSuccess.bind(this);
     }
 
-    
+
     _toastInfo(body) {
         this.state.toast = 'info';
         toast.info(body);
+    }
+
+    _toastSuccess(body) {
+        this.state.toast = 'success';
+        toast.success(body);
     }
 
     _handleSocket() {
@@ -45,9 +51,16 @@ export default class Footer extends Component {
             this.setState({ visible: false })
         }.bind(this));
 
-        this.props.socket.on('server-message', function (data) {
-            console.log("Příjmám server-message: " + data);
+        this.props.socket.on('taskcreate', function (data) {
             this._toastInfo('The task ' + data + ' was scheduled');
+        }.bind(this));
+
+        this.props.socket.on('taskdone', function (data) {
+            this._toastSuccess('Task done');
+        }.bind(this));
+
+        this.props.socket.on('taskstart', function (data) {
+            this._toastInfo('Task start');
         }.bind(this));
     }
 
@@ -59,7 +72,7 @@ export default class Footer extends Component {
                         <Icon name='power cord' />
                         We are sorry, it's seems that server is down
                 </Menu.Item>
-                </Sidebar> 
+                </Sidebar>
                 <ToastContainer
                     position="bottom-left"
                     type={this.state.toast}
