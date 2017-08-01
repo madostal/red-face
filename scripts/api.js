@@ -1,3 +1,6 @@
+const LOG_FOLDER = './log_folder';
+
+var fs = require('fs');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
@@ -5,9 +8,15 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
 var pool = require('./utils/pool.js');
-var poolInstance = new pool(io);
+var poolInstance = new pool(io, LOG_FOLDER);
 
 server.listen(4200);
+
+function serverSetUp() {
+  if (!fs.existsSync(LOG_FOLDER)) {
+    fs.mkdirSync(LOG_FOLDER);
+  }
+}
 
 io.on('connection', function (socket) {
 
@@ -39,5 +48,6 @@ io.on('connection', function (socket) {
   var iterator = 0;
 });
 
+serverSetUp();
 
 
