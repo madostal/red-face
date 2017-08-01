@@ -13,6 +13,7 @@ import {
 
 import BruteForceTab from 'common/createTaskSection/BruteForceTab'
 import OtherTab from 'common/createTaskSection/OtherTab'
+import newId from '../../utils/Newid';
 
 import Api from 'utils/Api'
 
@@ -26,6 +27,10 @@ export default class CreateTaskSection extends Component {
     this.state = {
       setUpVisible: true
     }
+  }
+
+  componentWillMount() {
+    this.idTaskName = newId();
   }
 
   _createTask() {
@@ -42,6 +47,7 @@ export default class CreateTaskSection extends Component {
     var json = JSON.stringify({
       'controller': 'create-task',
       data: {
+        'task-name': document.getElementById(this.idTaskName).value,
         'BruteForceTab': bruteForceTab,
         'OtherTab': otherTab
       }
@@ -81,7 +87,7 @@ export default class CreateTaskSection extends Component {
             <Grid divided='vertically'>
               <Grid.Row columns={2} textAlign="right">
                 <Grid.Column>
-                  <Input placeholder='Task name' />
+                  <Input id={this.idTaskName} placeholder='Task name' />
                 </Grid.Column>
                 <Grid.Column>
                   <Button onClick={this._createTask} color='green'>Start task</Button>
