@@ -29,6 +29,7 @@ export default class Footer extends Component {
         this._toastInfo = this._toastInfo.bind(this);
     }
 
+    
     _toastInfo(body) {
         this.state.toast = 'info';
         toast.info(body);
@@ -46,7 +47,7 @@ export default class Footer extends Component {
 
         this.props.socket.on('server-message', function (data) {
             console.log("Příjmám server-message: " + data);
-            this.toastInfo('The task ' + data + ' was scheduled');
+            this._toastInfo('The task ' + data + ' was scheduled');
         }.bind(this));
     }
 
