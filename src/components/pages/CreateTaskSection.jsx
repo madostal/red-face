@@ -23,6 +23,7 @@ export default class CreateTaskSection extends Component {
     super(props)
 
     this._createTask = this._createTask.bind(this);
+    this._removeAllTasks = this._removeAllTasks.bind(this);
 
     this.state = {
       setUpVisible: true
@@ -55,6 +56,11 @@ export default class CreateTaskSection extends Component {
     });
     Api.socketRequest("taskcreate", json);
     this.setState({ setUpVisible: !this.state.setUpVisible });
+  }
+
+  _removeAllTasks() {
+    localStorage.clear();
+    window.location.reload();
   }
 
   render() {
@@ -96,7 +102,7 @@ export default class CreateTaskSection extends Component {
               </Grid.Row>
             </Grid>
             <Divider inverted />
-            <Button inverted color='red' size='tiny'>Remove</Button>
+            <Button onClick={this._removeAllTasks} inverted color='red' size='tiny'>Remove</Button>
           </Segment> :
           null
         }
