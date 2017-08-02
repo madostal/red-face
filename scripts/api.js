@@ -10,6 +10,9 @@ var io = require('socket.io')(server);
 var pool = require('./utils/pool.js');
 var poolInstance = new pool(io, LOG_FOLDER);
 
+var database = require('./utils/Database.js');
+var databaseInstance = new database();
+
 server.listen(4200);
 
 function serverSetUp() {
