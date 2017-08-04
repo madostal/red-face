@@ -4,10 +4,11 @@ var connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "dp"
+    database: "red-face"
 });
 
 module.exports = class Database {
+
     constructor() {
         connection.connect(function (err) {
             if (err) {

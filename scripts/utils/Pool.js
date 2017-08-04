@@ -3,27 +3,37 @@
 var library = require('./Library.js');
 var fs = require('fs');
 
+var taskHome = require('../task/taskHome.js');
+
 module.exports = class Pool {
 
-    constructor(io, logFolderPath) {
+    constructor(io, logFolderPath, db) {
         this.allowProcess = 2;
         this.activeProcess = 0;
         this.poolQueue = [];
+
+        this.db = db;
         this.logFolderPath = logFolderPath;
         this.io = io;
     }
 
-    startNewTask(id) {
-        if (this.activeProcess < this.allowProcess) {
-            this.startProcess(id);
-        } else {
-            this.poolQueue.push(id);
-        }
+    insertNewTask(taskName) {
+        var self = this;
+        this.db.executeNonSelectSql("INSERT INTO task SET ?", { taskName: taskName, state: taskHome.TaskState.created }, function (id) {
+            if (self.activeProcess < self.allowProcess) {
+                self._startProcess(id);
+            } else {
+                self.poolQueue.push(id);
+            }
+        });
     }
 
-    startProcess(id) {
-        var logFileName = this.createLogFile();
+    _startProcess(id) {
+        var logFileName = this._createLogFile();
         this.activeProcess++;
+
+        this.db.executeNonSelectSql("UPDATE task SET state = ?, startTime = ?  WHERE id = ?", [taskHome.TaskState.running, library.getMySQLTime(), id], null);
+
         this.io.emit('taskstart', "TASK " + id + " STARTED :-)");
 
         const { spawn } = require('child_process');
@@ -32,31 +42,35 @@ module.exports = class Pool {
 
         process.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
-            this.appendLog(data, logFileName);
+            this._appendLog(data, logFileName);
         });
 
         process.stderr.on('data', (data) => {
             console.log(`stderr: ${data}`);
+            this._appendLog("STD ERROR", logFileName);
+            this._appendLog(data, logFileName);
         });
 
         process.on('close', (code) => {
+            this.db.executeNonSelectSql("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", [taskHome.TaskState.done, library.getMySQLTime(), id], null);
             this.io.emit('taskdone', "TASK DONE :-)");
             //possible critical section ??
             this.activeProcess--;
             if (this.poolQueue.length != 0) {
-                this.startProcess(this.poolQueue.shift());
+                this._startProcess(this.poolQueue.shift());
             }
         });
     }
 
-    createLogFile() {
+    _createLogFile() {
         var file = [this.logFolderPath, "/", "red_face_log_", Date.now(), "_", library.getRandomTextInRange(), ".txt"].join("");
-        this.appendLog("Starting...\n", file);
+        this._appendLog("Starting...\n", file);
         return file;
     }
 
-    appendLog(message, file) {
+    _appendLog(message, file) {
         console.log("Appending msg: " + message + " to file: " + file);
         fs.appendFileSync(file, message);
     }
-} 
+}
+

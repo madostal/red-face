@@ -7,11 +7,11 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-var pool = require('./utils/pool.js');
-var poolInstance = new pool(io, LOG_FOLDER);
-
 var database = require('./utils/Database.js');
 var databaseInstance = new database();
+
+var pool = require('./utils/pool.js');
+var poolInstance = new pool(io, LOG_FOLDER, databaseInstance);
 
 server.listen(4200);
 
@@ -45,12 +45,12 @@ io.on('connection', function (socket) {
   socket.on('taskcreate', function (input) {
     var json = JSON.parse(input);
     io.emit('taskcreate', json.data.taskname);
-    poolInstance.startNewTask(iterator++);
+    poolInstance.insertNewTask(json.data.taskname);
   });
 
   var iterator = 0;
 });
 
-serverSetUp();
+ 
 
 
