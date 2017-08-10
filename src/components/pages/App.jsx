@@ -29,8 +29,8 @@ export default class App extends Component {
             <Menu.Item active={(path === '/home' || path === '/')} as={Link} to='/home'>
               <Icon name='home' /> Home
             </Menu.Item>
-            <Menu.Item active={(path === '/items')} as={Link} to='/items'>
-              <Icon name='list' /> Items
+            <Menu.Item active={(path === '/overview')} as={Link} to='/overview'>
+              <Icon name='list' /> Overview
             </Menu.Item>
             <Menu.Menu position='right'  >
               <Menu.Item active={(path === '/create-task')} as={Link} to='/create-task'>

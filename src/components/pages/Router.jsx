@@ -9,6 +9,7 @@ import {
 import App from './App'
 import HomeSection from './HomeSection'
 import CreateTaskSection from './CreateTaskSection'
+import OverviewSection from './OverviewSection'
 
 export default class DashboardRouter extends React.Component {
   render() {
@@ -17,7 +18,7 @@ export default class DashboardRouter extends React.Component {
         <Route component={App}>
           <Route path='/' component={HomeSection} />
           <Route path='/home' component={HomeSection} />
-          <Route path='/items' component={HomeSection} />
+          <Route path='/overview' component={OverviewSection} />
           <Route path='/create-task' component={CreateTaskSection} />
         </Route>
       </Router>
