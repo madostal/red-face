@@ -28,10 +28,10 @@ module.exports = class Database {
         });
     };
 
-    executeSelectSql(sql, callback, response) {
-        connection.query("SELECT * FROM task", function (err, result, fields) {
+    executeSelectSql(sql, callback) {
+        connection.query(sql, function (err, result, fields) {
             if (err) throw err;
-            if (callback) callback(response, result, fields);
+            if (callback) callback(result, fields);
         });
     }
 }

@@ -53,9 +53,10 @@ module.exports = class Pool {
 
         process.on('close', (code) => {
             this.db.executeNonSelectSql("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", [taskHome.TaskState.done, library.getMySQLTime(), id], null);
-            this.io.emit('taskdone', "TASK DONE :-)");
-            //possible critical section ??
+
             this.activeProcess--;
+            this.io.emit('taskdone', { "running": this.activeProcess, "pending": this.poolQueue.length });
+            this.io.emit('update-overview', { "running": this.activeProcess, "pending": this.poolQueue.length })
             if (this.poolQueue.length != 0) {
                 this._startProcess(this.poolQueue.shift());
             }

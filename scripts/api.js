@@ -14,6 +14,7 @@ var pool = require('./utils/pool.js');
 var poolInstance = new pool(io, LOG_FOLDER, databaseInstance);
 
 server.listen(4200);
+serverSetUp()
 
 function serverSetUp() {
   if (!fs.existsSync(LOG_FOLDER)) {
@@ -48,9 +49,19 @@ io.on('connection', function (socket) {
     poolInstance.insertNewTask(json.data.taskname);
   });
 
-  var iterator = 0;
+  /**
+   * Return all tasks
+   */
+  socket.on('give-me-tasks', function (input) {
+    databaseInstance.executeSelectSql("SELECT * FROM task", thereAreTasksCallback)
+  });
+
+  /**
+   * Emit via websocket tasks from database
+   *
+   * @param {array} field
+   */
+  var thereAreTasksCallback = function (field) {
+    io.emit('there-are-tasks', field);
+  }
 });
-
- 
-
-
