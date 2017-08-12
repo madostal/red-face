@@ -6,8 +6,8 @@ import {
 
 import { Link } from 'react-router'
 import {
-  Menu,
-  Icon
+    Menu,
+    Icon
 } from 'semantic-ui-react'
 
 
@@ -24,14 +24,14 @@ export default class OverviewTable extends Component {
 
         Api.getSocket().on('update-overview', function (data) {
             var lastRowData = this.state.result;
-            lastRowData.reverse().forEach(function(loop) {
-                if(loop.id === data.taskdone) {
+            lastRowData.reverse().forEach(function (loop) {
+                if (loop.id === data.taskdone) {
                     loop.state = 2;
                     loop.endTime = data.endTime;
                 }
             });
             this.state = {
-                result:lastRowData
+                result: lastRowData
             }
 
             this.forceUpdate()
@@ -39,13 +39,13 @@ export default class OverviewTable extends Component {
 
         Api.getSocket().on('there-are-tasks', function (data) {
             var rowData = [];
-            data.reverse().forEach(function(loop) {
+            data.reverse().forEach(function (loop) {
                 var tmp = {
-                    id:loop.id,
+                    id: loop.id,
                     addTime: Library.mySQLDateToHumanReadable(loop.addTime),
                     startTime: Library.mySQLDateToHumanReadable(loop.startTime),
                     endTime: Library.mySQLDateToHumanReadable(loop.endTime),
-                    state:loop.state,
+                    state: loop.state,
                     key: [loop.id, loop.taskKey].join("_")
                 }
                 rowData.push(tmp);
@@ -77,7 +77,7 @@ export default class OverviewTable extends Component {
                         </Table.Row>
                     </Table.Header>
 
-                        { result && result.length > 0 && (
+                    {result && result.length > 0 && (
                         <Table.Body>
                             {result.map((item) => {
                                 return (
@@ -95,12 +95,18 @@ export default class OverviewTable extends Component {
                                             {item.endTime}
                                         </Table.Cell>
                                         <Table.Cell textAlign="center">
-                                            {item.state === 2
-                                                ?
-                                               item.state
-                                                :
-                                                <Loader active inline size="small" />
-                                            }
+                                            {(function () {
+                                                switch (item.state) {
+                                                    case 0:
+                                                        return <Icon name='wait' size='large' />;
+                                                    case 1:
+                                                        return <Loader active inline size="small" />;
+                                                    case 2:
+                                                        return <Icon name='checkmark' size='large' />;
+                                                    default:
+                                                        return null;
+                                                }
+                                            })()}
                                         </Table.Cell>
                                         <Table.Cell textAlign='center'>
                                             <Menu.Item as={Link} to={['/detail-section?key=', item.key].join("")}>
@@ -111,7 +117,7 @@ export default class OverviewTable extends Component {
                                 )
                             })}
                         </Table.Body>
-                        )}
+                    )}
                 </Table>
             </div>
         )
