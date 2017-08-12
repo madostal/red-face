@@ -52,11 +52,12 @@ module.exports = class Pool {
         });
 
         process.on('close', (code) => {
-            this.db.executeNonSelectSql("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", [taskHome.TaskState.done, library.getMySQLTime(), id], null);
+            var endTime = library.getMySQLTime();
+            this.db.executeNonSelectSql("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", [taskHome.TaskState.done, endTime, id], null);
 
             this.activeProcess--;
-            this.io.emit('taskdone', { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone":id });
-            this.io.emit('update-overview', { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone" : id })
+            this.io.emit('taskdone', { "running" : this.activeProcess, "pending" : this.poolQueue.length, "taskdone" : id, "endTime" : endTime });
+            this.io.emit('update-overview', { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone" : id, "endTime" : endTime })
             if (this.poolQueue.length != 0) {
                 this._startProcess(this.poolQueue.shift());
             }

@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import {
-    Table
+    Table,
+    Loader
 } from 'semantic-ui-react'
 
 import Api from 'utils/Api'
+import Library from 'utils/Library'
 
 export default class OverviewTable extends Component {
     constructor(props) {
@@ -18,6 +20,7 @@ export default class OverviewTable extends Component {
             lastRowData.reverse().forEach(function(loop) {
                 if(loop.id === data.taskdone) {
                     loop.state = 2;
+                    loop.endTime = data.endTime;
                 }
             });
             this.state = {
@@ -32,9 +35,9 @@ export default class OverviewTable extends Component {
             data.reverse().forEach(function(loop) {
                 var tmp = {
                     id:loop.id,
-                    addTime:loop.addTime,
-                    startTime:loop.startTime,
-                    endTime:loop.endTime,
+                    addTime: Library.mySQLDateToHumanReadable(loop.addTime),
+                    startTime: Library.mySQLDateToHumanReadable(loop.startTime),
+                    endTime: Library.mySQLDateToHumanReadable(loop.endTime),
                     state:loop.state
                 }
                 rowData.push(tmp);
@@ -82,8 +85,13 @@ export default class OverviewTable extends Component {
                                         <Table.Cell>
                                             {item.endTime}
                                         </Table.Cell>
-                                        <Table.Cell>
-                                            {item.state}
+                                        <Table.Cell textAlign="center">
+                                            {item.state === 2
+                                                ?
+                                               item.state
+                                                :
+                                                <Loader active inline size="small" />
+                                            }
                                         </Table.Cell>
                                     </Table.Row>
                                 )
