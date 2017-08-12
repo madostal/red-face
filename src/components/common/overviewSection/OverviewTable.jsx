@@ -4,6 +4,13 @@ import {
     Loader
 } from 'semantic-ui-react'
 
+import { Link } from 'react-router'
+import {
+  Menu,
+  Icon
+} from 'semantic-ui-react'
+
+
 import Api from 'utils/Api'
 import Library from 'utils/Library'
 
@@ -38,7 +45,8 @@ export default class OverviewTable extends Component {
                     addTime: Library.mySQLDateToHumanReadable(loop.addTime),
                     startTime: Library.mySQLDateToHumanReadable(loop.startTime),
                     endTime: Library.mySQLDateToHumanReadable(loop.endTime),
-                    state:loop.state
+                    state:loop.state,
+                    key: [loop.id, loop.taskKey].join("_")
                 }
                 rowData.push(tmp);
             });
@@ -65,6 +73,7 @@ export default class OverviewTable extends Component {
                             <Table.HeaderCell>StartTime</Table.HeaderCell>
                             <Table.HeaderCell>EndTime</Table.HeaderCell>
                             <Table.HeaderCell>State</Table.HeaderCell>
+                            <Table.HeaderCell>Open</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
 
@@ -92,6 +101,11 @@ export default class OverviewTable extends Component {
                                                 :
                                                 <Loader active inline size="small" />
                                             }
+                                        </Table.Cell>
+                                        <Table.Cell textAlign='center'>
+                                            <Menu.Item as={Link} to={['/detail-section?key=', item.key].join("")}>
+                                                <Icon name='search' size='large' />
+                                            </Menu.Item>
                                         </Table.Cell>
                                     </Table.Row>
                                 )

@@ -28,8 +28,8 @@ module.exports = class Database {
         });
     };
 
-    executeSelectSql(sql, callback) {
-        connection.query(sql, function (err, result, fields) {
+    executeSelectSql(sql, values, callback) {
+        connection.query(sql, values, function (err, result, fields) {
             if (err) throw err;
             if (callback) callback(result, fields);
         });

@@ -19,7 +19,7 @@ module.exports = class Pool {
 
     insertNewTask(taskName) {
         var self = this;
-        this.db.executeNonSelectSql("INSERT INTO task SET ?", { taskName: taskName, state: taskHome.TaskState.created }, function (id) {
+        this.db.executeNonSelectSql("INSERT INTO task SET ?", { taskName: taskName, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10) }, function (id) {
             if (self.activeProcess < self.allowProcess) {
                 self._startProcess(id);
             } else {
