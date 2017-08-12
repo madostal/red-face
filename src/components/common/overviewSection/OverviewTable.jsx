@@ -30,7 +30,7 @@ export default class OverviewTable extends Component {
                     loop.endTime = data.endTime;
                 }
             });
-            this.state = {
+            this.setState = {
                 result: lastRowData
             }
 
@@ -59,6 +59,11 @@ export default class OverviewTable extends Component {
         }.bind(this));
 
         Api.socketRequest("give-me-tasks", {});
+    }
+
+    componentWillUnmount() {
+        Api.getSocket().removeAllListeners('there-are-tasks');
+        Api.getSocket().removeAllListeners('update-overview');
     }
 
     render() {
