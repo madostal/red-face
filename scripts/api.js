@@ -13,13 +13,36 @@ var databaseInstance = new database();
 var pool = require('./utils/pool.js');
 var poolInstance = new pool(io, LOG_FOLDER, databaseInstance);
 
+var taskHome = require('./task/TaskHome.js')
+var library = require('./utils/Library.js');
+
 server.listen(4200);
-serverSetUp()
+serverSetUp();
+checkDeadTasks();
 
 function serverSetUp() {
   if (!fs.existsSync(LOG_FOLDER)) {
     fs.mkdirSync(LOG_FOLDER);
   }
+}
+
+function checkDeadTasks() {
+  var self = this;
+  databaseInstance.getConnection().query('SELECT id FROM task WHERE STATE != ?', [2], function (err, fields) {
+    if (err) throw err;
+
+    fields.forEach(function (loop) {
+      var params = [taskHome.TaskState.failed, library.getMySQLTime(), loop.id];
+      databaseInstance.getConnection().query('UPDATE subTask SET state = ?, endTime = ? WHERE task_id= ? ', params, function (err) {
+        if (err) throw err;
+      });
+
+      var params = [taskHome.TaskState.failed, library.getMySQLTime(), loop.id];
+      databaseInstance.getConnection().query('UPDATE task SET state = ?, endTime = ? WHERE id= ? ', params, function (err) {
+        if (err) throw err;
+      });
+    });
+  });
 }
 
 io.on('connection', function (socket) {

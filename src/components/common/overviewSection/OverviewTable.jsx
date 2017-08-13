@@ -126,6 +126,8 @@ export default class OverviewTable extends Component {
                                                         return <Loader active inline size="small" />;
                                                     case 2:
                                                         return <Icon name='checkmark' size='large' />;
+                                                    case 3:
+                                                        return <Icon name='exclamation triangle' size='large' />;
                                                     default:
                                                         return null;
                                                 }

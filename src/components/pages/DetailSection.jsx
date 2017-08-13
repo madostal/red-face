@@ -147,6 +147,8 @@ export default class DetailSection extends Component {
                       return <Loader active inline size="massive" />;
                     case 2:
                       return <Icon name='checkmark' size='huge' />;
+                    case 3:
+                      return <Icon name='exclamation triangle' size='huge' />;
                     default:
                       return null;
                   }
