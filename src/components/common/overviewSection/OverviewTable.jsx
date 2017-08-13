@@ -24,7 +24,7 @@ export default class OverviewTable extends Component {
 
         Api.getSocket().on('update-overview', function (data) {
             var lastRowData = this.state.result;
-            lastRowData.reverse().forEach(function (loop) {
+            lastRowData.forEach(function (loop) {
                 if (loop.id === data.taskdone) {
                     loop.state = 2;
                     loop.endTime = data.endTime;
@@ -42,9 +42,9 @@ export default class OverviewTable extends Component {
             data.reverse().forEach(function (loop) {
                 var tmp = {
                     id: loop.id,
-                    addTime: Library.mySQLDateToHumanReadable(loop.addTime),
-                    startTime: Library.mySQLDateToHumanReadable(loop.startTime),
-                    endTime: Library.mySQLDateToHumanReadable(loop.endTime),
+                    addTime: (loop.addTime),
+                    startTime: (loop.startTime),
+                    endTime: (loop.endTime),
                     state: loop.state,
                     key: [loop.id, loop.taskKey].join("_")
                 }
@@ -61,7 +61,25 @@ export default class OverviewTable extends Component {
         Api.socketRequest("give-me-tasks", {});
     }
 
+    componentDidMount() {
+        var self = this;
+        this.interval = setInterval(function () {
+            var lastRowData = self.state.result;
+            lastRowData.forEach(function (loop) {
+                if (loop.state === 1) {
+                    loop.endTime = Library.msToHumanReadable(new Date().getTime() - new Date(loop.startTime).getTime());
+                }
+            });
+
+            self.setState = {
+                result: lastRowData
+            }
+            self.forceUpdate()
+        }, 100);
+    }
+
     componentWillUnmount() {
+        clearInterval(this.interval);
         Api.getSocket().removeAllListeners('there-are-tasks');
         Api.getSocket().removeAllListeners('update-overview');
     }
