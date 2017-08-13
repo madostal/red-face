@@ -8,6 +8,7 @@ module.exports = class Pool {
     constructor(io, logFolderPath, db) {
         this.allowProcess = 2;
         this.activeProcess = 0;
+
         this.poolQueue = [];
 
         this.db = db.getConnection();
@@ -23,10 +24,15 @@ module.exports = class Pool {
             if (err) throw err;
             var idTask = result.insertId;
 
-            var params = { state: taskHome.TaskState.created, task_id: idTask };
+            var params = { state: taskHome.TaskState.created, task_id: idTask, type: taskHome.TaskType.bruteForce };
             self.db.query('INSERT INTO subTask SET ?', params, function (err, result) {
                 if (err) throw err;
                 var idSubTask = result.insertId;
+
+                var params = { path: self._createLogFile("bruteforcetask"), subTask_id: idSubTask, subTask_task_id: idTask};
+                self.db.query('INSERT INTO log SET ?', params, function (err) {
+                    if (err) throw err;
+                });
 
                 if (data.data.taskdata.bruteforcetab != null) {
                     var params = { loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNames: data.data.taskdata.bruteforcetab.data.idLoginNames, loginPsw: data.data.taskdata.bruteforcetab.data.idLoginPsw, loginFormLocation: data.data.taskdata.bruteforcetab.data.idLoginFormLocation, subTask_id: idSubTask, subTask_task_id: idTask };
@@ -47,7 +53,7 @@ module.exports = class Pool {
     }
 
     _startProcess(id) {
-        var logFileName = this._createLogFile();
+        var logFileName = "tmp.txt";
         this.activeProcess++;
 
         var params = [taskHome.TaskState.running, library.getMySQLTime(), id];
@@ -59,10 +65,12 @@ module.exports = class Pool {
 
         const { spawn } = require('child_process');
 
-        const process = spawn('node', ['utils/tester.js', id]);
-
+        const process = spawn('node', ['task/Core.js', id], {
+            stdio: ['ipc', 'pipe', 'pipe']
+        });
+        
         process.stdout.on('data', (data) => {
-            // console.log(`stdout: ${data}`);
+            console.log(`stdout: ${data}`);
             this._appendLog(data, logFileName);
         });
 
@@ -75,7 +83,7 @@ module.exports = class Pool {
         process.on('close', (code) => {
             var endTime = library.getMySQLTime();
 
-            var params =  [taskHome.TaskState.done, endTime, id];
+            var params = [taskHome.TaskState.done, endTime, id];
             this.db.query('UPDATE task SET state = ?, endTime = ? WHERE  id= ? ', params, function (err) {
                 if (err) throw err;
             });
@@ -87,10 +95,14 @@ module.exports = class Pool {
                 this._startProcess(this.poolQueue.shift());
             }
         });
+
+        process.on('message', data => {
+            logFileName = data.file;
+        })
     }
 
-    _createLogFile() {
-        var file = [this.logFolderPath, "/", "red_face_log_", Date.now(), "_", library.getRandomTextInRange(), ".txt"].join("");
+    _createLogFile(taskname) {
+        var file = [this.logFolderPath, "/", "red_face_log_", taskname, "_", Date.now(), "_", library.getRandomTextInRange(), ".txt"].join("");
         this._appendLog("Starting...\n", file);
         return file;
     }
