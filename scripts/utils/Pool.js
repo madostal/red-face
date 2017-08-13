@@ -1,5 +1,3 @@
-'use strict';
-
 var library = require('./Library.js');
 var fs = require('fs');
 
@@ -12,7 +10,7 @@ module.exports = class Pool {
         this.activeProcess = 0;
         this.poolQueue = [];
 
-        this.db = db;
+        this.db = db.getConnection();
         this.logFolderPath = logFolderPath;
         this.io = io;
     }
@@ -21,19 +19,19 @@ module.exports = class Pool {
         var self = this;
 
         var params = { taskName: data.data.taskName, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10) };
-        this.db.getConnection().query("INSERT INTO task SET ?", params, function (err, result) {
+        this.db.query('INSERT INTO task SET ?', params, function (err, result) {
             if (err) throw err;
             var idTask = result.insertId;
 
             var params = { state: taskHome.TaskState.created, task_id: idTask };
-            self.db.getConnection().query('INSERT INTO subTask SET ?', params, function (err, result) {
+            self.db.query('INSERT INTO subTask SET ?', params, function (err, result) {
                 if (err) throw err;
                 var idSubTask = result.insertId;
 
                 if (data.data.taskdata.bruteforcetab != null) {
                     var params = { loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNames: data.data.taskdata.bruteforcetab.data.idLoginNames, loginPsw: data.data.taskdata.bruteforcetab.data.idLoginPsw, loginFormLocation: data.data.taskdata.bruteforcetab.data.idLoginFormLocation, subTask_id: idSubTask, subTask_task_id: idTask };
                     console.log(params);
-                    self.db.getConnection().query('INSERT INTO bruteforceTask SET ?', params, function (err, result) {
+                    self.db.query('INSERT INTO bruteforceTask SET ?', params, function (err, result) {
                         if (err) throw err;
 
                         //TODO MOVE THIS BLOCK TO ANOTHER SECTION
@@ -52,7 +50,10 @@ module.exports = class Pool {
         var logFileName = this._createLogFile();
         this.activeProcess++;
 
-        this.db.executeNonSelectSql("UPDATE task SET state = ?, startTime = ?  WHERE id = ?", [taskHome.TaskState.running, library.getMySQLTime(), id], null);
+        var params = [taskHome.TaskState.running, library.getMySQLTime(), id];
+        this.db.query('UPDATE task SET state = ?, startTime = ?  WHERE id = ?', params, function (err) {
+            if (err) throw err;
+        });
 
         this.io.emit('taskstart', "TASK " + id + " STARTED :-)");
 
@@ -73,7 +74,11 @@ module.exports = class Pool {
 
         process.on('close', (code) => {
             var endTime = library.getMySQLTime();
-            this.db.executeNonSelectSql("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", [taskHome.TaskState.done, endTime, id], null);
+
+            var params =  [taskHome.TaskState.done, endTime, id];
+            this.db.query('UPDATE task SET state = ?, endTime = ? WHERE  id= ? ', params, function (err) {
+                if (err) throw err;
+            });
 
             this.activeProcess--;
             this.io.emit('taskdone', { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone": id, "endTime": endTime });
@@ -95,4 +100,3 @@ module.exports = class Pool {
         fs.appendFileSync(file, message);
     }
 }
-

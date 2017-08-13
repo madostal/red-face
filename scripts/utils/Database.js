@@ -21,20 +21,6 @@ module.exports = class Database {
         });
     }
 
-    executeNonSelectSql(sql, values, callback) {
-        connection.query(sql, values, function (err, result) {
-            if (err) throw err;
-            if (callback) callback(result.insertId);
-        });
-    };
-
-    executeSelectSql(sql, values, callback) {
-        connection.query(sql, values, function (err, result, fields) {
-            if (err) throw err;
-            if (callback) callback(result, fields);
-        });
-    }
-
     getConnection() { return connection; }
 }
 

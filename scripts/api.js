@@ -53,17 +53,11 @@ io.on('connection', function (socket) {
    * Return all tasks
    */
   socket.on('give-me-tasks', function (input) {
-    databaseInstance.executeSelectSql("SELECT * FROM task", [], thereAreTasksCallback)
+    databaseInstance.getConnection().query('SELECT * FROM task', [], function (err, fields) {
+      if (err) throw err;
+      io.emit('there-are-tasks', fields);
+    });
   });
-
-  /**
-   * Emit via websocket tasks from database
-   *
-   * @param {array} field
-   */
-  var thereAreTasksCallback = function (field) {
-    io.emit('there-are-tasks', field);
-  }
 
   socket.on('give-me-task-detail', function (input) {
     var splitKey = input.key.split("_");
@@ -74,12 +68,11 @@ io.on('connection', function (socket) {
       //possible wrong key
       thereIsTaskDetailCallback({});
     } else {
-      databaseInstance.executeSelectSql("SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?", [splitKey[0], splitKey[1]], thereIsTaskDetailCallback);
+      var params = [splitKey[0], splitKey[1]];
+      databaseInstance.getConnection().query('SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?', params, function (err, fields) {
+        if (err) throw err;
+        io.emit('there-is-task-detail', fields);
+      });
     }
   });
-
-  var thereIsTaskDetailCallback = function (field) {
-    console.log(field)
-    io.emit('there-is-task-detail', field);
-  }
 });
