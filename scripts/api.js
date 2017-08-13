@@ -46,7 +46,7 @@ io.on('connection', function (socket) {
   socket.on('taskcreate', function (input) {
     var json = JSON.parse(input);
     io.emit('taskcreate', json.data.taskname);
-    poolInstance.insertNewTask(json.data.taskname);
+    poolInstance.insertNewTask(json);
   });
 
   /**
@@ -70,7 +70,7 @@ io.on('connection', function (socket) {
     console.log(input);
     console.log(splitKey.length);
     console.log(splitKey)
-    if(splitKey.length != 2) {
+    if (splitKey.length != 2) {
       //possible wrong key
       thereIsTaskDetailCallback({});
     } else {

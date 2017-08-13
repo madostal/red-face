@@ -4,7 +4,8 @@ import {
   Message,
   Loader,
   Grid,
-  List
+  List,
+  Icon
 } from 'semantic-ui-react'
 
 import Api from 'utils/Api'
@@ -45,7 +46,7 @@ export default class DetailSection extends Component {
     return (
       <div className='home-section'>
 
-         {loading && (
+        {loading && (
           <div>
             <Loader active />
           </div>
@@ -137,11 +138,28 @@ export default class DetailSection extends Component {
                 </List>
               </Grid.Column>
               <Grid.Column width={3} textAlign="center" verticalAlign="middle">
-                <Loader active inline size="massive" />
+
+                {(function () {
+                  switch (taskState) {
+                    case 0:
+                      return <Icon name='wait' size='huge' />;
+                    case 1:
+                      return <Loader active inline size="massive" />;
+                    case 2:
+                      return <Icon name='checkmark' size='huge' />;
+                    default:
+                      return null;
+                  }
+                })()}
               </Grid.Column>
             </Grid.Row>
           </Grid>
         )}
+        <List>
+          <List.Item>Apples</List.Item>
+          <List.Item>Pears</List.Item>
+          <List.Item>Oranges</List.Item>
+        </List>
       </div>
     )
   }

@@ -34,6 +34,8 @@ module.exports = class Database {
             if (callback) callback(result, fields);
         });
     }
+
+    getConnection() { return connection; }
 }
 
 

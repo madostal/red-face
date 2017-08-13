@@ -17,14 +17,34 @@ module.exports = class Pool {
         this.io = io;
     }
 
-    insertNewTask(taskName) {
+    insertNewTask(data) {
         var self = this;
-        this.db.executeNonSelectSql("INSERT INTO task SET ?", { taskName: taskName, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10) }, function (id) {
-            if (self.activeProcess < self.allowProcess) {
-                self._startProcess(id);
-            } else {
-                self.poolQueue.push(id);
-            }
+
+        var params = { taskName: data.data.taskName, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10) };
+        this.db.getConnection().query("INSERT INTO task SET ?", params, function (err, result) {
+            if (err) throw err;
+            var idTask = result.insertId;
+
+            var params = { state: taskHome.TaskState.created, task_id: idTask };
+            self.db.getConnection().query('INSERT INTO subTask SET ?', params, function (err, result) {
+                if (err) throw err;
+                var idSubTask = result.insertId;
+
+                if (data.data.taskdata.bruteforcetab != null) {
+                    var params = { loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNames: data.data.taskdata.bruteforcetab.data.idLoginNames, loginPsw: data.data.taskdata.bruteforcetab.data.idLoginPsw, loginFormLocation: data.data.taskdata.bruteforcetab.data.idLoginFormLocation, subTask_id: idSubTask, subTask_task_id: idTask };
+                    console.log(params);
+                    self.db.getConnection().query('INSERT INTO bruteforceTask SET ?', params, function (err, result) {
+                        if (err) throw err;
+
+                        //TODO MOVE THIS BLOCK TO ANOTHER SECTION
+                        if (self.activeProcess < self.allowProcess) {
+                            self._startProcess(idTask);
+                        } else {
+                            self.poolQueue.push(idTask);
+                        }
+                    })
+                }
+            })
         });
     }
 
@@ -41,7 +61,7 @@ module.exports = class Pool {
         const process = spawn('node', ['utils/tester.js', id]);
 
         process.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
+            // console.log(`stdout: ${data}`);
             this._appendLog(data, logFileName);
         });
 
@@ -56,8 +76,8 @@ module.exports = class Pool {
             this.db.executeNonSelectSql("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", [taskHome.TaskState.done, endTime, id], null);
 
             this.activeProcess--;
-            this.io.emit('taskdone', { "running" : this.activeProcess, "pending" : this.poolQueue.length, "taskdone" : id, "endTime" : endTime });
-            this.io.emit('update-overview', { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone" : id, "endTime" : endTime })
+            this.io.emit('taskdone', { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone": id, "endTime": endTime });
+            this.io.emit('update-overview', { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone": id, "endTime": endTime })
             if (this.poolQueue.length != 0) {
                 this._startProcess(this.poolQueue.shift());
             }
@@ -71,7 +91,7 @@ module.exports = class Pool {
     }
 
     _appendLog(message, file) {
-        console.log("Appending msg: " + message + " to file: " + file);
+        // console.log("Appending msg: " + message + " to file: " + file);
         fs.appendFileSync(file, message);
     }
 }

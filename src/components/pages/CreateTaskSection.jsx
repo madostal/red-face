@@ -48,9 +48,9 @@ export default class CreateTaskSection extends Component {
     var json = JSON.stringify({
       data: {
         'taskname': document.getElementById(this.idTaskName).value,
-        'task-data': {
-          'BruteForceTab': bruteForceTab,
-          'OtherTab': otherTab
+        'taskdata': {
+          'bruteforcetab': bruteForceTab,
+          'othertab': otherTab
         }
       }
     });
