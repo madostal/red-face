@@ -21,7 +21,8 @@ function createStorageIfNotExist() {
         'enable': false,
         data: {
             'idTestJavascriptImport': false,
-            'idTestHttpHttps': false
+            'idTestHttpHttps': false,
+            'idTestGitConfig': false
         }
     });
     localStorage.setItem('OtherTab', json);
@@ -100,18 +101,21 @@ class Body extends Component {
     componentWillMount() {
         this.idTestJavascriptImport = newId();
         this.idTestHttpHttps = newId();
+        this.idTestGitConfig = newId();
     }
 
     componentDidMount() {
         var json = readStorage();
         document.getElementById(this.idTestJavascriptImport).getElementsByTagName("input")[0].checked = json.data.idTestJavascriptImport;
         document.getElementById(this.idTestHttpHttps).getElementsByTagName("input")[0].checked = json.data.idTestHttpHttps;
+        document.getElementById(this.idTestGitConfig).getElementsByTagName("input")[0].checked = json.data.idTestGitConfig;
     }
 
     componentWillUnmount() {
         var json = readStorage();
         json.data.idTestJavascriptImport = document.getElementById(this.idTestJavascriptImport).getElementsByTagName("input")[0].checked;
         json.data.idTestHttpHttps = document.getElementById(this.idTestHttpHttps).getElementsByTagName("input")[0].checked;
+        json.data.idTestGitConfig = document.getElementById(this.idTestGitConfig).getElementsByTagName("input")[0].checked;
         localStorage.setItem('OtherTab', JSON.stringify(json));
     }
 
@@ -121,6 +125,8 @@ class Body extends Component {
                 <Checkbox id={this.idTestJavascriptImport} label={<label>Test javascript import</label>} />
                 <Divider hidden />
                 <Checkbox id={this.idTestHttpHttps} label={<label>Test http and https</label>} />
+                <Divider hidden />
+                <Checkbox id={this.idTestGitConfig} label={<label>Test GIT config</label>} />
                 <Divider hidden />
                 <Divider hidden />
             </div >
