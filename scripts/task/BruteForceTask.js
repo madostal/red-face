@@ -2,6 +2,7 @@ var taskParent = require('./TaskParent.js');
 
 module.exports = class BruteForceTask extends taskParent {
 
+	/* THIS IS ONLY DEMO */
 	constructor(taskId) {
 		super(taskId);
 		console.log("STARTING BRUTEFORCE");

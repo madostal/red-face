@@ -4,12 +4,12 @@ var fs = require('fs');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
+var server = require('http')
+  .createServer(app);
 var io = require('socket.io')(server);
 
 var database = require('./utils/Database.js');
 var databaseInstance = new database();
-
 var pool = require('./utils/pool.js');
 var poolInstance = new pool(io, LOG_FOLDER, databaseInstance);
 
@@ -17,31 +17,29 @@ var taskHome = require('./task/TaskHome.js')
 var library = require('./utils/Library.js');
 
 server.listen(4200);
-serverSetUp();
-checkDeadTasks();
 
+/**
+ * Create directory for storings logs
+ */
 function serverSetUp() {
   if (!fs.existsSync(LOG_FOLDER)) {
     fs.mkdirSync(LOG_FOLDER);
   }
 }
 
+/**
+ * After reset server (if was some fail :-( ) its need check task which were in progress when server fails
+ * 
+ * So set this task to failed state
+ */
 function checkDeadTasks() {
-  var self = this;
-  databaseInstance.getConnection().query('SELECT id FROM task WHERE STATE != ?', [2], function (err, fields) {
+  var params = [taskHome.TaskState.failed, library.getMySQLTime(), taskHome.TaskState.done];
+  databaseInstance.getConnection().query('UPDATE task SET state = ?, endTime = ? WHERE id IN (SELECT task_id FROM subTask WHERE STATE != ?) ', params, function (err) {
     if (err) throw err;
+  });
 
-    fields.forEach(function (loop) {
-      var params = [taskHome.TaskState.failed, library.getMySQLTime(), loop.id];
-      databaseInstance.getConnection().query('UPDATE subTask SET state = ?, endTime = ? WHERE task_id= ? ', params, function (err) {
-        if (err) throw err;
-      });
-
-      var params = [taskHome.TaskState.failed, library.getMySQLTime(), loop.id];
-      databaseInstance.getConnection().query('UPDATE task SET state = ?, endTime = ? WHERE id= ? ', params, function (err) {
-        if (err) throw err;
-      });
-    });
+  databaseInstance.getConnection().query('UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?', params, function (err) {
+    if (err) throw err;
   });
 }
 
@@ -99,3 +97,6 @@ io.on('connection', function (socket) {
     }
   });
 });
+
+serverSetUp();
+checkDeadTasks();
