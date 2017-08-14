@@ -4,7 +4,7 @@ module.exports = class BruteForceTask extends taskParent {
 
 	constructor(taskId) {
 		super(taskId);
-		console.log("STARTING BRUTEFORCE START");
+		console.log("STARTING BRUTEFORCE");
 
 		var loop = Math.floor(Math.random() * (60 - 15 + 1)) + 15;
 		console.log("Task id: " + this.taskId + " started: " + loop + "ms");
@@ -18,6 +18,6 @@ module.exports = class BruteForceTask extends taskParent {
 				end = new Date().getTime();
 			}
 		}
-		console.log("STARTING BRUTEFORCE END");
+		console.log("BRUTEFORCE CLOSE");
 	}
 }

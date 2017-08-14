@@ -3,6 +3,7 @@ var database = require('../utils/Database.js');
 var db = new database().getConnection();
 
 var bruteForceTask = require('./BruteForceTask.js');
+var otherTask = require('./OtherTask.js');
 
 var args = process.argv.slice(2);
 var id = args[0];
@@ -44,6 +45,9 @@ class Core {
 				switch (tasktodo.type) {
 					case taskHome.TaskType.bruteForce:
 						new bruteForceTask(tasktodo.id);
+						break;
+					case taskHome.TaskType.other:
+						new otherTask(tasktodo.id);
 						break;
 					default:
 						console.log("UNKNOWN TASK TYPE: " + tasktodo.type)

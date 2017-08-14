@@ -7,7 +7,8 @@ var TaskState = Object.freeze({
 });
 
 var TaskType = Object.freeze({
-    'bruteForce': 0
+    'bruteForce': 0,
+    'other': 1
 });
 
 module.exports =

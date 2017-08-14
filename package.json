@@ -11,7 +11,7 @@
     "url": "https://github.com/JaLe29/red-face"
   },
   "dependencies": {
-    "async": "^2.2.0",
+    "async": "^2.5.0",
     "babel-core": "^6.24.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-add-module-exports": "^0.2.1",
