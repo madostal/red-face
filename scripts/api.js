@@ -45,22 +45,6 @@ function checkDeadTasks() {
 
 io.on('connection', function (socket) {
 
-  console.log('a user connected: ' + socket.id + "\n");
-
-  socket.on('disconnect', function () {
-    console.log(socket.name + ' has disconnected from the chat.' + socket.id + "\n");
-  });
-
-  socket.on('join', function (name) {
-    socket.name = name;
-    console.log(socket.name + ' joined the chat.' + "\n");
-  });
-
-  socket.on('message', function (name) {
-    socket.name = name;
-    console.log(socket.name + ' joined the chat.' + "\n");
-  });
-
   /**
    * On create new task
    */
