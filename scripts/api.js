@@ -80,6 +80,13 @@ io.on('connection', function (socket) {
       });
     }
   });
+
+  socket.on('remove-task', function (input) {
+    var params = [input.id];
+    databaseInstance.getConnection().query('DELETE FROM TASK WHERE ID = ?', params, function (err) {
+      if (err) throw err;
+    });
+  });
 });
 
 serverSetUp();

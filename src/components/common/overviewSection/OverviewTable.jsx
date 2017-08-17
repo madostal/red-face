@@ -14,7 +14,7 @@ import Api from 'utils/Api'
 import Library from 'utils/Library'
 
 export default class OverviewTable extends Component {
-    
+
     constructor(props) {
         super(props)
 
@@ -75,7 +75,7 @@ export default class OverviewTable extends Component {
     }
 
     _delete(item) {
-        console.log(item);
+        Api.socketRequest("remove-task", {id:item.id});
     }
 
     componentDidMount() {
@@ -174,6 +174,8 @@ export default class OverviewTable extends Component {
                                                         this.setState({
                                                             modalRemoveTaskOpen: false,
                                                         })
+                                                        
+                                                        this._delete(item);
                                                     }}>
                                                         <Icon name='checkmark' /> Yes
                                               </Button>
