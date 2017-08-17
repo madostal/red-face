@@ -1,25 +1,28 @@
 import React, { Component } from 'react'
-import {
-    Table,
-    Loader
-} from 'semantic-ui-react'
-
-import { Link } from 'react-router'
+import { browserHistory } from 'react-router';
 import {
     Menu,
-    Icon
+    Icon,
+    Button,
+    Modal,
+    Header,
+    Loader,
+    Table
 } from 'semantic-ui-react'
-
 
 import Api from 'utils/Api'
 import Library from 'utils/Library'
 
 export default class OverviewTable extends Component {
+    
     constructor(props) {
         super(props)
 
         this.state = {
-            result: []
+            result: [],
+            redirect: false,
+            modalRemoveTaskOpen: false,
+            modalStopTaskOpen: false
         }
 
         Api.getSocket().on('update-overview', function (data) {
@@ -30,6 +33,7 @@ export default class OverviewTable extends Component {
                     loop.endTime = data.endTime;
                 }
             });
+
             this.setState = {
                 result: lastRowData
             }
@@ -61,6 +65,19 @@ export default class OverviewTable extends Component {
         Api.socketRequest("give-me-tasks", {});
     }
 
+    _open(e, item) {
+        browserHistory.push(['/detail-section?key=', item.key].join(""));
+    }
+
+    _repeat(e, item) {
+        console.log(item);
+        this.setState({ setUpVisible: !this.state.setUpVisible });
+    }
+
+    _delete(item) {
+        console.log(item);
+    }
+
     componentDidMount() {
         var self = this;
         this.interval = setInterval(function () {
@@ -71,7 +88,7 @@ export default class OverviewTable extends Component {
                 }
             });
 
-            self.setState = {
+            self.state = {
                 result: lastRowData
             }
             self.forceUpdate()
@@ -104,6 +121,7 @@ export default class OverviewTable extends Component {
                         <Table.Body>
                             {result.map((item) => {
                                 return (
+
                                     <Table.Row key={item.id}>
                                         <Table.Cell>
                                             {item.id}
@@ -134,9 +152,60 @@ export default class OverviewTable extends Component {
                                             })()}
                                         </Table.Cell>
                                         <Table.Cell textAlign='center'>
-                                            <Menu.Item as={Link} to={['/detail-section?key=', item.key].join("")}>
-                                                <Icon name='search' size='large' />
-                                            </Menu.Item>
+                                            <Button onClick={(e) => this._open(e, item)} color='blue' icon><Icon name='search' /></Button>
+                                            <Button onClick={(e) => this._repeat(e, item)} color='green' icon><Icon name='repeat' /></Button>
+
+                                            <Modal size='tiny' trigger={<Button inverted color='red' icon><Icon name='trash' /></Button>} open={this.state.modalRemoveTaskOpen}>
+                                                <Header icon='trash' content='Remove task?' />
+                                                <Modal.Content>Are you sure, that you want to remove this task?</Modal.Content>
+                                                <Modal.Actions>
+                                                    <Button color='red' onClick={() => {
+                                                        console.log("NO");
+                                                        console.log(item.id);
+                                                        this.setState({
+                                                            modalRemoveTaskOpen: false,
+                                                        })
+                                                    }}>
+                                                        <Icon name='remove' /> No
+                                              </Button>
+                                                    <Button color='green' onClick={() => {
+                                                        console.log("YES");
+                                                        console.log(item.id);
+                                                        this.setState({
+                                                            modalRemoveTaskOpen: false,
+                                                        })
+                                                    }}>
+                                                        <Icon name='checkmark' /> Yes
+                                              </Button>
+                                                </Modal.Actions>
+                                            </Modal>
+
+
+                                            <Modal size='tiny' trigger={<Button inverted color='orange' icon><Icon name='stop' /></Button>} open={this.state.modalStopTaskOpen}>
+                                                <Header icon='stop' content='Stop task?' />
+                                                <Modal.Content>Are you sure, that you want to stop this task?</Modal.Content>
+                                                <Modal.Actions>
+                                                    <Button color='red' onClick={() => {
+                                                        console.log("NO");
+                                                        console.log(item.id);
+                                                        this.setState({
+                                                            modalStopTaskOpen: false,
+                                                        })
+                                                    }}>
+                                                        <Icon name='remove' /> No
+                                              </Button>
+                                                    <Button color='green' onClick={() => {
+                                                        console.log("YES");
+                                                        console.log(item.id);
+                                                        this.setState({
+                                                            modalStopTaskOpen: false,
+                                                        })
+                                                    }}>
+                                                        <Icon name='checkmark' /> Yes
+                                              </Button>
+                                                </Modal.Actions>
+                                            </Modal>
+
                                         </Table.Cell>
                                     </Table.Row>
                                 )
