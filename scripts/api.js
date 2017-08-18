@@ -8,8 +8,8 @@ var server = require("http")
   .createServer(app);
 var io = require("socket.io")(server);
 
-var database = require("./utils/Database.js");
-var databaseInstance = new database();
+var Database = require("./utils/Database.js");
+var databaseInstance = new Database();
 var pool = require("./utils/pool.js");
 var poolInstance = new pool(io, LOG_FOLDER, databaseInstance);
 
@@ -66,12 +66,9 @@ io.on("connection", function (socket) {
 
   socket.on("give-me-task-detail", function (input) {
     var splitKey = input.key.split("_");
-    console.log(input);
-    console.log(splitKey.length);
-    console.log(splitKey)
     if (splitKey.length !== 2) {
       //possible wrong key
-      thereIsTaskDetailCallback({});
+      io.emit("there-is-task-detail", null);
     } else {
       var params = [splitKey[0], splitKey[1]];
       databaseInstance.getConnection().query("SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?", params, function (err, fields) {

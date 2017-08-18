@@ -2,8 +2,8 @@ var taskHome = require("./TaskHome")
 var database = require("../utils/Database");
 var library = require("../utils/Library")
 
-var bruteForceTask = require("./BruteForceTask");
-var otherTask = require("./OtherTask");
+var BruteForceTask = require("./BruteForceTask");
+var OtherTask = require("./OtherTask");
 
 var db = new database().getConnection();
 
@@ -57,10 +57,10 @@ class Core {
 
 				switch (tasktodo.type) {
 					case taskHome.TaskType.bruteForce:
-						lastTask = new bruteForceTask(tasktodo.id);
+						lastTask = new BruteForceTask(tasktodo.id);
 						break;
 					case taskHome.TaskType.other:
-						lastTask = new otherTask(tasktodo.id);
+						lastTask = new OtherTask(tasktodo.id);
 						break;
 					default:
 						console.log("UNKNOWN TASK TYPE: " + tasktodo.type);

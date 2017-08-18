@@ -12,4 +12,4 @@ module.exports = class ParentTask {
     getLogFile() {
         return this.logFile;
     }
-}
+};
