@@ -1,4 +1,4 @@
-var mysql = require('mysql');
+var mysql = require("mysql");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -15,7 +15,7 @@ module.exports = class Database {
                 console.error(err);
                 throw err
             } else {
-                console.log('Connection to database was successful');
+                console.log("Connection to database was successful");
             }
         });
     }

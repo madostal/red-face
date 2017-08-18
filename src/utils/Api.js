@@ -1,4 +1,4 @@
-const socket = require('socket.io-client')('http://localhost:4200');
+const socket = require("socket.io-client")("http://localhost:4200");
 
 class Api {
 

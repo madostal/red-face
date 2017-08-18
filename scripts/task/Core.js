@@ -1,9 +1,9 @@
-var taskHome = require('./TaskHome')
-var database = require('../utils/Database');
-var library = require('../utils/Library')
+var taskHome = require("./TaskHome")
+var database = require("../utils/Database");
+var library = require("../utils/Library")
 
-var bruteForceTask = require('./BruteForceTask');
-var otherTask = require('./OtherTask');
+var bruteForceTask = require("./BruteForceTask");
+var otherTask = require("./OtherTask");
 
 var db = new database().getConnection();
 
@@ -47,7 +47,7 @@ class Core {
 			var tasktodo = this.subTasks.pop();
 
 			var self = this;
-			db.query('SELECT * FROM log WHERE subTask_id = ? LIMIT 1', [tasktodo.id], function (err, field) {
+			db.query("SELECT * FROM log WHERE subTask_id = ? LIMIT 1", [tasktodo.id], function (err, field) {
 				if (err) throw err;
 
 				//send message to parent process and inform him about switched file for log

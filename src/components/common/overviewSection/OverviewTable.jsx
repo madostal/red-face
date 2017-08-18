@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { browserHistory } from 'react-router';
+import React, { Component } from "react"
+import { browserHistory } from "react-router";
 import {
     Menu,
     Icon,
@@ -8,10 +8,10 @@ import {
     Header,
     Loader,
     Table
-} from 'semantic-ui-react'
+} from "semantic-ui-react"
 
-import Api from 'utils/Api'
-import Library from 'utils/Library'
+import Api from "utils/Api"
+import Library from "utils/Library"
 
 export default class OverviewTable extends Component {
 
@@ -25,7 +25,7 @@ export default class OverviewTable extends Component {
             modalStopTaskOpen: false
         }
 
-        Api.getSocket().on('update-overview', function (data) {
+        Api.getSocket().on("update-overview", function (data) {
             var lastRowData = this.state.result;
             lastRowData.forEach(function (loop) {
                 if (loop.id === data.taskdone) {
@@ -41,7 +41,7 @@ export default class OverviewTable extends Component {
             this.forceUpdate()
         }.bind(this));
 
-        Api.getSocket().on('there-are-tasks', function (data) {
+        Api.getSocket().on("there-are-tasks", function (data) {
             var rowData = [];
             data.reverse().forEach(function (loop) {
                 var tmp = {
@@ -66,7 +66,7 @@ export default class OverviewTable extends Component {
     }
 
     _open(e, item) {
-        browserHistory.push(['/detail-section?key=', item.key].join(""));
+        browserHistory.push(["/detail-section?key=", item.key].join(""));
     }
 
     _repeat(e, item) {
@@ -97,8 +97,8 @@ export default class OverviewTable extends Component {
 
     componentWillUnmount() {
         clearInterval(this.interval);
-        Api.getSocket().removeAllListeners('there-are-tasks');
-        Api.getSocket().removeAllListeners('update-overview');
+        Api.getSocket().removeAllListeners("there-are-tasks");
+        Api.getSocket().removeAllListeners("update-overview");
     }
 
     render() {
@@ -139,36 +139,36 @@ export default class OverviewTable extends Component {
                                             {(function () {
                                                 switch (item.state) {
                                                     case 0:
-                                                        return <Icon name='wait' size='large' />;
+                                                        return <Icon name="wait" size="large" />;
                                                     case 1:
                                                         return <Loader active inline size="small" />;
                                                     case 2:
-                                                        return <Icon name='checkmark' size='large' />;
+                                                        return <Icon name="checkmark" size="large" />;
                                                     case 3:
-                                                        return <Icon name='exclamation triangle' size='large' />;
+                                                        return <Icon name="exclamation triangle" size="large" />;
                                                     default:
                                                         return null;
                                                 }
                                             })()}
                                         </Table.Cell>
-                                        <Table.Cell textAlign='center'>
-                                            <Button onClick={(e) => this._open(e, item)} color='blue' icon><Icon name='search' /></Button>
-                                            <Button onClick={(e) => this._repeat(e, item)} color='green' icon><Icon name='repeat' /></Button>
+                                        <Table.Cell textAlign="center">
+                                            <Button onClick={(e) => this._open(e, item)} color="blue" icon><Icon name="search" /></Button>
+                                            <Button onClick={(e) => this._repeat(e, item)} color="green" icon><Icon name="repeat" /></Button>
 
-                                            <Modal size='tiny' trigger={<Button inverted color='red' icon><Icon name='trash' /></Button>} open={this.state.modalRemoveTaskOpen}>
-                                                <Header icon='trash' content='Remove task?' />
+                                            <Modal size="tiny" trigger={<Button inverted color="red" icon><Icon name="trash" /></Button>} open={this.state.modalRemoveTaskOpen}>
+                                                <Header icon="trash" content="Remove task?" />
                                                 <Modal.Content>Are you sure, that you want to remove this task?</Modal.Content>
                                                 <Modal.Actions>
-                                                    <Button color='red' onClick={() => {
+                                                    <Button color="red" onClick={() => {
                                                         console.log("NO");
                                                         console.log(item.id);
                                                         this.setState({
                                                             modalRemoveTaskOpen: false,
                                                         })
                                                     }}>
-                                                        <Icon name='remove' /> No
+                                                        <Icon name="remove" /> No
                                               </Button>
-                                                    <Button color='green' onClick={() => {
+                                                    <Button color="green" onClick={() => {
                                                         console.log("YES");
                                                         console.log(item.id);
                                                         this.setState({
@@ -177,33 +177,33 @@ export default class OverviewTable extends Component {
                                                         
                                                         this._delete(item);
                                                     }}>
-                                                        <Icon name='checkmark' /> Yes
+                                                        <Icon name="checkmark" /> Yes
                                               </Button>
                                                 </Modal.Actions>
                                             </Modal>
 
 
-                                            <Modal size='tiny' trigger={<Button inverted color='orange' icon><Icon name='stop' /></Button>} open={this.state.modalStopTaskOpen}>
-                                                <Header icon='stop' content='Stop task?' />
+                                            <Modal size="tiny" trigger={<Button inverted color="orange" icon><Icon name="stop" /></Button>} open={this.state.modalStopTaskOpen}>
+                                                <Header icon="stop" content="Stop task?" />
                                                 <Modal.Content>Are you sure, that you want to stop this task?</Modal.Content>
                                                 <Modal.Actions>
-                                                    <Button color='red' onClick={() => {
+                                                    <Button color="red" onClick={() => {
                                                         console.log("NO");
                                                         console.log(item.id);
                                                         this.setState({
                                                             modalStopTaskOpen: false,
                                                         })
                                                     }}>
-                                                        <Icon name='remove' /> No
+                                                        <Icon name="remove" /> No
                                               </Button>
-                                                    <Button color='green' onClick={() => {
+                                                    <Button color="green" onClick={() => {
                                                         console.log("YES");
                                                         console.log(item.id);
                                                         this.setState({
                                                             modalStopTaskOpen: false,
                                                         })
                                                     }}>
-                                                        <Icon name='checkmark' /> Yes
+                                                        <Icon name="checkmark" /> Yes
                                               </Button>
                                                 </Modal.Actions>
                                             </Modal>

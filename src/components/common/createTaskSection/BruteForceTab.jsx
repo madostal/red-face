@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 import {
     Header,
     Checkbox,
@@ -8,28 +8,28 @@ import {
     Divider,
     Grid,
     Message
-} from 'semantic-ui-react'
+} from "semantic-ui-react"
 
-import newId from '../../../utils/Newid';
+import newId from "../../../utils/Newid";
 
-import { TASK_DISABLE_WARNING_MESSAGE, TASK_DISABLE_WARNING_MESSAGE_HEADER } from '../../../language/Variables'
+import { TASK_DISABLE_WARNING_MESSAGE, TASK_DISABLE_WARNING_MESSAGE_HEADER } from "../../../language/Variables"
 
 function createStorageIfNotExist() {
     var json = JSON.stringify({
-        'enable': false,
+        "enable": false,
         data: {
-            'idLoginFormXPathExpr': '',
-            'idLoginNames': '',
-            'idLoginPsw': '',
-            'idLoginFormLocation': ''
+            "idLoginFormXPathExpr": "",
+            "idLoginNames": "",
+            "idLoginPsw": "",
+            "idLoginFormLocation": ""
         }
     });
-    localStorage.setItem('BruteForceTab', json);
+    localStorage.setItem("BruteForceTab", json);
     return json;
 }
 
 function readStorage() {
-    return JSON.parse(localStorage.getItem('BruteForceTab'));
+    return JSON.parse(localStorage.getItem("BruteForceTab"));
 }
 
 export default class BruteForceTab extends Component {
@@ -37,7 +37,7 @@ export default class BruteForceTab extends Component {
     constructor(props) {
         super(props);
         var storage;
-        if (localStorage.getItem('BruteForceTab') === null) {
+        if (localStorage.getItem("BruteForceTab") === null) {
             storage = createStorageIfNotExist();
         } else {
             storage = readStorage();
@@ -73,9 +73,9 @@ export default class BruteForceTab extends Component {
     render() {
         return (
             <div>
-                <Header as='h3'>Brute Force</Header>
+                <Header as="h3">Brute Force</Header>
                 <Grid  >
-                    <Grid.Row textAlign='right'>
+                    <Grid.Row textAlign="right">
                         <Grid.Column>
                             <Checkbox id="A" checked={this.state.setUpVisible} label="Enable" toggle onClick={(e, d) => this._checkBoxAction(e, d)} />
                         </Grid.Column>
@@ -84,7 +84,7 @@ export default class BruteForceTab extends Component {
                 <Divider inverted />
                 {this.state.error && (
                     <Message info
-                        icon='warning circle'
+                        icon="warning circle"
                         header={this.state.errorHeader}
                         content={this.state.error}
                     />
@@ -120,36 +120,36 @@ class Body extends Component {
         json.data.idLoginNames = document.getElementById(this.idLoginNames).value;
         json.data.idLoginPsw = document.getElementById(this.idLoginPsw).value;
         json.data.idLoginFormLocation = document.getElementById(this.idLoginFormLocation).value;
-        localStorage.setItem('BruteForceTab', JSON.stringify(json));
+        localStorage.setItem("BruteForceTab", JSON.stringify(json));
     }
 
     render() {
         return (
             <div>
                 <Form >
-                    <Header as='h5'>Login form XPath expression</Header>
-                    <TextArea id={this.idLoginFormXPathExpr} placeholder='Tell us more' label='Enter Password' />
+                    <Header as="h5">Login form XPath expression</Header>
+                    <TextArea id={this.idLoginFormXPathExpr} placeholder="Tell us more" label="Enter Password" />
                 </Form>
                 <Divider hidden />
-                <Grid divided='vertically'>
+                <Grid divided="vertically">
                     <Grid.Row columns={2}>
                         <Grid.Column>
                             <Form >
-                                <Header as='h5'>Login names</Header>
-                                <TextArea id={this.idLoginNames} placeholder='Tell us more' label='Enter Password' />
+                                <Header as="h5">Login names</Header>
+                                <TextArea id={this.idLoginNames} placeholder="Tell us more" label="Enter Password" />
                             </Form>
                         </Grid.Column>
                         <Grid.Column>
                             <Form >
-                                <Header as='h5'>Passwords</Header>
-                                <TextArea id={this.idLoginPsw} placeholder='Tell us more' label='Enter Password' />
+                                <Header as="h5">Passwords</Header>
+                                <TextArea id={this.idLoginPsw} placeholder="Tell us more" label="Enter Password" />
                             </Form>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
                 <Form>
-                    <Header as='h5'>Login form location</Header>
-                    <TextArea id={this.idLoginFormLocation} placeholder='Tell us more' label='Enter Password' />
+                    <Header as="h5">Login form location</Header>
+                    <TextArea id={this.idLoginFormLocation} placeholder="Tell us more" label="Enter Password" />
                 </Form >
             </div>
         )

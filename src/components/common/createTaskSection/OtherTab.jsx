@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 import {
     Header,
     Checkbox,
@@ -10,27 +10,27 @@ import {
     Grid,
     Image,
     Message
-} from 'semantic-ui-react'
+} from "semantic-ui-react"
 
-import newId from '../../../utils/Newid';
+import newId from "../../../utils/Newid";
 
-import { TASK_DISABLE_WARNING_MESSAGE, TASK_DISABLE_WARNING_MESSAGE_HEADER } from '../../../language/Variables'
+import { TASK_DISABLE_WARNING_MESSAGE, TASK_DISABLE_WARNING_MESSAGE_HEADER } from "../../../language/Variables"
 
 function createStorageIfNotExist() {
     var json = JSON.stringify({
-        'enable': false,
+        "enable": false,
         data: {
-            'idTestJavascriptImport': false,
-            'idTestHttpHttps': false,
-            'idTestGitConfig': false
+            "idTestJavascriptImport": false,
+            "idTestHttpHttps": false,
+            "idTestGitConfig": false
         }
     });
-    localStorage.setItem('OtherTab', json);
+    localStorage.setItem("OtherTab", json);
     return json;
 }
 
 function readStorage() {
-    return JSON.parse(localStorage.getItem('OtherTab'));
+    return JSON.parse(localStorage.getItem("OtherTab"));
 }
 
 export default class OtherTab extends Component {
@@ -38,7 +38,7 @@ export default class OtherTab extends Component {
     constructor(props) {
         super(props)
         var storage;
-        if (localStorage.getItem('OtherTab') === null) {
+        if (localStorage.getItem("OtherTab") === null) {
             storage = createStorageIfNotExist();
         } else {
             storage = readStorage();
@@ -70,9 +70,9 @@ export default class OtherTab extends Component {
         return (
             <div>
                 <div>
-                    <Header as='h3'>Other</Header>
+                    <Header as="h3">Other</Header>
                     <Grid  >
-                        <Grid.Row textAlign='right'>
+                        <Grid.Row textAlign="right">
                             <Grid.Column>
                                 <Checkbox checked={this.state.setUpVisible} label="Enable" toggle onClick={(e, d) => this._checkBoxAction(e, d)} />
                             </Grid.Column>
@@ -81,7 +81,7 @@ export default class OtherTab extends Component {
                     <Divider inverted />
                     {this.state.error && (
                         <Message info
-                            icon='warning circle'
+                            icon="warning circle"
                             header={this.state.errorHeader}
                             content={this.state.error}
                         />
@@ -116,7 +116,7 @@ class Body extends Component {
         json.data.idTestJavascriptImport = document.getElementById(this.idTestJavascriptImport).getElementsByTagName("input")[0].checked;
         json.data.idTestHttpHttps = document.getElementById(this.idTestHttpHttps).getElementsByTagName("input")[0].checked;
         json.data.idTestGitConfig = document.getElementById(this.idTestGitConfig).getElementsByTagName("input")[0].checked;
-        localStorage.setItem('OtherTab', JSON.stringify(json));
+        localStorage.setItem("OtherTab", JSON.stringify(json));
     }
 
     render() {

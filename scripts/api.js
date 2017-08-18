@@ -1,20 +1,20 @@
-const LOG_FOLDER = './log_folder';
+const LOG_FOLDER = "./log_folder";
 
-var fs = require('fs');
-var bodyParser = require('body-parser');
-var express = require('express');
+var fs = require("fs");
+var bodyParser = require("body-parser");
+var express = require("express");
 var app = express();
-var server = require('http')
+var server = require("http")
   .createServer(app);
-var io = require('socket.io')(server);
+var io = require("socket.io")(server);
 
-var database = require('./utils/Database.js');
+var database = require("./utils/Database.js");
 var databaseInstance = new database();
-var pool = require('./utils/pool.js');
+var pool = require("./utils/pool.js");
 var poolInstance = new pool(io, LOG_FOLDER, databaseInstance);
 
-var taskHome = require('./task/TaskHome.js')
-var library = require('./utils/Library.js');
+var taskHome = require("./task/TaskHome.js")
+var library = require("./utils/Library.js");
 
 server.listen(4200);
 
@@ -34,37 +34,37 @@ function serverSetUp() {
  */
 function checkDeadTasks() {
   var params = [taskHome.TaskState.failed, library.getMySQLTime(), taskHome.TaskState.done];
-  databaseInstance.getConnection().query('UPDATE task SET state = ?, endTime = ? WHERE id IN (SELECT task_id FROM subTask WHERE STATE != ?) ', params, function (err) {
+  databaseInstance.getConnection().query("UPDATE task SET state = ?, endTime = ? WHERE id IN (SELECT task_id FROM subTask WHERE STATE != ?) ", params, function (err) {
     if (err) throw err;
   });
 
-  databaseInstance.getConnection().query('UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?', params, function (err) {
+  databaseInstance.getConnection().query("UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?", params, function (err) {
     if (err) throw err;
   });
 }
 
-io.on('connection', function (socket) {
+io.on("connection", function (socket) {
 
   /**
    * On create new task
    */
-  socket.on('taskcreate', function (input) {
+  socket.on("taskcreate", function (input) {
     var json = JSON.parse(input);
-    io.emit('taskcreate', json.data.taskname);
+    io.emit("taskcreate", json.data.taskname);
     poolInstance.insertNewTask(json);
   });
 
   /**
    * Return all tasks
    */
-  socket.on('give-me-tasks', function (input) {
-    databaseInstance.getConnection().query('SELECT * FROM task', [], function (err, fields) {
+  socket.on("give-me-tasks", function (input) {
+    databaseInstance.getConnection().query("SELECT * FROM task", [], function (err, fields) {
       if (err) throw err;
-      io.emit('there-are-tasks', fields);
+      io.emit("there-are-tasks", fields);
     });
   });
 
-  socket.on('give-me-task-detail', function (input) {
+  socket.on("give-me-task-detail", function (input) {
     var splitKey = input.key.split("_");
     console.log(input);
     console.log(splitKey.length);
@@ -74,16 +74,16 @@ io.on('connection', function (socket) {
       thereIsTaskDetailCallback({});
     } else {
       var params = [splitKey[0], splitKey[1]];
-      databaseInstance.getConnection().query('SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?', params, function (err, fields) {
+      databaseInstance.getConnection().query("SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?", params, function (err, fields) {
         if (err) throw err;
-        io.emit('there-is-task-detail', fields);
+        io.emit("there-is-task-detail", fields);
       });
     }
   });
 
-  socket.on('remove-task', function (input) {
+  socket.on("remove-task", function (input) {
     var params = [input.id];
-    databaseInstance.getConnection().query('DELETE FROM TASK WHERE ID = ?', params, function (err) {
+    databaseInstance.getConnection().query("DELETE FROM TASK WHERE ID = ?", params, function (err) {
       if (err) throw err;
     });
   });

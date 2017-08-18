@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 
 import {
   Message,
@@ -6,9 +6,9 @@ import {
   Grid,
   List,
   Icon
-} from 'semantic-ui-react'
+} from "semantic-ui-react"
 
-import Api from 'utils/Api'
+import Api from "utils/Api"
 
 export default class DetailSection extends Component {
 
@@ -19,7 +19,7 @@ export default class DetailSection extends Component {
       loading: true
     }
 
-    Api.getSocket().on('there-is-task-detail', function (data) {
+    Api.getSocket().on("there-is-task-detail", function (data) {
       console.log(data[0]);
       console.log(Object.keys(data).length)
       if (Object.keys(data).length > 0) {
@@ -44,7 +44,7 @@ export default class DetailSection extends Component {
   render() {
     let { loading, taskId, taskAddTime, taskStartTime, taskEndTime, taskType, taskName, taskKey, taskState } = this.state
     return (
-      <div className='home-section'>
+      <div className="home-section">
 
         {loading && (
           <div>
@@ -54,13 +54,13 @@ export default class DetailSection extends Component {
 
         {!loading && !taskId && (
           <Message error
-            icon='warning sign'
-            header='This task does not exist'
+            icon="warning sign"
+            header="This task does not exist"
             list={
               [
-                'Do you have the right link?',
-                'The task could be deleted.',
-                'Or any other unexpected error occurred.'
+                "Do you have the right link?",
+                "The task could be deleted.",
+                "Or any other unexpected error occurred."
               ]
             }
           />
@@ -142,13 +142,13 @@ export default class DetailSection extends Component {
                 {(function () {
                   switch (taskState) {
                     case 0:
-                      return <Icon name='wait' size='huge' />;
+                      return <Icon name="wait" size="huge" />;
                     case 1:
                       return <Loader active inline size="massive" />;
                     case 2:
-                      return <Icon name='checkmark' size='huge' />;
+                      return <Icon name="checkmark" size="huge" />;
                     case 3:
-                      return <Icon name='exclamation triangle' size='huge' />;
+                      return <Icon name="exclamation triangle" size="huge" />;
                     default:
                       return null;
                   }
