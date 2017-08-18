@@ -38,8 +38,7 @@ module.exports = class Pool {
                                     if (err) throw err;
                                 });
 
-                                var params = { testJavascriptImport: data.data.taskdata.othertab.data.idTestJavascriptImport, testHttpHttps: data.data.taskdata.othertab.data.idTestHttpHttps, testGitConfig: data.data.taskdata.othertab.data.idTestGitConfig, subTask_id: idSubTask, subTask_task_id: idTask };
-                                console.log(params);
+                                params = { testJavascriptImport: data.data.taskdata.othertab.data.idTestJavascriptImport, testHttpHttps: data.data.taskdata.othertab.data.idTestHttpHttps, testGitConfig: data.data.taskdata.othertab.data.idTestGitConfig, subTask_id: idSubTask, subTask_task_id: idTask };
                                 self.db.query('INSERT INTO otherTask SET ?', params, function (err, result) {
                                     if (err) throw err;
                                     callback(null);
@@ -120,7 +119,7 @@ module.exports = class Pool {
             this.activeProcess--;
             this.io.emit('taskdone', { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone": id, "endTime": endTime });
             this.io.emit('update-overview', { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone": id, "endTime": endTime })
-            if (this.poolQueue.length != 0) {
+            if (this.poolQueue.length !== 0) {
                 this._startProcess(this.poolQueue.shift());
             }
         });
@@ -137,7 +136,6 @@ module.exports = class Pool {
     }
 
     _appendLog(message, file) {
-        // console.log("Appending msg: " + message + " to file: " + file);
         fs.appendFileSync(file, message);
     }
 }

@@ -1,3 +1,8 @@
+
+var sliceNumber = function (num, pos) {
+    return ("0" + num).slice(-pos);
+}
+
 var mySQLDateToHumanReadable = function (mysqlDateTimeStamp) {
     var date = new Date(mysqlDateTimeStamp);
 
@@ -25,15 +30,11 @@ var msToHumanReadable = function (time) {
     time = parseInt(time / 60);
     var hours = time % 24;
     var out = "";
-    if (hours && hours > 0) out += hours + " " + ((hours == 1) ? "hr" : "hrs") + " ";
-    if (minutes && minutes > 0) out += sliceNumber(minutes, 2) + " " + ((minutes == 1) ? "min" : "mins") + " ";
-    if (seconds && seconds > 0) out += sliceNumber(seconds, 2) + " " + ((seconds == 1) ? "sec" : "secs") + " ";
-    if (millis && millis > 0) out += sliceNumber(millis, 3) + " " + ((millis == 1) ? "msec" : "msecs") + " ";
+    if (hours && hours > 0) out += hours + " " + ((hours === 1) ? "hr" : "hrs") + " ";
+    if (minutes && minutes > 0) out += sliceNumber(minutes, 2) + " " + ((minutes === 1) ? "min" : "mins") + " ";
+    if (seconds && seconds > 0) out += sliceNumber(seconds, 2) + " " + ((seconds === 1) ? "sec" : "secs") + " ";
+    if (millis && millis > 0) out += sliceNumber(millis, 3) + " " + ((millis === 1) ? "msec" : "msecs") + " ";
     return out.trim();
-}
-
-var sliceNumber = function (num, pos) {
-    return ("0" + num).slice(-pos);
 }
 
 module.exports = {

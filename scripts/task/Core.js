@@ -42,7 +42,7 @@ class Core {
 	 * Take each sub task in loop and synchrony do a task job
 	 */
 	_startJob() {
-		if (this.subTasks.length != 0) {
+		if (this.subTasks.length !== 0) {
 
 			var tasktodo = this.subTasks.pop();
 
@@ -55,10 +55,10 @@ class Core {
 
 				switch (tasktodo.type) {
 					case taskHome.TaskType.bruteForce:
-						new bruteForceTask(tasktodo.id);
+						var tmp = new bruteForceTask(tasktodo.id);
 						break;
 					case taskHome.TaskType.other:
-						new otherTask(tasktodo.id);
+						var tmp = new otherTask(tasktodo.id);
 						break;
 					default:
 						console.log("UNKNOWN TASK TYPE: " + tasktodo.type);
@@ -93,7 +93,7 @@ class Core {
 	 * Mark subtask as done in database
 	 * 
 	 */
-	_markSubTaskDone() { 
+	_markSubTaskDone() {
 		var params = [taskHome.TaskState.done, library.getMySQLTime(), this.taskId];
 		db.query('UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ', params, function (err) {
 			if (err) throw err;
