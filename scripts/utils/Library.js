@@ -4,8 +4,8 @@
  * @return {String} actual mysql TIMESTAMP
  */
 getMySQLTime = function () {
-    return (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ');
-}
+    return (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace("T", " ");
+};
 
 /**
  * Return random string in range
@@ -21,7 +21,7 @@ getRandomTextInRange = function (range = 5) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return text;
-}
+};
 
 module.exports =
     {

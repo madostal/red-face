@@ -11,9 +11,8 @@ module.exports = class Database {
 
     constructor() {
         connection.connect(function (err) {
-            if (err) {
-                console.log('Connection to db failed');
-                console.log(err);
+            if (err) { 
+                console.error(err);
                 throw err
             } else {
                 console.log('Connection to database was successful');

@@ -25,7 +25,7 @@ class Core {
 	 */
 	_loadInfo() {
 		var self = this;
-		db.query('SELECT * FROM subtask WHERE task_id = ?', [this.taskId], function (err, fields) {
+		db.query("SELECT * FROM subtask WHERE task_id = ?", [this.taskId], function (err, fields) {
 			if (err) {
 				throw err;
 			}
@@ -53,12 +53,14 @@ class Core {
 				//send message to parent process and inform him about switched file for log
 				self._setStream(field[0].path);
 
+				var lastTask;
+
 				switch (tasktodo.type) {
 					case taskHome.TaskType.bruteForce:
-						var tmp = new bruteForceTask(tasktodo.id);
+						lastTask = new bruteForceTask(tasktodo.id);
 						break;
 					case taskHome.TaskType.other:
-						var tmp = new otherTask(tasktodo.id);
+						lastTask = new otherTask(tasktodo.id);
 						break;
 					default:
 						console.log("UNKNOWN TASK TYPE: " + tasktodo.type);
@@ -95,7 +97,7 @@ class Core {
 	 */
 	_markSubTaskDone() {
 		var params = [taskHome.TaskState.done, library.getMySQLTime(), this.taskId];
-		db.query('UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ', params, function (err) {
+		db.query("UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ", params, function (err) {
 			if (err) throw err;
 		});
 	}
