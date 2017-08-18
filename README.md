@@ -1,5 +1,7 @@
 # Red Face - security testing of web applications
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0fef741942c5461ea9da0356c4b5b942)](https://www.codacy.com/app/JaLe/red-face?utm_source=github.com&utm_medium=referral&utm_content=JaLe29/red-face&utm_campaign=badger)
+
 ## What is Red Face
 
 * It's my diploma thesis - [Faculty of Applied Sciences of the University of West Bohemia in Pilsen](http://www.fav.zcu.cz/en/)
