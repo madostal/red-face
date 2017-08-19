@@ -31,7 +31,7 @@ var msToHumanReadable = function (time) {
     var hours = time % 24;
     var out = "";
     if (hours && hours > 0) {
-        out += hours + " " + ((hours === 1) ? "hr" : "hrs") + " "
+        out += hours + " " + ((hours === 1) ? "hr" : "hrs") + " ";
     };
     if (minutes && minutes > 0) {
         out += sliceNumber(minutes, 2) + " " + ((minutes === 1) ? "min" : "mins") + " ";

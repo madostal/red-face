@@ -7,4 +7,4 @@ require("semantic-ui-css/semantic.css");
 ReactDOM.render(
   <PageRouter />,
   document.getElementById("main")
-)
+);

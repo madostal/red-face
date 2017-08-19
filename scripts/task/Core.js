@@ -1,6 +1,6 @@
 var taskHome = require("./TaskHome")
 var database = require("../utils/Database");
-var library = require("../utils/Library")
+var library = require("../utils/Library");
 
 var BruteForceTask = require("./BruteForceTask");
 var OtherTask = require("./OtherTask");
@@ -48,7 +48,10 @@ class Core {
 
 			var self = this;
 			db.query("SELECT * FROM log WHERE subTask_id = ? LIMIT 1", [tasktodo.id], function (err, field) {
-				if (err) throw err;
+				if (err) {
+					console.error(err);
+					throw err;
+				}
 
 				//send message to parent process and inform him about switched file for log
 				self._setStream(field[0].path);
@@ -88,7 +91,7 @@ class Core {
 	 * @param {string} log file 
 	 */
 	_setStream(stream) {
-		process.send({ file: stream })
+		process.send({ file: stream });
 	}
 
 	/**

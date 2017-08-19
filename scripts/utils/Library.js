@@ -3,7 +3,7 @@
  * 
  * @return {String} actual mysql TIMESTAMP
  */
-getMySQLTime = function () {
+var getMySQLTime = function () {
     return (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace("T", " ");
 };
 
@@ -14,7 +14,7 @@ getMySQLTime = function () {
  * 
  * @return {String} text in your range
  */
-getRandomTextInRange = function (range = 5) {
+var getRandomTextInRange = function (range = 5) {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for (var i = 0; i < range; i++) {

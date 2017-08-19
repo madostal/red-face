@@ -10,8 +10,8 @@ var io = require("socket.io")(server);
 
 var Database = require("./utils/Database.js");
 var databaseInstance = new Database();
-var pool = require("./utils/pool.js");
-var poolInstance = new pool(io, LOG_FOLDER, databaseInstance);
+var Pool = require("./utils/pool.js");
+var poolInstance = new Pool(io, LOG_FOLDER, databaseInstance);
 
 var taskHome = require("./task/TaskHome.js")
 var library = require("./utils/Library.js");
@@ -35,7 +35,10 @@ function serverSetUp() {
 function checkDeadTasks() {
   var params = [taskHome.TaskState.failed, library.getMySQLTime(), taskHome.TaskState.done];
   databaseInstance.getConnection().query("UPDATE task SET state = ?, endTime = ? WHERE id IN (SELECT task_id FROM subTask WHERE STATE != ?) ", params, function (err) {
-    if (err) throw err;
+    if (err) {
+      console.error(err);
+      throw err;
+    }
   });
 
   databaseInstance.getConnection().query("UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?", params, function (err) {
