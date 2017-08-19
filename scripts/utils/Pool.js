@@ -101,7 +101,7 @@ module.exports = class Pool {
                     }
                 });
 
-        })
+        });
     }
 
     _startProcess(id) {
@@ -110,7 +110,10 @@ module.exports = class Pool {
 
         var params = [taskHome.TaskState.running, library.getMySQLTime(), id];
         this.db.query("UPDATE task SET state = ?, startTime = ?  WHERE id = ?", params, function (err) {
-            if (err) throw err;
+            if (err) {
+				console.error(err);
+				throw err;
+			}
         });
 
         this.io.emit("taskstart", "TASK " + id + " STARTED :-)");
@@ -148,7 +151,7 @@ module.exports = class Pool {
             }
         });
 
-        process.on("message", data => {
+        process.on("message", (data) => {
             logFileName = data.file;
         });
     }
@@ -162,4 +165,4 @@ module.exports = class Pool {
     _appendLog(message, file) {
         fs.appendFileSync(file, message);
     }
-}
+};

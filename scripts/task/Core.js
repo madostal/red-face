@@ -1,11 +1,11 @@
-var taskHome = require("./TaskHome")
-var database = require("../utils/Database");
+var taskHome = require("./TaskHome");
+var Database = require("../utils/Database");
 var library = require("../utils/Library");
 
 var BruteForceTask = require("./BruteForceTask");
 var OtherTask = require("./OtherTask");
 
-var db = new database().getConnection();
+var db = new Database().getConnection();
 
 class Core {
 
@@ -101,7 +101,10 @@ class Core {
 	_markSubTaskDone() {
 		var params = [taskHome.TaskState.done, library.getMySQLTime(), this.taskId];
 		db.query("UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ", params, function (err) {
-			if (err) throw err;
+			if (err) {
+				console.error(err);
+				throw err;
+			}
 		});
 	}
 }

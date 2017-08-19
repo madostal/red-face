@@ -13,7 +13,7 @@ var databaseInstance = new Database();
 var Pool = require("./utils/pool.js");
 var poolInstance = new Pool(io, LOG_FOLDER, databaseInstance);
 
-var taskHome = require("./task/TaskHome.js")
+var taskHome = require("./task/TaskHome.js");
 var library = require("./utils/Library.js");
 
 server.listen(4200);
@@ -42,7 +42,10 @@ function checkDeadTasks() {
   });
 
   databaseInstance.getConnection().query("UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?", params, function (err) {
-    if (err) throw err;
+    if (err) {
+      console.error(err);
+      throw err;
+    }
   });
 }
 

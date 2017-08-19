@@ -21,4 +21,4 @@ module.exports = class OtherTask extends taskParent {
         }
         console.log("OTHERTASK CLOSE");
     }
-}
+};

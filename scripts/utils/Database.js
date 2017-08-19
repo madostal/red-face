@@ -13,7 +13,7 @@ module.exports = class Database {
         connection.connect(function (err) {
             if (err) { 
                 console.error(err);
-                throw err
+                throw err;
             } else {
                 console.log("Connection to database was successful");
             }

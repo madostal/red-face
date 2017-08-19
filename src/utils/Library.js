@@ -1,7 +1,6 @@
-
 var sliceNumber = function (num, pos) {
     return ("0" + num).slice(-pos);
-}
+};
 
 var mySQLDateToHumanReadable = function (mysqlDateTimeStamp) {
     var date = new Date(mysqlDateTimeStamp);

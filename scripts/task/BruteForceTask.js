@@ -1,4 +1,4 @@
-var taskParent = require('./TaskParent.js');
+var taskParent = require("./TaskParent.js");
 
 module.exports = class BruteForceTask extends taskParent {
 
