@@ -161,13 +161,13 @@ export default class OverviewTable extends Component {
                                         </Table.Cell>
                                         <Table.Cell textAlign="center">
                                             <Button onClick={(e) => this._open(e, item)} color="blue" icon><Icon name="search" /></Button>
-                                            <Button onClick={(e) => this._repeat(e, item)} color="green" icon><Icon name="repeat" /></Button>
+                                            <Button disabled={item.state===1} onClick={(e) => this._repeat(e, item)} color="green" icon><Icon name="repeat" /></Button>
 
-                                            <Modal size="tiny" trigger={<Button inverted color="red" icon><Icon name="trash" /></Button>} open={this.state.modalRemoveTaskOpen}>
+                                            <Modal size="tiny" trigger={<Button disabled={item.state===1} inverted color="red" icon><Icon name="trash" /></Button>} open={this.state.modalRemoveTaskOpen}>
                                                 <Header icon="trash" content="Remove task?" />
                                                 <Modal.Content>Are you sure, that you want to remove this task?</Modal.Content>
                                                 <Modal.Actions>
-                                                    <Button color="red" onClick={() => {
+                                                <Button color="red" onClick={() => {
                                                         console.log("NO");
                                                         console.log(item.id);
                                                         this.setState({
@@ -175,8 +175,8 @@ export default class OverviewTable extends Component {
                                                         })
                                                     }}>
                                                         <Icon name="remove" /> No
-                                              </Button>
-                                                    <Button color="green" onClick={() => {
+                                                </Button>
+                                                <Button color="green" onClick={() => {
                                                         console.log("YES");
                                                         console.log(item.id);
                                                         this.setState({
@@ -186,7 +186,7 @@ export default class OverviewTable extends Component {
                                                         this._delete(item);
                                                     }}>
                                                         <Icon name="checkmark" /> Yes
-                                              </Button>
+                                                </Button>
                                                 </Modal.Actions>
                                             </Modal>
 
@@ -203,8 +203,8 @@ export default class OverviewTable extends Component {
                                                         })
                                                     }}>
                                                         <Icon name="remove" /> No
-                                              </Button>
-                                                    <Button color="green" onClick={() => {
+                                                </Button>
+                                                <Button color="green" onClick={() => {
                                                         console.log("YES");
                                                         console.log(item.id);
                                                         this.setState({
