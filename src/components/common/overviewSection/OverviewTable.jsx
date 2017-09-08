@@ -75,7 +75,15 @@ export default class OverviewTable extends Component {
     }
 
     _delete(item) {
-        Api.socketRequest("remove-task", {id:item.id});
+        Api.socketRequest("remove-task", { id: item.id });
+
+        let { result } = this.state;
+        var index = result.indexOf(item);
+
+        if (index > -1) {
+            result.splice(index, 1);
+        }
+        this.forceUpdate();
     }
 
     componentDidMount() {
@@ -174,7 +182,7 @@ export default class OverviewTable extends Component {
                                                         this.setState({
                                                             modalRemoveTaskOpen: false,
                                                         })
-                                                        
+
                                                         this._delete(item);
                                                     }}>
                                                         <Icon name="checkmark" /> Yes
