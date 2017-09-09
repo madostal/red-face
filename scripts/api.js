@@ -65,7 +65,9 @@ io.on("connection", function (socket) {
    */
   socket.on("give-me-tasks", function (input) {
     databaseInstance.getConnection().query("SELECT * FROM task", [], function (err, fields) {
-      if (err) throw err;
+      if (err) {
+        throw err;
+      }
       io.emit("there-are-tasks", fields);
     });
   });

@@ -78,7 +78,7 @@ module.exports = class Pool {
                                 }
                             });
 
-                            var params = { loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNames: data.data.taskdata.bruteforcetab.data.idLoginNames, loginPsw: data.data.taskdata.bruteforcetab.data.idLoginPsw, loginFormLocation: data.data.taskdata.bruteforcetab.data.idLoginFormLocation, subTask_id: idSubTask, subTask_task_id: idTask };
+                            params = { loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNames: data.data.taskdata.bruteforcetab.data.idLoginNames, loginPsw: data.data.taskdata.bruteforcetab.data.idLoginPsw, loginFormLocation: data.data.taskdata.bruteforcetab.data.idLoginFormLocation, subTask_id: idSubTask, subTask_task_id: idTask };
                             console.log(params);
                             self.db.query("INSERT INTO bruteforceTask SET ?", params, function (err, result) {
                                 if (err) {
@@ -145,12 +145,14 @@ module.exports = class Pool {
 
             var params = [taskFinishedState, endTime, id];
             this.db.query("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", params, function (err) {
-                if (err) throw err;
+                if (err) {
+                    throw err;
+                }
             });
 
             this.activeProcess--;
             this.processMap.delete(id);
-            console.log("Task id: " + id + " closed...")
+            console.log("Task id: " + id + " closed...");
 
             this.io.emit("taskdone", { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone": id, "endTime": endTime });
             this.io.emit("update-overview", { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone": id, "endTime": endTime });

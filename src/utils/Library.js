@@ -18,7 +18,7 @@ var mySQLDateToHumanReadable = function (mysqlDateTimeStamp) {
     sec = (sec < 10 ? "0" : "") + sec;
 
     return hour + ":" + min + ":" + sec + " " + day + "." + month + "." + date.getFullYear();
-}
+};
 
 var msToHumanReadable = function (time) {
     var millis = time % 1000;
