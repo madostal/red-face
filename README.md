@@ -1,6 +1,6 @@
 # Red Face - security testing of web applications
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0fef741942c5461ea9da0356c4b5b942)](https://www.codacy.com/app/JaLe/red-face?utm_source=github.com&utm_medium=referral&utm_content=JaLe29/red-face&utm_campaign=badger)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b48a90f177b74ea8b182ea156f629adc)](https://www.codacy.com/app/JaLe29/red-face?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JaLe29/red-face&amp;utm_campaign=Badge_Grade)
 
 ## What is Red Face
 
@@ -51,7 +51,7 @@ npm start
 
 UI is running at [http://localhost:3000/](http://localhost:3000/)
 
-## Running the API 
+## Running the API
 
 ```bash
 node script/api.js
