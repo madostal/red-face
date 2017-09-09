@@ -34,7 +34,7 @@ export default class OverviewTable extends Component {
                 }
             });
 
-            this.setState = {
+            this.state = {
                 result: lastRowData
             }
 
