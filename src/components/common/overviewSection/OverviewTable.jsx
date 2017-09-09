@@ -22,7 +22,8 @@ export default class OverviewTable extends Component {
             result: [],
             redirect: false,
             modalRemoveTaskOpen: false,
-            modalStopTaskOpen: false
+            modalStopTaskOpen: false,
+            modalRepeatOpen: false
         }
 
         Api.getSocket().on("update-overview", function (data) {
@@ -69,9 +70,15 @@ export default class OverviewTable extends Component {
         browserHistory.push(["/detail-section?key=", item.key].join(""));
     }
 
-    _repeat(e, item) {
-        console.log(item);
-        this.setState({ setUpVisible: !this.state.setUpVisible });
+    _repeat(item) {
+        console.log("Calling repeat task id: " + item.id);
+        Api.socketRequest("repeat-task", { id: item.id });
+        //TODO UPDATE VIEW
+    }
+
+    _stop(item) {
+        console.log("Calling stop task id: " + item.id);
+        Api.socketRequest("stop-task", { id: item.id });
     }
 
     _delete(item) {
@@ -161,13 +168,36 @@ export default class OverviewTable extends Component {
                                         </Table.Cell>
                                         <Table.Cell textAlign="center">
                                             <Button onClick={(e) => this._open(e, item)} color="blue" icon><Icon name="search" /></Button>
-                                            <Button disabled={item.state===1} onClick={(e) => this._repeat(e, item)} color="green" icon><Icon name="repeat" /></Button>
 
-                                            <Modal size="tiny" trigger={<Button disabled={item.state===1} inverted color="red" icon><Icon name="trash" /></Button>} open={this.state.modalRemoveTaskOpen}>
+
+                                            <Modal size="tiny" trigger={<Button disabled={item.state === 1} color="green" icon><Icon name="repeat" /></Button>} open={this.state.modalRepeatOpen}>
+                                                <Header icon="trash" content="Remove task?" />
+                                                <Modal.Content>Are you sure, that you want to repeat this task?</Modal.Content>
+                                                <Modal.Actions>
+                                                    <Button color="red" onClick={() => {
+                                                        this.setState({
+                                                            modalRepeatOpen: false,
+                                                        })
+                                                    }}>
+                                                        <Icon name="remove" /> No
+                                                </Button>
+                                                    <Button color="green" onClick={() => {
+                                                        this.setState({
+                                                            modalRepeatOpen: false,
+                                                        })
+
+                                                        this._repeat(item);
+                                                    }}>
+                                                        <Icon name="checkmark" /> Yes
+                                                </Button>
+                                                </Modal.Actions>
+                                            </Modal>
+
+                                            <Modal size="tiny" trigger={<Button disabled={item.state === 1} inverted color="red" icon><Icon name="trash" /></Button>} open={this.state.modalRemoveTaskOpen}>
                                                 <Header icon="trash" content="Remove task?" />
                                                 <Modal.Content>Are you sure, that you want to remove this task?</Modal.Content>
                                                 <Modal.Actions>
-                                                <Button color="red" onClick={() => {
+                                                    <Button color="red" onClick={() => {
                                                         console.log("NO");
                                                         console.log(item.id);
                                                         this.setState({
@@ -175,8 +205,8 @@ export default class OverviewTable extends Component {
                                                         })
                                                     }}>
                                                         <Icon name="remove" /> No
-                                                </Button>
-                                                <Button color="green" onClick={() => {
+                                            </Button>
+                                                    <Button color="green" onClick={() => {
                                                         console.log("YES");
                                                         console.log(item.id);
                                                         this.setState({
@@ -186,35 +216,35 @@ export default class OverviewTable extends Component {
                                                         this._delete(item);
                                                     }}>
                                                         <Icon name="checkmark" /> Yes
-                                                </Button>
+                                            </Button>
                                                 </Modal.Actions>
                                             </Modal>
 
-
-                                            <Modal size="tiny" trigger={<Button inverted color="orange" icon><Icon name="stop" /></Button>} open={this.state.modalStopTaskOpen}>
-                                                <Header icon="stop" content="Stop task?" />
+                                            <Modal size="tiny" trigger={<Button disabled={item.state !== 1} inverted color="orange" icon><Icon name="stop" /></Button>} open={this.state.modalStopTaskOpen}>
+                                                <Header icon="trash" content="Stop task?" />
                                                 <Modal.Content>Are you sure, that you want to stop this task?</Modal.Content>
                                                 <Modal.Actions>
                                                     <Button color="red" onClick={() => {
-                                                        console.log("NO");
-                                                        console.log(item.id);
                                                         this.setState({
                                                             modalStopTaskOpen: false,
                                                         })
                                                     }}>
                                                         <Icon name="remove" /> No
                                                 </Button>
-                                                <Button color="green" onClick={() => {
-                                                        console.log("YES");
-                                                        console.log(item.id);
+                                                    <Button color="green" onClick={() => {
                                                         this.setState({
                                                             modalStopTaskOpen: false,
                                                         })
+
+                                                        this._stop(item);
                                                     }}>
                                                         <Icon name="checkmark" /> Yes
-                                              </Button>
+                                                </Button>
                                                 </Modal.Actions>
                                             </Modal>
+
+
+
 
                                         </Table.Cell>
                                     </Table.Row>
