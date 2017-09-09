@@ -1,4 +1,5 @@
 const LOG_FOLDER = "./log_folder";
+const SERVER_PORT = 4200;
 
 var fs = require("fs");
 var bodyParser = require("body-parser");
@@ -15,8 +16,9 @@ var poolInstance = new Pool(io, LOG_FOLDER, databaseInstance);
 
 var taskHome = require("./task/TaskHome.js");
 var library = require("./utils/Library.js");
+var logger = require('./Logger.js');
 
-server.listen(4200);
+server.listen(SERVER_PORT);
 
 /**
  * Create directory for storings logs
@@ -36,14 +38,14 @@ function checkDeadTasks() {
   var params = [taskHome.TaskState.failed, library.getMySQLTime(), taskHome.TaskState.done];
   databaseInstance.getConnection().query("UPDATE task SET state = ?, endTime = ? WHERE id IN (SELECT task_id FROM subTask WHERE STATE != ?) ", params, function (err) {
     if (err) {
-      console.error(err);
+      logger.log('error', err);
       throw err;
     }
   });
 
   databaseInstance.getConnection().query("UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?", params, function (err) {
     if (err) {
-      console.error(err);
+      logger.log('error', err);
       throw err;
     }
   });
@@ -66,6 +68,7 @@ io.on("connection", function (socket) {
   socket.on("give-me-tasks", function (input) {
     databaseInstance.getConnection().query("SELECT * FROM task", [], function (err, fields) {
       if (err) {
+        logger.log('error', err);
         throw err;
       }
       io.emit("there-are-tasks", fields);
@@ -80,7 +83,10 @@ io.on("connection", function (socket) {
     } else {
       var params = [splitKey[0], splitKey[1]];
       databaseInstance.getConnection().query("SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?", params, function (err, fields) {
-        if (err) throw err;
+        if (err) {
+          logger.log('error', err);
+          throw err;
+        }
         io.emit("there-is-task-detail", fields);
       });
     }
@@ -89,17 +95,20 @@ io.on("connection", function (socket) {
   socket.on("remove-task", function (input) {
     var params = [input.id];
     databaseInstance.getConnection().query("DELETE FROM TASK WHERE ID = ?", params, function (err) {
-      if (err) throw err;
+      if (err) {
+        logger.log('error', err);
+        throw err;
+      }
     });
   });
 
   socket.on("repeat-task", function (input) {
-    console.log("Repeat task id: " + input.id);
+    logger.log('debug', ["Repeat task id: ", input.id].join(""));
     //TODO
   });
 
   socket.on("stop-task", function (input) {
-    console.log("Stop task id: " + input.id);
+    logger.log('debug', ["Stop task id: ", input.id].join(""));
     poolInstance.killTask(input.id);
   });
 });
