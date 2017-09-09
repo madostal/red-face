@@ -29,7 +29,7 @@ function serverSetUp() {
 
 /**
  * After reset server (if was some fail :-( ) its need check task which were in progress when server fails
- * 
+ *
  * So set this task to failed state
  */
 function checkDeadTasks() {
@@ -89,6 +89,16 @@ io.on("connection", function (socket) {
     databaseInstance.getConnection().query("DELETE FROM TASK WHERE ID = ?", params, function (err) {
       if (err) throw err;
     });
+  });
+
+  socket.on("repeat-task", function (input) {
+    console.log("Repeat task id: " + input.id);
+    //TODO
+  });
+
+  socket.on("stop-task", function (input) {
+    console.log("Stop task id: " + input.id);
+    poolInstance.killTask(input.id);
   });
 });
 

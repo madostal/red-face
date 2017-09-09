@@ -161,6 +161,8 @@ export default class OverviewTable extends Component {
                                                         return <Icon name="checkmark" size="large" />;
                                                     case 3:
                                                         return <Icon name="exclamation triangle" size="large" />;
+                                                    case 4:
+                                                        return <Icon name="crosshairs" size="large" />;
                                                     default:
                                                         return null;
                                                 }

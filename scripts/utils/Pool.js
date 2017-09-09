@@ -14,6 +14,7 @@ module.exports = class Pool {
         this.db = db.getConnection();
         this.logFolderPath = logFolderPath;
         this.io = io;
+        this.processMap = new Map();
     }
 
     insertNewTask(data) {
@@ -111,9 +112,9 @@ module.exports = class Pool {
         var params = [taskHome.TaskState.running, library.getMySQLTime(), id];
         this.db.query("UPDATE task SET state = ?, startTime = ?  WHERE id = ?", params, function (err) {
             if (err) {
-				console.error(err);
-				throw err;
-			}
+                console.error(err);
+                throw err;
+            }
         });
 
         this.io.emit("taskstart", "TASK " + id + " STARTED :-)");
@@ -123,6 +124,8 @@ module.exports = class Pool {
         const process = spawn("node", ["task/Core.js", id], {
             stdio: ["ipc", "pipe", "pipe"]
         });
+
+        this.processMap.set(id, process);
 
         process.stdout.on("data", (data) => {
             console.log(`stdout: ${data}`);
@@ -136,14 +139,19 @@ module.exports = class Pool {
         });
 
         process.on("close", (code) => {
+            var taskFinishedState = (code === 0) ? taskHome.TaskState.done : taskHome.TaskState.killed;
+
             var endTime = library.getMySQLTime();
 
-            var params = [taskHome.TaskState.done, endTime, id];
+            var params = [taskFinishedState, endTime, id];
             this.db.query("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", params, function (err) {
                 if (err) throw err;
             });
 
             this.activeProcess--;
+            this.processMap.delete(id);
+            console.log("Task id: " + id + " closed...")
+
             this.io.emit("taskdone", { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone": id, "endTime": endTime });
             this.io.emit("update-overview", { "running": this.activeProcess, "pending": this.poolQueue.length, "taskdone": id, "endTime": endTime });
             if (this.poolQueue.length !== 0) {
@@ -164,5 +172,15 @@ module.exports = class Pool {
 
     _appendLog(message, file) {
         fs.appendFileSync(file, message);
+    }
+
+    killTask(taskId) {
+        var proc = this.processMap.get(taskId);
+        if (proc === null) {
+            console.log("Proces is empty, err");
+            return;
+        }
+
+        proc.kill("SIGINT");
     }
 };
