@@ -42,7 +42,7 @@ module.exports = class Pool {
                             }
                             var idSubTask = result.insertId;
 
-                            var params = { path: self._createLogFile("othertask"), subTask_id: idSubTask, subTask_task_id: idTask };
+                            var params = { path: self._createLogFile("othertask"), subTask_id: idSubTask, subTask_id: idTask };
                             database.connection.query("INSERT INTO log SET ?", params, function (err) {
                                 if (err) {
                                     console.error(err);
@@ -50,13 +50,25 @@ module.exports = class Pool {
                                 }
                             });
 
-                            params = { testJavascriptImport: data.data.taskdata.othertab.data.idTestJavascriptImport, testHttpHttps: data.data.taskdata.othertab.data.idTestHttpHttps, testGitConfig: data.data.taskdata.othertab.data.idTestGitConfig, subTask_id: idSubTask, subTask_task_id: idTask };
+                            params = { testPortScan: data.data.taskdata.othertab.data.idTestPortScan, testJavascriptImport: data.data.taskdata.othertab.data.idTestJavascriptImport, testHttpHttps: data.data.taskdata.othertab.data.idTestHttpHttps, testGitConfig: data.data.taskdata.othertab.data.idTestGitConfig, subTask_id: idSubTask };
                             database.connection.query("INSERT INTO otherTask SET ?", params, function (err, result) {
                                 if (err) {
                                     console.error(err);
                                     throw err;
                                 }
-                                callback(null);
+                                if (data.data.taskdata.othertab.data.idTestPortScan === true) {
+                                    //is enable port scanning
+                                    params = { from: data.data.taskdata.othertab.data.testPortScanData.from, to: data.data.taskdata.othertab.data.testPortScanData.to, otherTask_id: result.insertId }
+                                    database.connection.query("INSERT INTO portScan SET ?", params, function (err, result) {
+                                        if (err) {
+                                            console.error(err);
+                                            throw err;
+                                        }
+                                        callback(null);
+                                    });
+                                } else {
+                                    callback(null);
+                                }
                             });
                         });
                     } else {
@@ -74,7 +86,7 @@ module.exports = class Pool {
                             }
                             var idSubTask = result.insertId;
 
-                            var params = { path: self._createLogFile("bruteforcetask"), subTask_id: idSubTask, subTask_task_id: idTask };
+                            var params = { path: self._createLogFile("bruteforcetask"), subTask_id: idSubTask, };
                             database.connection.query("INSERT INTO log SET ?", params, function (err) {
                                 if (err) {
                                     console.error(err);
@@ -82,7 +94,7 @@ module.exports = class Pool {
                                 }
                             });
 
-                            params = { loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNames: data.data.taskdata.bruteforcetab.data.idLoginNames, loginPsw: data.data.taskdata.bruteforcetab.data.idLoginPsw, loginFormLocation: data.data.taskdata.bruteforcetab.data.idLoginFormLocation, subTask_id: idSubTask, subTask_task_id: idTask };
+                            params = { loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNames: data.data.taskdata.bruteforcetab.data.idLoginNames, loginPsw: data.data.taskdata.bruteforcetab.data.idLoginPsw, loginFormLocation: data.data.taskdata.bruteforcetab.data.idLoginFormLocation, subTask_id: idSubTask };
                             console.log(params);
                             database.connection.query("INSERT INTO bruteforceTask SET ?", params, function (err, result) {
                                 if (err) {
