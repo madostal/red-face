@@ -36,6 +36,8 @@ export default class CreateTaskSection extends Component {
   }
 
   _createTask() {
+    this.setState({ setUpVisible: !this.state.setUpVisible });
+
     var bruteForceTab = JSON.parse(localStorage.getItem("BruteForceTab"));
     if (bruteForceTab != null && bruteForceTab.enable === false) {
       bruteForceTab = null;
@@ -57,7 +59,7 @@ export default class CreateTaskSection extends Component {
       }
     });
     Api.socketRequest("taskcreate", json);
-    this.setState({ setUpVisible: !this.state.setUpVisible });
+
   }
 
   _removeAllTasks() {
