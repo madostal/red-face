@@ -9,10 +9,10 @@ var server = require("http")
   .createServer(app);
 var io = require("socket.io")(server);
 
-var Database = require("./utils/Database.js");
-var databaseInstance = new Database();
+
+var database = require("./utils/Database.js");
 var Pool = require("./utils/pool.js");
-var poolInstance = new Pool(io, LOG_FOLDER, databaseInstance);
+var poolInstance = new Pool(io, LOG_FOLDER);
 
 var taskHome = require("./task/TaskHome.js");
 var library = require("./utils/Library.js");
@@ -36,14 +36,14 @@ function serverSetUp() {
  */
 function checkDeadTasks() {
   var params = [taskHome.TaskState.failed, library.getMySQLTime(), taskHome.TaskState.done];
-  databaseInstance.getConnection().query("UPDATE task SET state = ?, endTime = ? WHERE id IN (SELECT task_id FROM subTask WHERE STATE != ?) ", params, function (err) {
+  database.connection.query("UPDATE task SET state = ?, endTime = ? WHERE id IN (SELECT task_id FROM subTask WHERE STATE != ?) ", params, function (err) {
     if (err) {
       logger.log('error', err);
       throw err;
     }
   });
 
-  databaseInstance.getConnection().query("UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?", params, function (err) {
+  database.connection.query("UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?", params, function (err) {
     if (err) {
       logger.log('error', err);
       throw err;
@@ -66,7 +66,7 @@ io.on("connection", function (socket) {
    * Return all tasks
    */
   socket.on("give-me-tasks", function (input) {
-    databaseInstance.getConnection().query("SELECT * FROM task", [], function (err, fields) {
+    database.connection.query("SELECT * FROM task", [], function (err, fields) {
       if (err) {
         logger.log('error', err);
         throw err;
@@ -82,7 +82,7 @@ io.on("connection", function (socket) {
       io.emit("there-is-task-detail", null);
     } else {
       var params = [splitKey[0], splitKey[1]];
-      databaseInstance.getConnection().query("SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?", params, function (err, fields) {
+      database.connection.query("SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?", params, function (err, fields) {
         if (err) {
           logger.log('error', err);
           throw err;
@@ -94,7 +94,7 @@ io.on("connection", function (socket) {
 
   socket.on("remove-task", function (input) {
     var params = [input.id];
-    databaseInstance.getConnection().query("DELETE FROM TASK WHERE ID = ?", params, function (err) {
+    database.connection.query("DELETE FROM TASK WHERE ID = ?", params, function (err) {
       if (err) {
         logger.log('error', err);
         throw err;

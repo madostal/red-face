@@ -32,6 +32,7 @@ export default class CreateTaskSection extends Component {
 
   componentWillMount() {
     this.idTaskName = newId();
+    this.idServerHome = newId();
   }
 
   _createTask() {
@@ -48,6 +49,7 @@ export default class CreateTaskSection extends Component {
     var json = JSON.stringify({
       data: {
         "taskname": document.getElementById(this.idTaskName).value,
+        "serverhome": document.getElementById(this.idServerHome).value,
         "taskdata": {
           "bruteforcetab": bruteForceTab,
           "othertab": otherTab
@@ -91,7 +93,14 @@ export default class CreateTaskSection extends Component {
           <Segment>
 
             <Header as="h3">Starter</Header>
-            <Grid divided="vertically">
+            <Grid>
+              <Grid.Row columns={2} textAlign="right">
+                <Grid.Column>
+                  <Input id={this.idServerHome} placeholder="Server home" />
+                </Grid.Column>
+                <Grid.Column>
+                </Grid.Column>
+              </Grid.Row>
               <Grid.Row columns={2} textAlign="right">
                 <Grid.Column>
                   <Input id={this.idTaskName} placeholder="Task name" />

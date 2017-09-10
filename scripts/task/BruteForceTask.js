@@ -3,8 +3,9 @@ var taskParent = require("./TaskParent.js");
 module.exports = class BruteForceTask extends taskParent {
 
 	/* THIS IS ONLY DEMO */
-	constructor(taskId) {
-		super(taskId);
+	constructor(db, taskId) {
+		super(db, taskId);
+		//TODO REWRITE TO WATERFALL MODEL LIKE A OTHERTASK
 		console.log("STARTING BRUTEFORCE");
 
 		var loop = Math.floor(Math.random() * (60 - 15 + 1)) + 15;

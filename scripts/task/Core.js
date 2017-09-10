@@ -1,15 +1,15 @@
+var async = require("async");
 var taskHome = require("./TaskHome");
-var Database = require("../utils/Database");
+var database = require("../utils/Database.js");
 var library = require("../utils/Library");
-
 var BruteForceTask = require("./BruteForceTask");
 var OtherTask = require("./OtherTask");
-
-var db = new Database().getConnection();
+var logger = require("../Logger");
 
 class Core {
 
 	constructor(taskId) {
+		logger.log('debug', ["Starting task id: ", taskId].join(""));
 		//actual task id
 		this.taskId = taskId;
 		//list of subtask todo
@@ -25,15 +25,16 @@ class Core {
 	 */
 	_loadInfo() {
 		var self = this;
-		db.query("SELECT * FROM subtask WHERE task_id = ?", [this.taskId], function (err, fields) {
+		database.connection.query("SELECT * FROM subtask WHERE task_id = ?", [this.taskId], function (err, fields) {
 			if (err) {
 				throw err;
 			}
 
 			fields.forEach(function (loop) {
-				self.subTasks.push(loop);;
+				self.subTasks.push(loop);
 			});
 
+			logger.log('debug', ["Task id: ", self.taskId, ", subtask count: ", self.subTasks.length].join(""));
 			self._startJob();
 		});
 	}
@@ -47,7 +48,7 @@ class Core {
 			var tasktodo = this.subTasks.pop();
 
 			var self = this;
-			db.query("SELECT * FROM log WHERE subTask_id = ? LIMIT 1", [tasktodo.id], function (err, field) {
+			database.connection.query("SELECT * FROM log WHERE subTask_id = ? LIMIT 1", [tasktodo.id], function (err, field) {
 				if (err) {
 					console.error(err);
 					throw err;
@@ -69,8 +70,16 @@ class Core {
 						console.log("UNKNOWN TASK TYPE: " + tasktodo.type);
 						break;
 				}
-				self._markSubTaskDone(tasktodo.id);
-				self._startJob();
+
+				async.waterfall([
+					function (callback) {
+						lastTask.start(callback);
+					}, function (callback) {
+						self._markSubTaskDone(tasktodo.id, callback);
+					}
+				], function (err) {
+					self._startJob();
+				});
 			});
 		} else {
 			//task array is empty, ve are done
@@ -82,13 +91,14 @@ class Core {
 	 * Shut downl taks process with successfully exit code
 	 */
 	_shutDown() {
+		logger.log('debug', ["Shut down task id: ", this.taskId].join(""));
 		process.exit(0);
 	}
 
 	/**
 	 * Switch file handler, where are stored logs by sendimg mesasge to parent process
-	 * 
-	 * @param {string} log file 
+	 *
+	 * @param {string} log file
 	 */
 	_setStream(stream) {
 		process.send({ file: stream });
@@ -96,15 +106,16 @@ class Core {
 
 	/**
 	 * Mark subtask as done in database
-	 * 
+	 *
 	 */
-	_markSubTaskDone() {
+	_markSubTaskDone(tasktodo, wfCallback) {
 		var params = [taskHome.TaskState.done, library.getMySQLTime(), this.taskId];
-		db.query("UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ", params, function (err) {
+		database.connection.query("UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ", params, function (err) {
 			if (err) {
 				console.error(err);
 				throw err;
 			}
+			wfCallback(null);
 		});
 	}
 }

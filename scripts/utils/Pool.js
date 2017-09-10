@@ -2,26 +2,28 @@ var library = require("./Library.js");
 var fs = require("fs");
 var async = require("async");
 var taskHome = require("../task/taskHome.js");
+var logger = require("../Logger.js");
+var database = require("./Database.js");
 
 module.exports = class Pool {
 
-    constructor(io, logFolderPath, db) {
+    constructor(io, logFolderPath) {
         this.allowProcess = 2;
         this.activeProcess = 0;
 
         this.poolQueue = [];
 
-        this.db = db.getConnection();
         this.logFolderPath = logFolderPath;
         this.io = io;
         this.processMap = new Map();
     }
 
     insertNewTask(data) {
+        logger.log('debug', ["Insert new task ", JSON.stringify(data)].join(""));
         var self = this;
 
-        var params = { taskName: data.data.taskName, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10) };
-        this.db.query("INSERT INTO task SET ?", params, function (err, result) {
+        var params = { taskName: data.data.taskName, serverHome: data.data.serverhome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10) };
+        database.connection.query("INSERT INTO task SET ?", params, function (err, result) {
             if (err) {
                 console.error(err);
                 throw err;
@@ -33,7 +35,7 @@ module.exports = class Pool {
                     if (data.data.taskdata.othertab != null) {
 
                         var params = { state: taskHome.TaskState.created, task_id: idTask, type: taskHome.TaskType.other };
-                        self.db.query("INSERT INTO subTask SET ?", params, function (err, result) {
+                        database.connection.query("INSERT INTO subTask SET ?", params, function (err, result) {
                             if (err) {
                                 console.error(err);
                                 throw err;
@@ -41,7 +43,7 @@ module.exports = class Pool {
                             var idSubTask = result.insertId;
 
                             var params = { path: self._createLogFile("othertask"), subTask_id: idSubTask, subTask_task_id: idTask };
-                            self.db.query("INSERT INTO log SET ?", params, function (err) {
+                            database.connection.query("INSERT INTO log SET ?", params, function (err) {
                                 if (err) {
                                     console.error(err);
                                     throw err;
@@ -49,7 +51,7 @@ module.exports = class Pool {
                             });
 
                             params = { testJavascriptImport: data.data.taskdata.othertab.data.idTestJavascriptImport, testHttpHttps: data.data.taskdata.othertab.data.idTestHttpHttps, testGitConfig: data.data.taskdata.othertab.data.idTestGitConfig, subTask_id: idSubTask, subTask_task_id: idTask };
-                            self.db.query("INSERT INTO otherTask SET ?", params, function (err, result) {
+                            database.connection.query("INSERT INTO otherTask SET ?", params, function (err, result) {
                                 if (err) {
                                     console.error(err);
                                     throw err;
@@ -57,13 +59,15 @@ module.exports = class Pool {
                                 callback(null);
                             });
                         });
+                    } else {
+                        callback(null);
                     }
                 },
                 function (callback) {
                     if (data.data.taskdata.bruteforcetab != null) {
 
                         var params = { state: taskHome.TaskState.created, task_id: idTask, type: taskHome.TaskType.bruteForce };
-                        self.db.query("INSERT INTO subTask SET ?", params, function (err, result) {
+                        database.connection.query("INSERT INTO subTask SET ?", params, function (err, result) {
                             if (err) {
                                 console.error(err);
                                 throw err;
@@ -71,7 +75,7 @@ module.exports = class Pool {
                             var idSubTask = result.insertId;
 
                             var params = { path: self._createLogFile("bruteforcetask"), subTask_id: idSubTask, subTask_task_id: idTask };
-                            self.db.query("INSERT INTO log SET ?", params, function (err) {
+                            database.connection.query("INSERT INTO log SET ?", params, function (err) {
                                 if (err) {
                                     console.error(err);
                                     throw err;
@@ -80,7 +84,7 @@ module.exports = class Pool {
 
                             params = { loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNames: data.data.taskdata.bruteforcetab.data.idLoginNames, loginPsw: data.data.taskdata.bruteforcetab.data.idLoginPsw, loginFormLocation: data.data.taskdata.bruteforcetab.data.idLoginFormLocation, subTask_id: idSubTask, subTask_task_id: idTask };
                             console.log(params);
-                            self.db.query("INSERT INTO bruteforceTask SET ?", params, function (err, result) {
+                            database.connection.query("INSERT INTO bruteforceTask SET ?", params, function (err, result) {
                                 if (err) {
                                     console.error(err);
                                     throw err;
@@ -88,6 +92,8 @@ module.exports = class Pool {
                                 callback(null);
                             });
                         });
+                    } else {
+                        callback(null);
                     }
                 }], function (err) {
                     if (err) {
@@ -110,7 +116,7 @@ module.exports = class Pool {
         this.activeProcess++;
 
         var params = [taskHome.TaskState.running, library.getMySQLTime(), id];
-        this.db.query("UPDATE task SET state = ?, startTime = ?  WHERE id = ?", params, function (err) {
+        database.connection.query("UPDATE task SET state = ?, startTime = ?  WHERE id = ?", params, function (err) {
             if (err) {
                 console.error(err);
                 throw err;
@@ -144,7 +150,7 @@ module.exports = class Pool {
             var endTime = library.getMySQLTime();
 
             var params = [taskFinishedState, endTime, id];
-            this.db.query("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", params, function (err) {
+            database.connection.query("UPDATE task SET state = ?, endTime = ? WHERE  id= ? ", params, function (err) {
                 if (err) {
                     throw err;
                 }

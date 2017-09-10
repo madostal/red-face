@@ -1,24 +1,61 @@
+var async = require("async");
+
 var taskParent = require("./TaskParent.js");
+var database = require("../utils/Database.js");
+var logger = require("../Logger");
 
 module.exports = class OtherTask extends taskParent {
 
-    /* THIS IS ONLY DEMO */
     constructor(taskId) {
         super(taskId);
-        console.log("STARTING OTHERTASK");
+    }
 
-        var loop = Math.floor(Math.random() * (60 - 15 + 1)) + 15;
-        console.log("Task id: " + this.taskId + " started: " + loop + "ms");
+    start(coreCallback) {
+        var self = this;
 
-        for (var i = 0; i < loop; i++) {
-            console.log("TICK " + i);
-            var ms = 1000;
-            var start = new Date().getTime();
-            var end = start;
-            while (end < start + ms) {
-                end = new Date().getTime();
+        database.connection.query("SELECT * FROM otherTask WHERE subTask_id = ? LIMIT 1", [this.taskId], function (err, field) {
+            if (err) {
+                console.error(err);
+                throw err;
             }
-        }
-        console.log("OTHERTASK CLOSE");
+
+            field = field[0];
+
+            async.waterfall([
+                function (callback) {
+                    if (field.testHttpHttps === 1) {
+                        self._doHttpHttps();
+                    }
+                    callback(null);
+                },
+                function (callback) {
+                    if (field.testJavascriptImport === 1) {
+                        self._doJavascriptImport();
+                    }
+                    callback(null);
+                },
+                function (callback) {
+                    if (field.testGitConfig === 1) {
+                        self._doGitConfig();
+                    }
+                    callback(null);
+                }
+            ], function (err) {
+                console.log("Other task done...");
+                coreCallback(null);
+            });
+        });
+    }
+
+    _doHttpHttps() {
+        logger.log('debug', "Starting http/https test");
+    }
+
+    _doJavascriptImport() {
+        logger.log('debug', "Starting javascript import test");
+    }
+
+    _doGitConfig() {
+        logger.log('debug', "Starting gitocnfig test");
     }
 };

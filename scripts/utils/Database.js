@@ -4,21 +4,19 @@ var connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "red-face"
+    database: "red-face",
+    // debug: true,
 });
 
-module.exports = class Database {
-
-    constructor() {
-        connection.connect(function (err) {
-            if (err) { 
-                console.error(err);
-                throw err;
-            } else {
-                console.log("Connection to database was successful");
-            }
-        });
+connection.connect(function (err) {
+    if (err) {
+        console.error(err);
+        throw err;
+    } else {
+        console.log("Connection to database was successful");
     }
+});
 
-    getConnection() { return connection; }
+module.exports = {
+    connection
 };
