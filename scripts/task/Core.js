@@ -9,7 +9,7 @@ var logger = require("../Logger");
 class Core {
 
 	constructor(taskId) {
-		logger.log('debug', ["Starting task id: ", taskId].join(""));
+		logger.log("debug", ["Starting task id: ", taskId].join(""));
 		//actual task id
 		this.taskId = taskId;
 		//list of subtask todo
@@ -43,7 +43,7 @@ class Core {
 				self.subTasks.push(loop);
 			});
 
-			logger.log('debug', ["Task id: ", self.taskId, ", subtask count: ", self.subTasks.length].join(""));
+			logger.log("debug", ["Task id: ", self.taskId, ", subtask count: ", self.subTasks.length].join(""));
 			self._startJob();
 		});
 	}
@@ -100,7 +100,7 @@ class Core {
 	 * Shut downl taks process with successfully exit code
 	 */
 	_shutDown() {
-		logger.log('debug', ["Shut down task id: ", this.taskId].join(""));
+		logger.log("debug", ["Shut down task id: ", this.taskId].join(""));
 		process.exit(0);
 	}
 

@@ -19,7 +19,7 @@ module.exports = class Pool {
     }
 
     insertNewTask(data) {
-        logger.log('debug', ["Insert new task ", JSON.stringify(data)].join(""));
+        logger.log("debug", ["Insert new task ", JSON.stringify(data)].join(""));
         var self = this;
 
         var params = { taskName: data.data.taskName, serverHome: data.data.serverhome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10) };
@@ -58,7 +58,7 @@ module.exports = class Pool {
                                 }
                                 if (data.data.taskdata.othertab.data.idTestPortScan === true) {
                                     //is enable port scanning
-                                    params = { from: data.data.taskdata.othertab.data.testPortScanData.from, to: data.data.taskdata.othertab.data.testPortScanData.to, otherTask_id: result.insertId }
+                                    params = { from: data.data.taskdata.othertab.data.testPortScanData.from, to: data.data.taskdata.othertab.data.testPortScanData.to, otherTask_id: result.insertId };
                                     database.connection.query("INSERT INTO portScan SET ?", params, function (err, result) {
                                         if (err) {
                                             console.error(err);

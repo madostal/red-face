@@ -1,5 +1,5 @@
 var async = require("async");
-var scan = require('net-scan');
+var scan = require("net-scan");
 var portNumbers = require("port-numbers");
 
 var taskParent = require("./TaskParent.js");
@@ -64,22 +64,22 @@ module.exports = class OtherTask extends taskParent {
     }
 
     _doHttpHttps() {
-        logger.log('debug', "Starting http/https test");
+        logger.log("debug", "Starting http/https test");
     }
 
     _doJavascriptImport() {
-        logger.log('debug', "Starting javascript import test");
+        logger.log("debug", "Starting javascript import test");
     }
 
     _doGitConfig() {
-        logger.log('debug', "Starting gitconfig test");
+        logger.log("debug", "Starting gitconfig test");
     }
 
     _doPortScan(field, serverHome, callback) {
-        logger.log('debug', "Starting portscan test");
+        logger.log("debug", "Starting portscan test");
 
         console.log(["Starting port scan on range: ", field.from, " - ", field.to, " on ", serverHome].join(""));
-        console.time('ports scan');
+        console.time("ports scan");
         scan.port({
             host: serverHome,
             start: field.from,
@@ -87,7 +87,7 @@ module.exports = class OtherTask extends taskParent {
             timeout: 10000,
             queue: 1000
         })
-            .on('open', function (port) {
+            .on("open", function (port) {
                 var portString = portNumbers.getService(port);
                 if (portString === null) {
                     console.log(port);
@@ -96,7 +96,7 @@ module.exports = class OtherTask extends taskParent {
                     console.log([portString.name, " on ", port, " - (", portString.description, ")"].join(""));
                 }
             })
-            .on('end', function (port) {
+            .on("end", function (port) {
                 callback(null);
             });
     }

@@ -16,7 +16,7 @@ var poolInstance = new Pool(io, LOG_FOLDER);
 
 var taskHome = require("./task/TaskHome.js");
 var library = require("./utils/Library.js");
-var logger = require('./Logger.js');
+var logger = require("./Logger.js");
 
 server.listen(SERVER_PORT);
 
@@ -38,14 +38,14 @@ function checkDeadTasks() {
   var params = [taskHome.TaskState.failed, library.getMySQLTime(), taskHome.TaskState.done];
   database.connection.query("UPDATE task SET state = ?, endTime = ? WHERE id IN (SELECT task_id FROM subTask WHERE STATE != ?) ", params, function (err) {
     if (err) {
-      logger.log('error', err);
+      logger.log("error", err);
       throw err;
     }
   });
 
   database.connection.query("UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?", params, function (err) {
     if (err) {
-      logger.log('error', err);
+      logger.log("error", err);
       throw err;
     }
   });
@@ -68,7 +68,7 @@ io.on("connection", function (socket) {
   socket.on("give-me-tasks", function (input) {
     database.connection.query("SELECT * FROM task", [], function (err, fields) {
       if (err) {
-        logger.log('error', err);
+        logger.log("error", err);
         throw err;
       }
       io.emit("there-are-tasks", fields);
@@ -84,7 +84,7 @@ io.on("connection", function (socket) {
       var params = [splitKey[0], splitKey[1]];
       database.connection.query("SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?", params, function (err, fields) {
         if (err) {
-          logger.log('error', err);
+          logger.log("error", err);
           throw err;
         }
         io.emit("there-is-task-detail", fields);
@@ -96,19 +96,19 @@ io.on("connection", function (socket) {
     var params = [input.id];
     database.connection.query("DELETE FROM TASK WHERE ID = ?", params, function (err) {
       if (err) {
-        logger.log('error', err);
+        logger.log("error", err);
         throw err;
       }
     });
   });
 
   socket.on("repeat-task", function (input) {
-    logger.log('debug', ["Repeat task id: ", input.id].join(""));
+    logger.log("debug", ["Repeat task id: ", input.id].join(""));
     //TODO
   });
 
   socket.on("stop-task", function (input) {
-    logger.log('debug', ["Stop task id: ", input.id].join(""));
+    logger.log("debug", ["Stop task id: ", input.id].join(""));
     poolInstance.killTask(input.id);
   });
 });

@@ -22,4 +22,3 @@ exports.getRandomTextInRange = function (range = 5) {
     }
     return text;
 };
-

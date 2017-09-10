@@ -42,7 +42,7 @@ var msToHumanReadable = function (time) {
         out += sliceNumber(millis, 3) + " " + ((millis === 1) ? "msec" : "msecs") + " ";
     }
     return out.trim();
-}
+};
 
 module.exports = {
     mySQLDateToHumanReadable,

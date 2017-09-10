@@ -1,6 +1,6 @@
 const LOG_FILE_NAME = "red-face";
 
-var winston = require('winston');
+var winston = require("winston");
 
 var logger = new (winston.Logger)({
 	transports: [
