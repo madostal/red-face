@@ -22,7 +22,12 @@ function createStorageIfNotExist() {
         data: {
             "idTestJavascriptImport": false,
             "idTestHttpHttps": false,
-            "idTestGitConfig": false
+            "idTestGitConfig": false,
+            "idTestPortScan": false,
+            "testPortScanData": {
+                "from": 1,
+                "to": 1000
+            }
         }
     });
     localStorage.setItem("OtherTab", json);
@@ -102,6 +107,9 @@ class Body extends Component {
         this.idTestJavascriptImport = newId();
         this.idTestHttpHttps = newId();
         this.idTestGitConfig = newId();
+        this.idTestPortScan = newId();
+        this.idTestPortScanBotVal = newId();
+        this.idTestPortScanTopVal = newId();
     }
 
     componentDidMount() {
@@ -109,6 +117,9 @@ class Body extends Component {
         document.getElementById(this.idTestJavascriptImport).getElementsByTagName("input")[0].checked = json.data.idTestJavascriptImport;
         document.getElementById(this.idTestHttpHttps).getElementsByTagName("input")[0].checked = json.data.idTestHttpHttps;
         document.getElementById(this.idTestGitConfig).getElementsByTagName("input")[0].checked = json.data.idTestGitConfig;
+        document.getElementById(this.idTestPortScan).getElementsByTagName("input")[0].checked = json.data.idTestPortScan;
+        document.getElementById(this.idTestPortScanBotVal).value = json.data.testPortScanData.from;
+        document.getElementById(this.idTestPortScanTopVal).value = json.data.testPortScanData.to;
     }
 
     componentWillUnmount() {
@@ -116,6 +127,8 @@ class Body extends Component {
         json.data.idTestJavascriptImport = document.getElementById(this.idTestJavascriptImport).getElementsByTagName("input")[0].checked;
         json.data.idTestHttpHttps = document.getElementById(this.idTestHttpHttps).getElementsByTagName("input")[0].checked;
         json.data.idTestGitConfig = document.getElementById(this.idTestGitConfig).getElementsByTagName("input")[0].checked;
+        json.data.idTestPortScan = document.getElementById(this.idTestPortScan).getElementsByTagName("input")[0].checked;
+        json.data.testPortScanData = { "from": parseInt(document.getElementById(this.idTestPortScanBotVal).value), "to": parseInt(document.getElementById(this.idTestPortScanTopVal).value) }
         localStorage.setItem("OtherTab", JSON.stringify(json));
     }
 
@@ -127,6 +140,8 @@ class Body extends Component {
                 <Checkbox id={this.idTestHttpHttps} label={<label>Test http and https</label>} />
                 <Divider hidden />
                 <Checkbox id={this.idTestGitConfig} label={<label>Test GIT config</label>} />
+                <Divider hidden />
+                <Checkbox id={this.idTestPortScan} label={<label>Port scanner</label>} /> <Input id={this.idTestPortScanBotVal} placeholder="From" /> <Input id={this.idTestPortScanTopVal} placeholder="To" />
                 <Divider hidden />
                 <Divider hidden />
             </div >

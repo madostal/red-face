@@ -14,10 +14,19 @@ class Core {
 		this.taskId = taskId;
 		//list of subtask todo
 		this.subTasks = [];
+		//task data
+		this.taskData = null;
 	}
 
 	start() {
-		this._loadInfo();
+		var self = this;
+		database.connection.query("SELECT * FROM task WHERE id = ?", [this.taskId], function (err, fields) {
+			if (err) {
+				throw err;
+			}
+			self.taskData = fields[0];
+			self._loadInfo();
+		});
 	}
 
 	/**
@@ -64,7 +73,7 @@ class Core {
 						lastTask = new BruteForceTask(tasktodo.id);
 						break;
 					case taskHome.TaskType.other:
-						lastTask = new OtherTask(tasktodo.id);
+						lastTask = new OtherTask(tasktodo.id, self.taskData.serverHome);
 						break;
 					default:
 						console.log("UNKNOWN TASK TYPE: " + tasktodo.type);
