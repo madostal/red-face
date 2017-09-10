@@ -42,7 +42,7 @@ module.exports = class Pool {
                             }
                             var idSubTask = result.insertId;
 
-                            var params = { path: self._createLogFile("othertask"), subTask_id: idSubTask, subTask_id: idTask };
+                            var params = { path: self._createLogFile("othertask"), subTask_id: idSubTask };
                             database.connection.query("INSERT INTO log SET ?", params, function (err) {
                                 if (err) {
                                     console.error(err);

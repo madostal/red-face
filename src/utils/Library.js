@@ -31,7 +31,7 @@ var msToHumanReadable = function (time) {
     var out = "";
     if (hours && hours > 0) {
         out += hours + " " + ((hours === 1) ? "hr" : "hrs") + " ";
-    };
+    }
     if (minutes && minutes > 0) {
         out += sliceNumber(minutes, 2) + " " + ((minutes === 1) ? "min" : "mins") + " ";
     }
@@ -47,4 +47,4 @@ var msToHumanReadable = function (time) {
 module.exports = {
     mySQLDateToHumanReadable,
     msToHumanReadable
-}
+};
