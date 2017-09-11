@@ -2,9 +2,11 @@ var taskParent = require("./TaskParent.js");
 
 module.exports = class BruteForceTask extends taskParent {
 
-	/* THIS IS ONLY DEMO */
 	constructor(db, taskId) {
 		super(db, taskId);
+	}
+
+	start(coreCallback) {
 		//TODO REWRITE TO WATERFALL MODEL LIKE A OTHERTASK
 		console.log("STARTING BRUTEFORCE");
 
@@ -21,5 +23,6 @@ module.exports = class BruteForceTask extends taskParent {
 			}
 		}
 		console.log("BRUTEFORCE CLOSE");
+		coreCallback(null);
 	}
 };
