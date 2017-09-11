@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
 
 import {
   Tab,
@@ -8,14 +8,17 @@ import {
   Message,
   Header,
   Input,
-  Divider
-} from "semantic-ui-react"
+  Divider,
+  Icon
+} from "semantic-ui-react";
 
-import BruteForceTab from "common/createTaskSection/BruteForceTab"
-import OtherTab from "common/createTaskSection/OtherTab"
+import { browserHistory } from "react-router";
+
+import BruteForceTab from "common/createTaskSection/BruteForceTab";
+import OtherTab from "common/createTaskSection/OtherTab";
 import newId from "../../utils/Newid";
 
-import Api from "utils/Api"
+import Api from "utils/Api";
 
 export default class CreateTaskSection extends Component {
 
@@ -24,10 +27,6 @@ export default class CreateTaskSection extends Component {
 
     this._createTask = this._createTask.bind(this);
     this._removeAllTasks = this._removeAllTasks.bind(this);
-
-    this.state = {
-      setUpVisible: true
-    }
   }
 
   componentWillMount() {
@@ -36,8 +35,7 @@ export default class CreateTaskSection extends Component {
   }
 
   _createTask() {
-    this.setState({ setUpVisible: !this.state.setUpVisible });
-
+    browserHistory.push("/task-summary");
     var bruteForceTab = JSON.parse(localStorage.getItem("BruteForceTab"));
     if (bruteForceTab != null && bruteForceTab.enable === false) {
       bruteForceTab = null;
@@ -85,48 +83,29 @@ export default class CreateTaskSection extends Component {
     return (
 
       <div className="create-task-section" >
-
-        {this.state.setUpVisible ?
-          <Tab panes={panes} /> :
-          null
-        }
-
-        {this.state.setUpVisible ?
-          <Segment>
-
-            <Header as="h3">Starter</Header>
-            <Grid>
-              <Grid.Row columns={2} textAlign="right">
-                <Grid.Column>
-                  <Input id={this.idServerHome} placeholder="Server home" />
-                </Grid.Column>
-                <Grid.Column>
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row columns={2} textAlign="right">
-                <Grid.Column>
-                  <Input id={this.idTaskName} placeholder="Task name" />
-                </Grid.Column>
-                <Grid.Column>
-                  <Button onClick={this._createTask} color="green">Start task</Button>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-            <Divider inverted />
-            <Button onClick={this._removeAllTasks} inverted color="red" size="tiny">Remove</Button>
-          </Segment> :
-          null
-        }
-
-        {this.state.setUpVisible ?
-          null :
-          <Message positive
-            icon="check"
-            header="Warning"
-            content="Your task was created and will be planned in few minutes, go to overview to check status of your task"
-          />
-        }
-
+        <Tab panes={panes} />
+        <Segment>
+          <Header as="h3">Starter</Header>
+          <Grid>
+            <Grid.Row columns={2} textAlign="right">
+              <Grid.Column>
+                <Input id={this.idServerHome} placeholder="Server home" />
+              </Grid.Column>
+              <Grid.Column>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row columns={2} textAlign="right">
+              <Grid.Column>
+                <Input id={this.idTaskName} placeholder="Task name" />
+              </Grid.Column>
+              <Grid.Column>
+                <Button onClick={this._createTask} color="green">Start task</Button>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+          <Divider inverted />
+          <Button onClick={this._removeAllTasks} inverted color="red" size="tiny">Remove</Button>
+        </Segment>
       </div >
     )
   }
