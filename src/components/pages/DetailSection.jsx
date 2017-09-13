@@ -5,10 +5,12 @@ import {
   Loader,
   Grid,
   List,
-  Icon
+  Icon,
+  Divider
 } from "semantic-ui-react"
 
 import Api from "utils/Api"
+import newId from "utils/Newid";
 
 export default class DetailSection extends Component {
 
@@ -16,29 +18,52 @@ export default class DetailSection extends Component {
     super(props)
 
     this.state = {
-      loading: true
+      loading: true,
+      updateBinded: false
     }
+  }
+
+  componentWillMount() {
+    this.idLogArea = newId();
+  }
+
+  componentDidMount() {
+    var self = this;
 
     Api.getSocket().on("there-is-task-detail", function (data) {
-      console.log(data[0]);
-      console.log(Object.keys(data).length)
       if (Object.keys(data).length > 0) {
         this.state = {
-          taskId: data[0].id,
-          taskAddTime: data[0].addTime,
-          taskStartTime: data[0].startTime,
-          taskEndTime: data[0].endTime,
-          taskType: data[0].type,
-          taskName: data[0].taskName,
-          taskKey: data[0].taskKey,
-          taskState: data[0].state,
+          taskId: data.id,
+          taskAddTime: data.addTime,
+          taskStartTime: data.startTime,
+          taskEndTime: data.endTime,
+          taskType: data.type,
+          taskName: data.taskName,
+          taskKey: data.taskKey,
+          taskState: data.state,
           loading: false
+        }
+        if (!this.state.updateBinded) {
+          this.setState = {
+            updateBinded: true
+          }
+          if (this.state.taskState === 1) {
+            //task running
+            Api.getSocket().on(["detail-", this.state.taskId].join(""), function (data) {
+              document.getElementById(self.idLogArea).innerText += data.data;
+            });
+          }
         }
         this.forceUpdate();
       }
     }.bind(this));
 
     Api.socketRequest("give-me-task-detail", { key: this.props.location.query.key });
+  }
+
+  componentWillUnmount() {
+    Api.getSocket().removeListener(["detail-", this.state.taskId].join(""));
+    Api.getSocket().removeListener("there-is-task-detail");
   }
 
   render() {
@@ -154,14 +179,11 @@ export default class DetailSection extends Component {
                   }
                 })()}
               </Grid.Column>
+              <Divider />
+              <div id={this.idLogArea}/>
             </Grid.Row>
           </Grid>
         )}
-        <List>
-          <List.Item>Apples</List.Item>
-          <List.Item>Pears</List.Item>
-          <List.Item>Oranges</List.Item>
-        </List>
       </div>
     )
   }

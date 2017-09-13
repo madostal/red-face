@@ -1,6 +1,7 @@
 var library = require("./Library.js");
 var fs = require("fs");
 var async = require("async");
+var { spawn } = require("child_process");
 var taskHome = require("../task/taskHome.js");
 var logger = require("../Logger.js");
 var database = require("./Database.js");
@@ -137,8 +138,6 @@ module.exports = class Pool {
 
         this.io.emit("taskstart", "TASK " + id + " STARTED :-)");
 
-        const { spawn } = require("child_process");
-
         const process = spawn("node", ["task/Core.js", id], {
             stdio: ["ipc", "pipe", "pipe"]
         });
@@ -146,8 +145,10 @@ module.exports = class Pool {
         this.processMap.set(id, process);
 
         process.stdout.on("data", (data) => {
-            console.log(`stdout: ${data}`);
+            console.log(`stderr: ${data}`);
             this._appendLog(data, logFileName);
+            this.io.emit(["detail-", id].join(""), { "data": data.toString('utf8') });
+
         });
 
         process.stderr.on("data", (data) => {

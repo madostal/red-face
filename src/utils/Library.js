@@ -1,8 +1,8 @@
-exports.sliceNumber = function (num, pos) {
+var sliceNumber = function (num, pos) {
     return ("0" + num).slice(-pos);
 };
 
-exports.mySQLDateToHumanReadable = function (mysqlDateTimeStamp) {
+var mySQLDateToHumanReadable = function (mysqlDateTimeStamp) {
     var date = new Date(mysqlDateTimeStamp);
 
     var month = date.getMonth();
@@ -20,7 +20,7 @@ exports.mySQLDateToHumanReadable = function (mysqlDateTimeStamp) {
     return hour + ":" + min + ":" + sec + " " + day + "." + month + "." + date.getFullYear();
 };
 
-exports.msToHumanReadable = function (time) {
+var msToHumanReadable = function (time) {
     var millis = time % 1000;
     time = parseInt(time / 1000);
     var seconds = time % 60;
@@ -42,4 +42,9 @@ exports.msToHumanReadable = function (time) {
         out += sliceNumber(millis, 3) + " " + ((millis === 1) ? "msec" : "msecs") + " ";
     }
     return out.trim();
+};
+
+module.exports = {
+    mySQLDateToHumanReadable,
+    msToHumanReadable
 };

@@ -87,6 +87,8 @@ io.on("connection", function (socket) {
           logger.log("error", err);
           throw err;
         }
+        fields = fields[0];
+        
         io.emit("there-is-task-detail", fields);
       });
     }
