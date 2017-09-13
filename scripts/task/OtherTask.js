@@ -1,6 +1,7 @@
 var async = require("async");
 var scan = require("net-scan");
 var portNumbers = require("port-numbers");
+var puppeteer = require('puppeteer');
 
 var taskParent = require("./TaskParent.js");
 var database = require("../utils/Database.js");
@@ -65,6 +66,20 @@ module.exports = class OtherTask extends taskParent {
 
     _doHttpHttps() {
         logger.log("debug", "Starting http/https test");
+
+        var url = 'https://example.com';
+        (async () => {
+          const browser = await puppeteer.launch();
+          const page = await browser.newPage();
+          await page.goto(url);
+        
+          var protocol = await page.evaluate(() => {
+            return location.protocol 
+          });
+          
+          console.log( protocol);
+          browser.close();
+        })(); 
     }
 
     _doJavascriptImport() {

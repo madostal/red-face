@@ -27,6 +27,7 @@
     "mysql": "^2.14.1",
     "net-scan": "^0.1.1",
     "port-numbers": "^2.0.8",
+    "puppeteer": "^0.10.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-router": "^2.8.1",
