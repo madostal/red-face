@@ -1,3 +1,5 @@
+var request = require('request');
+
 /**
  * Return actual mysql TIMESTAMP
  *
@@ -22,3 +24,14 @@ exports.getRandomTextInRange = function (range = 5) {
     }
     return text;
 };
+
+/**
+ * Check if URL exist using send request to url - can be used to validat url
+ * 
+ */
+exports.urlExists = function (url, cb) {
+    request({ url: url, method: 'HEAD' }, function (err, res) {
+        if (err) return cb(null, false);
+        cb(null, /4\d\d/.test(res.statusCode) === false);
+    });
+}

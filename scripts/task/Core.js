@@ -44,7 +44,17 @@ class Core {
 			});
 
 			logger.log("debug", ["Task id: ", self.taskId, ", subtask count: ", self.subTasks.length].join(""));
-			self._startJob();
+
+			console.log(self.taskData.serverHome);
+			library.urlExists(self.taskData.serverHome, function (err, exists) {
+				if (exists) {
+					console.log(["'", self.taskData.serverHome, "' exist, starting testing..."].join(""));
+					self._startJob();
+				} else {
+					console.log(["'", self.taskData.serverHome, "' doesn't exist, ending testing..."].join(""));
+					//todo all task set to closed
+				}
+			});
 		});
 	}
 
