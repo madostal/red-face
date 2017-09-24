@@ -24,12 +24,15 @@ module.exports = class OtherTask extends taskParent {
             }
 
             field = field[0];
+            console.log("------------------------------");
+            console.log(field);
             async.waterfall([
                 function (callback) {
                     if (field.testHttpHttps === 1) {
-                        self._doHttpHttps();
+                        self._doHttpHttps(callback);
+                    } else {
+                        callback(null);
                     }
-                    callback(null);
                 },
                 function (callback) {
                     if (field.testJavascriptImport === 1) {
@@ -64,22 +67,23 @@ module.exports = class OtherTask extends taskParent {
         });
     }
 
-    _doHttpHttps() {
+    _doHttpHttps(callback) {
         logger.log("debug", "Starting http/https test");
-
-        var url = 'https://example.com';
+        console.log(["Checking ", this.serverHome, " server protocol"].join(""));
+        var url = this.serverHome;
         (async () => {
-          const browser = await puppeteer.launch();
-          const page = await browser.newPage();
-          await page.goto(url);
-        
-          var protocol = await page.evaluate(() => {
-            return location.protocol 
-          });
-          
-          console.log( protocol);
-          browser.close();
-        })(); 
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            await page.goto(url);
+
+            var protocol = await page.evaluate(() => {
+                return location.protocol
+            });
+
+            console.log(["Server ", this.serverHome, " using ", protocol.replace(":", ""), " protocol"].join(""));
+            browser.close();
+            callback(null);
+        })();
     }
 
     _doJavascriptImport() {
@@ -96,7 +100,7 @@ module.exports = class OtherTask extends taskParent {
         console.log(["Starting port scan on range: ", field.from, " - ", field.to, " on ", serverHome].join(""));
         console.time("ports scan");
         scan.port({
-            host: serverHome,
+            host: serverHome.replace(/(^\w+:|^)\/\//, ''), //remove https:// or https// from actual url
             start: field.from,
             end: field.to,
             timeout: 10000,
