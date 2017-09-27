@@ -52,7 +52,7 @@ export default class OverviewTable extends Component {
                     endTime: (loop.endTime),
                     state: loop.state,
                     key: [loop.id, loop.taskKey].join("_")
-                }
+                } 
                 rowData.push(tmp);
             });
 
@@ -96,18 +96,8 @@ export default class OverviewTable extends Component {
     componentDidMount() {
         var self = this;
         this.interval = setInterval(function () {
-            var lastRowData = self.state.result;
-            lastRowData.forEach(function (loop) {
-                if (loop.state === 1) {
-                    loop.endTime = Library.msToHumanReadable(new Date().getTime() - new Date(loop.startTime).getTime());
-                }
-            });
-
-            self.state = {
-                result: lastRowData
-            }
             self.forceUpdate()
-        }, 100);
+        }, 1000);
     }
 
     componentWillUnmount() {
@@ -142,13 +132,22 @@ export default class OverviewTable extends Component {
                                             {item.id}
                                         </Table.Cell>
                                         <Table.Cell singleLine>
-                                            {item.addTime}
+                                            {Library.timeToHumanReadable(new Date(item.addTime))}
                                         </Table.Cell>
                                         <Table.Cell>
-                                            {item.startTime}
+                                            {Library.timeToHumanReadable(new Date(item.startTime))}
                                         </Table.Cell>
                                         <Table.Cell>
-                                            {item.endTime}
+                                            {
+                                                (function () {
+                                                    switch (item.state) {
+                                                        case 1: 
+                                                            return Library.timeDiffNow(new Date(item.startTime));
+                                                        default:
+                                                            return Library.timeToHumanReadable(new Date(item.endTime));
+                                                    }
+                                                })()
+                                            }
                                         </Table.Cell>
                                         <Table.Cell textAlign="center">
                                             {(function () {
