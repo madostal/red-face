@@ -20,10 +20,26 @@ import newId from "../../utils/Newid";
 
 import Api from "utils/Api";
 
+function readStorage() {
+  return JSON.parse(localStorage.getItem("MainTab"));
+}
+
+function createStorageIfNotExist() {
+  var json = JSON.stringify({
+    "idTaskName": "",
+    "idServerHome": ""
+  });
+  localStorage.setItem("MainTab", json);
+  return json;
+}
+
 export default class CreateTaskSection extends Component {
 
   constructor(props) {
     super(props)
+    if (localStorage.getItem("MainTab") === null) {
+      createStorageIfNotExist();
+    }
 
     this._createTask = this._createTask.bind(this);
     this._removeAllTasks = this._removeAllTasks.bind(this);
@@ -34,7 +50,25 @@ export default class CreateTaskSection extends Component {
     this.idServerHome = newId();
   }
 
+  componentDidMount() {
+    var json = readStorage();
+    document.getElementById(this.idTaskName).value = json.idTaskName;
+    document.getElementById(this.idServerHome).value = json.idServerHome;
+  }
+
+  componentWillUnmount() {
+    this._saveData();
+  }
+
+  _saveData() {
+    var json = readStorage();
+    json.idTaskName = document.getElementById(this.idTaskName).value;
+    json.idServerHome = document.getElementById(this.idServerHome).value;
+    localStorage.setItem("MainTab", JSON.stringify(json));
+  }
+
   _createTask() {
+    this._saveData();
     browserHistory.push("/task-summary");
     var bruteForceTab = JSON.parse(localStorage.getItem("BruteForceTab"));
     if (bruteForceTab != null && bruteForceTab.enable === false) {
