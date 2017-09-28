@@ -1,3 +1,4 @@
+const jetpack = require('fs-jetpack');
 var async = require("async");
 var scan = require("net-scan");
 var portNumbers = require("port-numbers");
@@ -6,6 +7,9 @@ var puppeteer = require('puppeteer');
 var taskParent = require("./TaskParent.js");
 var database = require("../utils/Database.js");
 var logger = require("../Logger");
+var request = require('sync-request');
+
+const PATH_GIT_CONFIG = "/task_settings/configuration/git_config";
 
 module.exports = class OtherTask extends taskParent {
 
@@ -42,9 +46,10 @@ module.exports = class OtherTask extends taskParent {
                 },
                 function (callback) {
                     if (field.testGitConfig === 1) {
-                        self._doGitConfig();
+                        self._doGitConfig(callback);
+                    } else {
+                        callback(null);
                     }
-                    callback(null);
                 },
                 function (callback) {
                     if (field.testPortScan === 1) {
@@ -90,8 +95,26 @@ module.exports = class OtherTask extends taskParent {
         logger.log("debug", "Starting javascript import test");
     }
 
-    _doGitConfig() {
+    _doGitConfig(coreCallback) {
         logger.log("debug", "Starting gitconfig test");
+
+        var homeUrl = this.serverHome;
+        async.waterfall([
+            function (callback) {                
+                var data = jetpack.read([process.cwd(), PATH_GIT_CONFIG].join("")).match(/[^\r\n]+/g);
+
+                var res = [];
+
+                data.forEach(function (value) {
+                    var url = [homeUrl, value].join("");
+                    var res = request('GET', url);
+                    console.log([url, ": " , res.statusCode].join(""));
+                });
+                callback(null);
+            }
+        ], function (err) {
+            coreCallback(null);
+        });
     }
 
     _doPortScan(field, serverHome, callback) {
