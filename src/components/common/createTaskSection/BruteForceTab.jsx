@@ -46,7 +46,8 @@ export default class BruteForceTab extends Component {
         this.state = {
             errorHeader: TASK_DISABLE_WARNING_MESSAGE_HEADER,
             error: (!isEnable) ? TASK_DISABLE_WARNING_MESSAGE : undefined,
-            setUpVisible: isEnable
+            setUpVisible: isEnable,
+            xpathFormVisible: true
         }
     }
 
@@ -99,11 +100,21 @@ export default class BruteForceTab extends Component {
 }
 class Body extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            xpathFormVisible: true,
+            pswFormVisible: true
+        }
+    }
+
     componentWillMount() {
         this.idLoginFormXPathExpr = newId();
+        this.idLoginNameXPathExpr = newId();
+        this.idLoginpswXPathExpr = newId();
         this.idLoginNames = newId();
         this.idLoginPsw = newId();
-        this.idLoginFormLocation = newId();
     }
 
     componentDidMount() {
@@ -116,41 +127,70 @@ class Body extends Component {
 
     componentWillUnmount() {
         var json = readStorage();
-        json.data.idLoginFormXPathExpr =  document.getElementById(this.idLoginFormXPathExpr).value;
+        json.data.idLoginFormXPathExpr = document.getElementById(this.idLoginFormXPathExpr).value;
         json.data.idLoginNames = document.getElementById(this.idLoginNames).value;
         json.data.idLoginPsw = document.getElementById(this.idLoginPsw).value;
         json.data.idLoginFormLocation = document.getElementById(this.idLoginFormLocation).value;
         localStorage.setItem("BruteForceTab", JSON.stringify(json));
     }
 
+    _switchAutomaticallyXPath() {
+        this.setState({ xpathFormVisible: !this.state.xpathFormVisible });
+    }
+
+    _switchAutomaticallyDatabase() {
+        this.setState({ pswFormVisible: !this.state.pswFormVisible });
+    }
+
     render() {
         return (
             <div>
-                <Form >
+                <Form>
                     <Header as="h5">Login form XPath expression</Header>
-                    <TextArea id={this.idLoginFormXPathExpr} placeholder="Tell us more" label="Enter Password" />
+                    <TextArea id={this.idLoginFormXPathExpr} placeholder="Tell us more" disabled={this.state.xpathFormVisible} />
                 </Form>
                 <Divider hidden />
+                <Form >
+                    <Header as="h5">Input name XPath expression</Header>
+                    <TextArea id={this.idLoginNameXPathExpr} placeholder="Tell us more" disabled={this.state.xpathFormVisible} />
+                </Form>
+                <Divider hidden />
+                <Form >
+                    <Header as="h5">Input password XPath expression</Header>
+                    <TextArea id={this.idLoginpswXPathExpr} placeholder="Tell us more" disabled={this.state.xpathFormVisible} />
+                </Form>
+                <Divider hidden />
+
+                <Grid  >
+                    <Grid.Row textAlign="right">
+                        <Grid.Column>
+                            <Checkbox checked={this.state.xpathFormVisible} label={{ children: 'Automatically' }} onClick={() => this._switchAutomaticallyXPath()} />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
                 <Grid divided="vertically">
                     <Grid.Row columns={2}>
                         <Grid.Column>
                             <Form >
                                 <Header as="h5">Login names</Header>
-                                <TextArea id={this.idLoginNames} placeholder="Tell us more" label="Enter Password" />
+                                <TextArea id={this.idLoginNames} placeholder="Tell us more" disabled={this.state.pswFormVisible} />
                             </Form>
                         </Grid.Column>
                         <Grid.Column>
                             <Form >
                                 <Header as="h5">Passwords</Header>
-                                <TextArea id={this.idLoginPsw} placeholder="Tell us more" label="Enter Password" />
+                                <TextArea id={this.idLoginPsw} placeholder="Tell us more" disabled={this.state.pswFormVisible} />
                             </Form>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <Form>
-                    <Header as="h5">Login form location</Header>
-                    <TextArea id={this.idLoginFormLocation} placeholder="Tell us more" label="Enter Password" />
-                </Form >
+                <Grid  >
+                    <Grid.Row textAlign="right">
+                        <Grid.Column>
+                            <Checkbox label={{ children: 'Use database' }} onClick={() => this._switchAutomaticallyXPath()} disabled={this.state.pswFormVisible} />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </div>
         )
     }
