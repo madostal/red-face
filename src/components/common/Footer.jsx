@@ -8,7 +8,7 @@ import {
     Image,
     Icon,
     Header
-} from "semantic-ui-react"
+} from "semantic-ui-react";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";

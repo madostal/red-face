@@ -7,7 +7,7 @@ var puppeteer = require('puppeteer');
 var taskParent = require("./TaskParent.js");
 var database = require("../utils/Database.js");
 var logger = require("../Logger");
-var request = require('sync-request');
+var request = require("sync-request");
 
 const PATH_GIT_CONFIG = "/task_settings/configuration/git_config";
 
@@ -100,14 +100,14 @@ module.exports = class OtherTask extends taskParent {
 
         var homeUrl = this.serverHome;
         async.waterfall([
-            function (callback) {                
+            function (callback) {
                 var data = jetpack.read([process.cwd(), PATH_GIT_CONFIG].join("")).match(/[^\r\n]+/g);
 
                 var res = [];
 
                 data.forEach(function (value) {
                     var url = [homeUrl, value].join("");
-                    var res = request('GET', url);
+                    var res = request("GET", url);
                     console.log([url, ": " , res.statusCode].join(""));
                 });
                 callback(null);

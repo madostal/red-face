@@ -1,7 +1,7 @@
-require('chromedriver');
-var sleep = require('system-sleep');
+require("chromedriver");
+var sleep = require("system-sleep");
 
-var webdriver = require('selenium-webdriver'),
+var webdriver = require("selenium-webdriver"),
 	By = webdriver.By,
 	until = webdriver.until;
 
