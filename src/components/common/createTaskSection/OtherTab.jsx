@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
 import {
     Header,
     Checkbox,
@@ -10,11 +10,11 @@ import {
     Grid,
     Image,
     Message
-} from "semantic-ui-react"
+} from "semantic-ui-react";
 
 import newId from "../../../utils/Newid";
 
-import { TASK_DISABLE_WARNING_MESSAGE, TASK_DISABLE_WARNING_MESSAGE_HEADER } from "../../../language/Variables"
+import { TASK_DISABLE_WARNING_MESSAGE, TASK_DISABLE_WARNING_MESSAGE_HEADER } from "../../../language/Variables";
 
 function createStorageIfNotExist() {
     var json = JSON.stringify({
@@ -59,12 +59,12 @@ export default class OtherTab extends Component {
     _checkBoxAction(e, d) {
         var json = readStorage();
         if (d.checked) {
-            this.setState({ error: TASK_DISABLE_WARNING_MESSAGE })
-            this.setState({ setUpVisible: false })
+            this.setState({ error: TASK_DISABLE_WARNING_MESSAGE });
+            this.setState({ setUpVisible: false });
             json.enable = false;
         } else {
-            this.setState({ error: undefined })
-            this.setState({ setUpVisible: true })
+            this.setState({ error: undefined });
+            this.setState({ setUpVisible: true });
             json.enable = true;
         }
         localStorage.setItem("OtherTab", JSON.stringify(json));
@@ -97,7 +97,7 @@ export default class OtherTab extends Component {
                     }
                 </div>
             </div>
-        )
+        );
     }
 }
 

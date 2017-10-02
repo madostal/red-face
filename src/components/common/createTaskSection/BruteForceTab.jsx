@@ -56,7 +56,7 @@ export default class BruteForceTab extends Component {
             error: (!isEnable) ? TASK_DISABLE_WARNING_MESSAGE : undefined,
             setUpVisible: isEnable,
             xpathFormVisible: true
-        }
+        };
     }
 
     _checkBoxAction(e, d) {

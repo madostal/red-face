@@ -6,9 +6,9 @@ var webdriver = require("selenium-webdriver"),
 	until = webdriver.until;
 
 const CHROME_OPTIONS = {
-	// 'args': ['--test-type', '--start-maximized', '--headless']
-	'args': [
-		'--test-type', 'disable-web-security'
+	// "args": ["--test-type", "--start-maximized", "--headless"]
+	"args": [
+		"--test-type", "disable-web-security"
 	],
 	"prefs": {
 		"profile.managed_default_content_settings.images": 2
@@ -26,10 +26,10 @@ module.exports = class WebDriver {
 
 	_init() {
 		var chromeCapabilities = webdriver.Capabilities.chrome();
-		chromeCapabilities.set('chromeOptions', CHROME_OPTIONS);
+		chromeCapabilities.set("chromeOptions", CHROME_OPTIONS);
 
 		this.driver = new webdriver.Builder()
-			.forBrowser('chrome')
+			.forBrowser("chrome")
 			.withCapabilities(chromeCapabilities)
 			.build();
 	}
@@ -37,7 +37,7 @@ module.exports = class WebDriver {
 	screenShot(path) {
 		this._simplePromiseGuard(() => this.driver.takeScreenshot()
 			.then(function (image, err) {
-				require('fs').writeFile(path, image, 'base64', function (err) {
+				require("fs").writeFile(path, image, "base64", function (err) {
 					//
 				});
 			}));
@@ -74,7 +74,7 @@ module.exports = class WebDriver {
 			this.driver.executeAsyncScript(function () {
 				var callback = arguments[arguments.length - 1];
 
-				var selector = 'input[type="text"], input[type="password"], textarea';
+				var selector = "input[type="text"], input[type="password"], textarea";
 				callback(document.querySelectorAll(selector.length > 0));
 			})
 		);

@@ -141,6 +141,6 @@ export default class CreateTaskSection extends Component {
           <Button onClick={this._removeAllTasks} inverted color="red" size="tiny">Remove</Button>
         </Segment>
       </div >
-    )
+    );
   }
 }

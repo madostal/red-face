@@ -1,10 +1,10 @@
-var webDriver = require('./WebDriver');
+var WebDriver = require('./WebDriver');
 
 module.exports = class Crawler {
 
     constructor(home) {
         this.home = home;
-        this.webDriver = new webDriver();
+        this.webDriver = new WebDriver();
         this.urls = new Array();
         // visited - url - writable elemets
         this.urls.push([false, home, false]);
@@ -70,5 +70,4 @@ module.exports = class Crawler {
     _shutDown() {
         this.webDriver.closeDriver();
     }
-
-}
+};

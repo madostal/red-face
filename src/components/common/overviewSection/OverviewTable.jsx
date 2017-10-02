@@ -16,7 +16,7 @@ import Library from "utils/Library";;
 export default class OverviewTable extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             result: [],
@@ -24,7 +24,7 @@ export default class OverviewTable extends Component {
             modalRemoveTaskOpen: false,
             modalStopTaskOpen: false,
             modalRepeatOpen: false
-        }
+        };
 
         Api.getSocket().on("update-overview", function (data) {
             var lastRowData = this.state.result;
@@ -139,33 +139,35 @@ export default class OverviewTable extends Component {
                                         </Table.Cell>
                                         <Table.Cell>
                                             {
-                                                (function () {
+                                                ((function () {
                                                     switch (item.state) {
                                                         case 1:
                                                             return Library.timeDiffNow(new Date(item.startTime));
                                                         default:
                                                             return Library.timeToHumanReadable(new Date(item.endTime));
                                                     }
-                                                })()
+                                                })())
                                             }
                                         </Table.Cell>
                                         <Table.Cell textAlign="center">
-                                            {(function () {
-                                                switch (item.state) {
-                                                    case 0:
-                                                        return <Icon name="wait" size="large" />;
-                                                    case 1:
-                                                        return <Loader active inline size="small" />;
-                                                    case 2:
-                                                        return <Icon name="checkmark" size="large" />;
-                                                    case 3:
-                                                        return <Icon name="exclamation triangle" size="large" />;
-                                                    case 4:
-                                                        return <Icon name="crosshairs" size="large" />;
-                                                    default:
-                                                        return null;
-                                                }
-                                            })()}
+                                            {
+                                                ((function () {
+                                                    switch (item.state) {
+                                                        case 0:
+                                                            return <Icon name="wait" size="large" />;
+                                                        case 1:
+                                                            return <Loader active inline size="small" />;
+                                                        case 2:
+                                                            return <Icon name="checkmark" size="large" />;
+                                                        case 3:
+                                                            return <Icon name="exclamation triangle" size="large" />;
+                                                        case 4:
+                                                            return <Icon name="crosshairs" size="large" />;
+                                                        default:
+                                                            return null;
+                                                    }
+                                                })())
+                                            }
                                         </Table.Cell>
                                         <Table.Cell textAlign="center">
                                             <Button onClick={(e) => this._open(e, item)} color="blue" icon><Icon name="search" /></Button>
@@ -243,10 +245,6 @@ export default class OverviewTable extends Component {
                                                 </Button>
                                                 </Modal.Actions>
                                             </Modal>
-
-
-
-
                                         </Table.Cell>
                                     </Table.Row>
                                 )

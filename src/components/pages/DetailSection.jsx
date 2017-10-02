@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
 
 import {
   Message,
@@ -7,15 +7,15 @@ import {
   List,
   Icon,
   Divider
-} from "semantic-ui-react"
+} from "semantic-ui-react";
 
-import Api from "utils/Api"
+import Api from "utils/Api";
 import newId from "utils/Newid";
 
 export default class DetailSection extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       loading: true,
@@ -67,7 +67,7 @@ export default class DetailSection extends Component {
   }
 
   render() {
-    let { loading, taskId, taskAddTime, taskStartTime, taskEndTime, taskType, taskName, taskKey, taskState } = this.state
+    let { loading, taskId, taskAddTime, taskStartTime, taskEndTime, taskType, taskName, taskKey, taskState } = this.state;
     return (
       <div className="home-section">
 
@@ -164,23 +164,25 @@ export default class DetailSection extends Component {
               </Grid.Column>
               <Grid.Column width={3} textAlign="center" verticalAlign="middle">
 
-                {(function () {
-                  switch (taskState) {
-                    case 0:
-                      return <Icon name="wait" size="huge" />;
-                    case 1:
-                      return <Loader active inline size="massive" />;
-                    case 2:
-                      return <Icon name="checkmark" size="huge" />;
-                    case 3:
-                      return <Icon name="exclamation triangle" size="huge" />;
-                    default:
-                      return null;
-                  }
-                })()}
+                {
+                  ((function () {
+                    switch (taskState) {
+                      case 0:
+                        return <Icon name="wait" size="huge" />;
+                      case 1:
+                        return <Loader active inline size="massive" />;
+                      case 2:
+                        return <Icon name="checkmark" size="huge" />;
+                      case 3:
+                        return <Icon name="exclamation triangle" size="huge" />;
+                      default:
+                        return null;
+                    }
+                  })())
+                }
               </Grid.Column>
               <Divider />
-              <div id={this.idLogArea}/>
+              <div id={this.idLogArea} />
             </Grid.Row>
           </Grid>
         )}

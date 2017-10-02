@@ -36,4 +36,4 @@ exports.urlExists = function (url, cb) {
         };
         cb(null, /4\d\d/.test(res.statusCode) === false);
     });
-}
+};

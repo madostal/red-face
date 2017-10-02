@@ -1,4 +1,4 @@
-const jetpack = require('fs-jetpack');
+const jetpack = require("fs-jetpack");
 var async = require("async");
 var scan = require("net-scan");
 var portNumbers = require("port-numbers");
@@ -123,7 +123,7 @@ module.exports = class OtherTask extends taskParent {
         console.log(["Starting port scan on range: ", field.from, " - ", field.to, " on ", serverHome].join(""));
         console.time("ports scan");
         scan.port({
-            host: serverHome.replace(/(^\w+:|^)\/\//, ''), //remove https:// or https// from actual url
+            host: serverHome.replace(/(^\w+:|^)\/\//, ""), //remove https:// or https// from actual url
             start: field.from,
             end: field.to,
             timeout: 10000,

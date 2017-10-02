@@ -17,7 +17,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 export default class Footer extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             visible: false,
             toast: "info"
@@ -44,7 +44,7 @@ export default class Footer extends Component {
     _handleSocket() {
 
         this.props.socket.on("connect_error", function () {
-            this.setState({ visible: true })
+            this.setState({ visible: true });
         }.bind(this));
 
         this.props.socket.on("connect", function () {
@@ -83,6 +83,6 @@ export default class Footer extends Component {
                     pauseOnHover
                 />
             </div>
-        )
+        );
     }
 }
