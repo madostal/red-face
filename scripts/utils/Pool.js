@@ -4,10 +4,10 @@ var async = require("async");
 var { spawn } = require("child_process");
 var taskHome = require("../task/taskHome.js");
 var logger = require("../Logger.js");
-const jetpack = require('fs-jetpack');
+const jetpack = require("fs-jetpack");
 var database = require("./Database.js");
 
-const BRUTE_FORCE_TMP_PATH = 'data/bruteforce/';
+const BRUTE_FORCE_TMP_PATH = "data/bruteforce/";
 
 module.exports = class Pool {
 
@@ -98,8 +98,8 @@ module.exports = class Pool {
                                 }
                             });
 
-                            var fileName = [BRUTE_FORCE_TMP_PATH, 'tmp.txt'].join('');
-                            jetpack.write(fileName, [data.data.taskdata.bruteforcetab.data.idLoginNames.join('\r\n'), data.data.taskdata.bruteforcetab.data.idLoginPsw.join('\r\n')].join('\r\n\r\n'));
+                            var fileName = [BRUTE_FORCE_TMP_PATH, "tmp.txt"].join("");
+                            jetpack.write(fileName, [data.data.taskdata.bruteforcetab.data.idLoginNames.join("\r\n"), data.data.taskdata.bruteforcetab.data.idLoginPsw.join("\r\n")].join("\r\n\r\n"));
 
                             params = { subTask_id: idSubTask, loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNameXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginNameXPathExpr, loginpswXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginpswXPathExpr, testFilePath: fileName, urlLocation: data.data.taskdata.bruteforcetab.data.idUrlLocation };
 
@@ -154,7 +154,7 @@ module.exports = class Pool {
         process.stdout.on("data", (data) => {
             console.log(`stderr: ${data}`);
             this._appendLog(data, logFileName);
-            this.io.emit(["detail-", id].join(""), { "data": data.toString('utf8') });
+            this.io.emit(["detail-", id].join(""), { "data": data.toString("utf8") });
 
         });
 

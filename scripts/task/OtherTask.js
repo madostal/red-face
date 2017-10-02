@@ -2,7 +2,7 @@ const jetpack = require('fs-jetpack');
 var async = require("async");
 var scan = require("net-scan");
 var portNumbers = require("port-numbers");
-var puppeteer = require('puppeteer');
+var puppeteer = require("puppeteer");
 
 var taskParent = require("./TaskParent.js");
 var database = require("../utils/Database.js");

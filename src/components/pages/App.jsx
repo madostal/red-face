@@ -1,16 +1,16 @@
-import React, { Component } from "react"
-import { Link } from "react-router"
+import React, { Component } from "react";
+import { Link } from "react-router";
 import {
   Menu,
   Icon
-} from "semantic-ui-react"
+} from "semantic-ui-react";
 
-import Footer from "common/Footer"
+import Footer from "common/Footer";
 
-import "../../styles/userstyles.css"
-import "../../images/fav.ico"
+import "../../styles/userstyles.css";
+import "../../images/fav.ico";
 
-import Api from "utils/Api"
+import Api from "utils/Api";
 
 export default class App extends Component {
 

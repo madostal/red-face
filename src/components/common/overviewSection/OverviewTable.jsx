@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
 import { browserHistory } from "react-router";
 import {
     Menu,
@@ -8,10 +8,10 @@ import {
     Header,
     Loader,
     Table
-} from "semantic-ui-react"
+} from "semantic-ui-react";
 
-import Api from "utils/Api"
-import Library from "utils/Library"
+import Api from "utils/Api";
+import Library from "utils/Library";;
 
 export default class OverviewTable extends Component {
 
@@ -52,7 +52,7 @@ export default class OverviewTable extends Component {
                     endTime: (loop.endTime),
                     state: loop.state,
                     key: [loop.id, loop.taskKey].join("_")
-                } 
+                }
                 rowData.push(tmp);
             });
 
@@ -141,7 +141,7 @@ export default class OverviewTable extends Component {
                                             {
                                                 (function () {
                                                     switch (item.state) {
-                                                        case 1: 
+                                                        case 1:
                                                             return Library.timeDiffNow(new Date(item.startTime));
                                                         default:
                                                             return Library.timeToHumanReadable(new Date(item.endTime));

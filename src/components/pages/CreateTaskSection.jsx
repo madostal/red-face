@@ -36,7 +36,7 @@ function createStorageIfNotExist() {
 export default class CreateTaskSection extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     if (localStorage.getItem("MainTab") === null) {
       createStorageIfNotExist();
     }
@@ -112,7 +112,7 @@ export default class CreateTaskSection extends Component {
       { menuItem: "TODO7", render: () => <Tab.Pane >Tab 7 Content</Tab.Pane> },
       { menuItem: "TODO8", render: () => <Tab.Pane >Tab 8 Content</Tab.Pane> },
       { menuItem: "TODO9", render: () => <Tab.Pane loading>Tab 9 Content</Tab.Pane> },
-    ]
+    ];
 
     return (
 

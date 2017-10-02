@@ -53,7 +53,7 @@ export default class OtherTab extends Component {
             errorHeader: TASK_DISABLE_WARNING_MESSAGE_HEADER,
             error: (!isEnable) ? TASK_DISABLE_WARNING_MESSAGE : undefined,
             setUpVisible: isEnable
-        }
+        };
     }
 
     _checkBoxAction(e, d) {

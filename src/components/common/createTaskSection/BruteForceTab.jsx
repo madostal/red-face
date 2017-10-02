@@ -136,8 +136,8 @@ class Body extends Component {
 
         this.state = ({ pswFormVisible: json.data.idLoginNamesDefault });
         document.getElementById(this.idLoginNamesCheckbox).firstChild.checked = json.data.idLoginNamesDefault;
-        document.getElementById(this.idLoginNames).value = json.data.idLoginNames.join('\r\n');
-        document.getElementById(this.idLoginPsw).value = json.data.idLoginPsw.join('\r\n');
+        document.getElementById(this.idLoginNames).value = json.data.idLoginNames.join("\r\n");
+        document.getElementById(this.idLoginPsw).value = json.data.idLoginPsw.join("\r\n");
 
         document.getElementById(this.idUrlLocation).value = json.data.idUrlLocation;
     }
@@ -183,24 +183,24 @@ class Body extends Component {
             <div>
                 <Form >
                     <Header as="h5">Login form XPath expression</Header>
-                    <TextArea id={this.idLoginFormXPathExpr} placeholder='Specify login form XPath expression' disabled={this.state.xpathFormVisible} />
+                    <TextArea id={this.idLoginFormXPathExpr} placeholder="Specify login form XPath expression" disabled={this.state.xpathFormVisible} />
                 </Form>
                 <Divider hidden />
                 <Form >
                     <Header as="h5">Input name XPath expression</Header>
-                    <TextArea id={this.idLoginNameXPathExpr} placeholder='Specify input name XPath expression' disabled={this.state.xpathFormVisible} />
+                    <TextArea id={this.idLoginNameXPathExpr} placeholder="Specify input name XPath expression" disabled={this.state.xpathFormVisible} />
                 </Form>
                 <Divider hidden />
                 <Form >
                     <Header as="h5">Input password XPath expression</Header>
-                    <TextArea id={this.idLoginpswXPathExpr} placeholder='Specify input password XPath expression' disabled={this.state.xpathFormVisible} />
+                    <TextArea id={this.idLoginpswXPathExpr} placeholder="Specify input password XPath expression" disabled={this.state.xpathFormVisible} />
                 </Form>
                 <Divider hidden />
 
                 <Grid  >
                     <Grid.Row textAlign="right">
                         <Grid.Column>
-                            <Checkbox id={this.idLoginFormCheckbox} checked={this.state.xpathFormVisible} label={{ children: 'Automatically' }} onClick={() => this._switchAutomaticallyXPath()} />
+                            <Checkbox id={this.idLoginFormCheckbox} checked={this.state.xpathFormVisible} label={{ children: "Automatically" }} onClick={() => this._switchAutomaticallyXPath()} />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -223,13 +223,13 @@ class Body extends Component {
                 <Grid  >
                     <Grid.Row textAlign="right">
                         <Grid.Column>
-                            <Checkbox id={this.idLoginNamesCheckbox} checked={this.state.pswFormVisible} label={{ children: 'Use database' }} onClick={() => this._switchAutomaticallyDatabase()} />
+                            <Checkbox id={this.idLoginNamesCheckbox} checked={this.state.pswFormVisible} label={{ children: "Use database" }} onClick={() => this._switchAutomaticallyDatabase()} />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
                 <Form >
                     <Header as="h5">URL location</Header>
-                    <Input id={this.idUrlLocation} placeholder='Specify url where is form located' fluid />
+                    <Input id={this.idUrlLocation} placeholder="Specify url where is form located" fluid />
                 </Form>
                 <Divider hidden />
             </div>

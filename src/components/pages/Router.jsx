@@ -1,17 +1,17 @@
 
-import React, { Component } from "react"
+import React, { Component } from "react";
 import {
   Router,
   Route,
   browserHistory
-} from "react-router"
+} from "react-router";
 
-import App from "./App"
-import HomeSection from "./HomeSection"
-import CreateTaskSection from "./CreateTaskSection"
-import OverviewSection from "./OverviewSection"
-import DetailSection from "./DetailSection"
-import TaskSummarySection from "./TaskSummarySection"
+import App from "./App";
+import HomeSection from "./HomeSection";
+import CreateTaskSection from "./CreateTaskSection";
+import OverviewSection from "./OverviewSection";
+import DetailSection from "./DetailSection";
+import TaskSummarySection from "./TaskSummarySection";
 
 export default class DashboardRouter extends React.Component {
   render() {
