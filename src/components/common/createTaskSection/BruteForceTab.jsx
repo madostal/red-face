@@ -14,9 +14,9 @@ import newId from "../../../utils/Newid";
 
 import { TASK_DISABLE_WARNING_MESSAGE, TASK_DISABLE_WARNING_MESSAGE_HEADER } from "../../../language/Variables"
 
-const defaultXPathForm = "a";
-const defaultXPathFormInput = "b";
-const defaultXPathFormPsw = "c";
+const defaultXPathForm = "//form//input[@type='text' or @type='email']//ancestor::form//input[@type='password']//ancestor::form";
+const defaultXPathFormInput = ["(", [defaultXPathForm, "//input"].join(""), ")[1]"].join("");
+const defaultXPathFormPsw = ["(", [defaultXPathForm, "//input"].join(""), ")[2]"].join("");
 
 function createStorageIfNotExist() {
     var json = JSON.stringify({
@@ -136,8 +136,8 @@ class Body extends Component {
 
         this.state = ({ pswFormVisible: json.data.idLoginNamesDefault });
         document.getElementById(this.idLoginNamesCheckbox).firstChild.checked = json.data.idLoginNamesDefault;
-        document.getElementById(this.idLoginNames).value = json.data.idLoginNames.join("\r\n");
-        document.getElementById(this.idLoginPsw).value = json.data.idLoginPsw.join("\r\n");
+        document.getElementById(this.idLoginNames).value = Array.isArray(json.data.idLoginNames) ? json.data.idLoginNames.join("\r\n") : "";
+        document.getElementById(this.idLoginPsw).value = Array.isArray(json.data.idLoginPsw) ? json.data.idLoginPsw.join("\r\n") : "";
 
         document.getElementById(this.idUrlLocation).value = json.data.idUrlLocation;
     }

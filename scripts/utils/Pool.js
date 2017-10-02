@@ -8,6 +8,7 @@ const jetpack = require("fs-jetpack");
 var database = require("./Database.js");
 
 const BRUTE_FORCE_TMP_PATH = "data/bruteforce/";
+const DEFAULT_BRUTE_FORCE_PATH = "task_settings/defaulbruteforce.txt";
 
 module.exports = class Pool {
 
@@ -98,8 +99,11 @@ module.exports = class Pool {
                                 }
                             });
 
-                            var fileName = [BRUTE_FORCE_TMP_PATH, "tmp.txt"].join("");
-                            jetpack.write(fileName, [data.data.taskdata.bruteforcetab.data.idLoginNames.join("\r\n"), data.data.taskdata.bruteforcetab.data.idLoginPsw.join("\r\n")].join("\r\n\r\n"));
+                            var fileName = (data.data.taskdata.bruteforcetab.data.idLoginNamesDefault) ? DEFAULT_BRUTE_FORCE_PATH : self._createBruteForcePswFile();
+
+                            if (!(data.data.taskdata.bruteforcetab.data.idLoginNamesDefault)) {
+                                jetpack.write(fileName, [data.data.taskdata.bruteforcetab.data.idLoginNames.join("\r\n"), data.data.taskdata.bruteforcetab.data.idLoginPsw.join("\r\n")].join("\r\n\r\n"));
+                            }
 
                             params = { subTask_id: idSubTask, loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNameXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginNameXPathExpr, loginpswXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginpswXPathExpr, testFilePath: fileName, urlLocation: data.data.taskdata.bruteforcetab.data.idUrlLocation };
 
@@ -195,6 +199,11 @@ module.exports = class Pool {
     _createLogFile(taskname) {
         var file = [this.logFolderPath, "/", "red_face_log_", taskname, "_", Date.now(), "_", library.getRandomTextInRange(), ".txt"].join("");
         this._appendLog("Starting...\n", file);
+        return file;
+    }
+
+    _createBruteForcePswFile() {
+        var file = [this.logFolderPath, "/", "red_face_taks_psw", , "_", Date.now(), "_", library.getRandomTextInRange(), ".txt"].join("");
         return file;
     }
 
