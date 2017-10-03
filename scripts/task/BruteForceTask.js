@@ -1,9 +1,9 @@
 const jetpack = require("fs-jetpack");
-var stringSimilarity = require('string-similarity');
+var stringSimilarity = require("string-similarity");
 
 var database = require("../utils/Database.js");
 var taskParent = require("./TaskParent.js");
-var webDriver = require("../utils/WebDriver");
+var WebDriver = require("../utils/WebDriver");
 var library = require("../utils/Library");
 
 module.exports = class BruteForceTask extends taskParent {
@@ -25,7 +25,7 @@ module.exports = class BruteForceTask extends taskParent {
 
 			self.serverHome = self._createUri(self.serverHome, field.urlLocation);
 
-			webDriver = new webDriver();
+			webDriver = new WebDriver();
 
 			console.log("Starting BruteForceTask");
 			console.log(["Location of login form is: ", field.loginFormXPathExpr].join(""));
@@ -111,7 +111,7 @@ module.exports = class BruteForceTask extends taskParent {
 	 * @param {String[]} array2 
 	 */
 	_createCombos(array1, array2) {
-		var combos = []
+		var combos = [];
 
 		for (var i = 0; i < array1.length; i++) {
 			for (var j = 0; j < array2.length; j++) {
