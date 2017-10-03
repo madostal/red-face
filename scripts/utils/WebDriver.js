@@ -74,8 +74,8 @@ module.exports = class WebDriver {
 			this.driver.executeAsyncScript(function () {
 				var callback = arguments[arguments.length - 1];
 
-				var selector = "input[type="text"], input[type="password"], textarea";
-				callback(document.querySelectorAll(selector.length > 0));
+				var selector = "input[type=\"text\"], input[type=\"password\"], textarea";
+				callback(document.querySelectorAll(selector).length > 0);
 			})
 		);
 	}
@@ -89,8 +89,8 @@ module.exports = class WebDriver {
 			}), guardTime);
 	}
 
-	doLogin(login, psw, xpForm, guardTime = GUARD_LOCK_TIME_MS) {
-		var data = [login, psw, xpForm];
+	doLogin(login, psw, xpForm, xpLogin, xpPsw, guardTime = GUARD_LOCK_TIME_MS) {
+		var data = [login, psw, xpForm, xpLogin, xpPsw,];
 		return this._simplePromiseGuard(() =>
 			this.driver.executeAsyncScript(function (data) {
 				var callback = arguments[arguments.length - 1];
@@ -100,14 +100,9 @@ module.exports = class WebDriver {
 					return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 				}
 
-				var loginForm = getElementByXpath(data[2]);
-
-				var userName = ["(", [data[2], "//input"].join(""), ")[1]"].join("");
-				var psw = ["(", [data[2], "//input"].join(""), ")[2]"].join("");
-
-				getElementByXpath(userName).value = data[0];
-				getElementByXpath(psw).value = data[1];
-				loginForm.submit();
+				getElementByXpath(data[3]).value = data[0];
+				getElementByXpath(data[4]).value = data[1];
+				getElementByXpath(data[2]).submit();
 
 				callback(null);
 			}, data), guardTime);
