@@ -1,11 +1,11 @@
-var library = require("./Library.js");
-var fs = require("fs");
-var async = require("async");
-var { spawn } = require("child_process");
-var taskHome = require("../task/taskHome.js");
-var logger = require("../Logger.js");
+const library = require("./Library.js");
+const fs = require("fs");
+const async = require("async");
+const { spawn } = require("child_process");
+const taskHome = require("../task/taskHome.js");
+const logger = require("../Logger.js");
 const jetpack = require("fs-jetpack");
-var database = require("./Database.js");
+const database = require("./Database.js");
 
 const TMP_FOLDER_PATH = "./tmp_folder";
 const DEFAULT_BRUTE_FORCE_PATH = "task_settings/defaulbruteforce.txt";

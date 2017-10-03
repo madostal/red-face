@@ -1,13 +1,13 @@
 const jetpack = require("fs-jetpack");
-var async = require("async");
-var scan = require("net-scan");
-var portNumbers = require("port-numbers");
-var puppeteer = require("puppeteer");
+const async = require("async");
+const scan = require("net-scan");
+const portNumbers = require("port-numbers");
+const puppeteer = require("puppeteer");
 
-var taskParent = require("./TaskParent.js");
-var database = require("../utils/Database.js");
-var logger = require("../Logger");
-var request = require("sync-request");
+const taskParent = require("./TaskParent.js");
+const database = require("../utils/Database.js");
+const logger = require("../Logger");
+const request = require("sync-request");
 
 const PATH_GIT_CONFIG = "/task_settings/configuration/git_config";
 

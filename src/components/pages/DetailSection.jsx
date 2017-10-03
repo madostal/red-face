@@ -10,6 +10,7 @@ import {
 } from "semantic-ui-react";
 
 import Api from "utils/Api";
+import Library from "utils/Library";
 import newId from "utils/Newid";
 
 export default class DetailSection extends Component {
@@ -109,7 +110,7 @@ export default class DetailSection extends Component {
                       Addtime
                         </List.Header>
                     <List.Description>
-                      {taskAddTime}
+                      {Library.timeToHumanReadable(new Date(taskAddTime))}
                     </List.Description>
                   </List.Item>
                   <List.Item>
@@ -117,7 +118,7 @@ export default class DetailSection extends Component {
                       Startime
                         </List.Header>
                     <List.Description>
-                      {taskStartTime}
+                      {Library.timeToHumanReadable(new Date(taskStartTime))}
                     </List.Description>
                   </List.Item>
                   <List.Item>
@@ -125,7 +126,16 @@ export default class DetailSection extends Component {
                       Endtime
                         </List.Header>
                     <List.Description>
-                      {taskEndTime}
+                      {
+                        ((function () {
+                          switch (taskState) {
+                            case 1:
+                              return "Running";
+                            default:
+                              return Library.timeToHumanReadable(new Date(taskEndTime));
+                          }
+                        })())
+                      }
                     </List.Description>
                   </List.Item>
                   <List.Item>

@@ -1,22 +1,22 @@
 const LOG_FOLDER = "./log_folder";
 const SERVER_PORT = 4200;
 
-var fs = require("fs");
-var bodyParser = require("body-parser");
-var express = require("express");
-var app = express();
-var server = require("http")
+const fs = require("fs");
+const bodyParser = require("body-parser");
+const express = require("express");
+const app = express();
+const server = require("http")
   .createServer(app);
-var io = require("socket.io")(server);
+  const io = require("socket.io")(server);
 
 
-var database = require("./utils/Database.js");
-var Pool = require("./utils/pool.js");
-var poolInstance = new Pool(io, LOG_FOLDER);
+const database = require("./utils/Database.js");
+const Pool = require("./utils/pool.js");
+const poolInstance = new Pool(io, LOG_FOLDER);
 
-var taskHome = require("./task/TaskHome.js");
-var library = require("./utils/Library.js");
-var logger = require("./Logger.js");
+const taskHome = require("./task/TaskHome.js");
+const library = require("./utils/Library.js");
+const logger = require("./Logger.js");
 
 server.listen(SERVER_PORT);
 

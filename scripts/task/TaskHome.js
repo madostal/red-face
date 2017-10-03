@@ -1,5 +1,5 @@
 
-var TaskState = Object.freeze({
+const TaskState = Object.freeze({
     "created": 0,
     "running": 1,
     "done": 2,
@@ -7,7 +7,7 @@ var TaskState = Object.freeze({
     "killed": 4
 });
 
-var TaskType = Object.freeze({
+const TaskType = Object.freeze({
     "bruteForce": 0,
     "other": 1
 });

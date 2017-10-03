@@ -1,5 +1,5 @@
-var request = require('request');
-var moment = require("moment");
+const request = require('request');
+const moment = require("moment");
 
 /**
  * Return actual mysql TIMESTAMP

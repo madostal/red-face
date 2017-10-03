@@ -1,10 +1,10 @@
 const jetpack = require("fs-jetpack");
-var stringSimilarity = require("string-similarity");
+const stringSimilarity = require("string-similarity");
 
-var database = require("../utils/Database.js");
-var taskParent = require("./TaskParent.js");
-var WebDriver = require("../utils/WebDriver");
-var library = require("../utils/Library");
+const database = require("../utils/Database.js");
+const taskParent = require("./TaskParent.js");
+const WebDriver = require("../utils/WebDriver");
+const library = require("../utils/Library");
 
 module.exports = class BruteForceTask extends taskParent {
 
@@ -25,7 +25,7 @@ module.exports = class BruteForceTask extends taskParent {
 
 			self.serverHome = self._createUri(self.serverHome, field.urlLocation);
 
-			webDriver = new WebDriver();
+			let webDriver = new WebDriver();
 
 			console.log("Starting BruteForceTask");
 			console.log(["Location of login form is: ", field.loginFormXPathExpr].join(""));

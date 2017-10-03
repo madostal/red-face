@@ -1,10 +1,10 @@
-var async = require("async");
-var taskHome = require("./TaskHome");
-var database = require("../utils/Database");
-var library = require("../utils/Library");
-var BruteForceTask = require("./BruteForceTask");
-var OtherTask = require("./OtherTask");
-var logger = require("../Logger");
+const async = require("async");
+const taskHome = require("./TaskHome");
+const database = require("../utils/Database");
+const library = require("../utils/Library");
+const BruteForceTask = require("./BruteForceTask");
+const OtherTask = require("./OtherTask");
+const logger = require("../Logger");
 
 class Core {
 

@@ -11,7 +11,7 @@ import {
 } from "semantic-ui-react";
 
 import Api from "utils/Api";
-import Library from "utils/Library";;
+import Library from "utils/Library";
 
 export default class OverviewTable extends Component {
 
