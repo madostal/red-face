@@ -7,7 +7,7 @@ var logger = require("../Logger.js");
 const jetpack = require("fs-jetpack");
 var database = require("./Database.js");
 
-const BRUTE_FORCE_TMP_PATH = "data/bruteforce/";
+const TMP_FOLDER_PATH = "./tmp_folder";
 const DEFAULT_BRUTE_FORCE_PATH = "task_settings/defaulbruteforce.txt";
 
 module.exports = class Pool {
@@ -99,15 +99,14 @@ module.exports = class Pool {
                                 }
                             });
 
-                            var fileName = (data.data.taskdata.bruteforcetab.data.idLoginNamesDefault) ? DEFAULT_BRUTE_FORCE_PATH : self._createBruteForcePswFile();
+                            var fileName = (!data.data.taskdata.bruteforcetab.data.idLoginNamesDefault) ? DEFAULT_BRUTE_FORCE_PATH : self._createBruteForcePswFile();
 
-                            if (!(data.data.taskdata.bruteforcetab.data.idLoginNamesDefault)) {
+                            if ((data.data.taskdata.bruteforcetab.data.idLoginNamesDefault)) {
                                 jetpack.write(fileName, [data.data.taskdata.bruteforcetab.data.idLoginNames.join("\r\n"), data.data.taskdata.bruteforcetab.data.idLoginPsw.join("\r\n")].join("\r\n\r\n"));
                             }
 
                             params = { subTask_id: idSubTask, loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginFormXPathExpr, loginNameXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginNameXPathExpr, loginpswXPathExpr: data.data.taskdata.bruteforcetab.data.idLoginpswXPathExpr, testFilePath: fileName, urlLocation: data.data.taskdata.bruteforcetab.data.idUrlLocation };
 
-                            console.log(params);
                             database.connection.query("INSERT INTO bruteforceTask SET ?", params, function (err, result) {
                                 if (err) {
                                     console.error(err);
@@ -203,7 +202,7 @@ module.exports = class Pool {
     }
 
     _createBruteForcePswFile() {
-        var file = [this.logFolderPath, "/", "red_face_taks_psw", , "_", Date.now(), "_", library.getRandomTextInRange(), ".txt"].join("");
+        var file = [TMP_FOLDER_PATH, "/", "red_face_taks_psw", "_", Date.now(), "_", library.getRandomTextInRange(), ".txt"].join("");
         return file;
     }
 

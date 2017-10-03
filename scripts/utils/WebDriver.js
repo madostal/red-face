@@ -118,7 +118,6 @@ module.exports = class WebDriver {
 	}
 
 	_simplePromiseGuard(fn, sleepTime = GUARD_LOCK_TIME_MS) {
-		console.log(sleepTime);
 		var returnData;
 		var state = false;
 		fn()

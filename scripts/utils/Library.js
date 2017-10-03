@@ -1,4 +1,5 @@
 var request = require('request');
+var moment = require("moment");
 
 /**
  * Return actual mysql TIMESTAMP
@@ -37,3 +38,7 @@ exports.urlExists = function (url, cb) {
         cb(null, /4\d\d/.test(res.statusCode) === false);
     });
 };
+
+exports.timeDiffNow = function (timeToDiff) {
+    return moment.utc(moment(new Date()).diff(moment(timeToDiff))).format("HH:mm:ss");
+}

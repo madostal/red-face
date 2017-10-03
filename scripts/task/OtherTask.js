@@ -28,8 +28,6 @@ module.exports = class OtherTask extends taskParent {
             }
 
             field = field[0];
-            console.log("------------------------------");
-            console.log(field);
             async.waterfall([
                 function (callback) {
                     if (field.testHttpHttps === 1) {

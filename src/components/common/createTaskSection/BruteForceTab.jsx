@@ -109,8 +109,6 @@ class Body extends Component {
             xpathFormVisible: true,
             pswFormVisible: true
         }
-
-
     }
 
     componentWillMount() {
@@ -128,18 +126,19 @@ class Body extends Component {
 
     componentDidMount() {
         var json = readStorage();
-        this.state = ({ xpathFormVisible: json.data.idXpathFormDefault });
+
         document.getElementById(this.idLoginFormCheckbox).firstChild.checked = json.data.idXpathFormDefault;
         document.getElementById(this.idLoginFormXPathExpr).value = json.data.idLoginFormXPathExpr;
         document.getElementById(this.idLoginNameXPathExpr).value = json.data.idLoginNameXPathExpr;
         document.getElementById(this.idLoginpswXPathExpr).value = json.data.idLoginpswXPathExpr;
 
-        this.state = ({ pswFormVisible: json.data.idLoginNamesDefault });
-        document.getElementById(this.idLoginNamesCheckbox).firstChild.checked = json.data.idLoginNamesDefault;
+        document.getElementById(this.idLoginNamesCheckbox).firstChild.checked = !json.data.idLoginNamesDefault;
         document.getElementById(this.idLoginNames).value = Array.isArray(json.data.idLoginNames) ? json.data.idLoginNames.join("\r\n") : "";
         document.getElementById(this.idLoginPsw).value = Array.isArray(json.data.idLoginPsw) ? json.data.idLoginPsw.join("\r\n") : "";
 
         document.getElementById(this.idUrlLocation).value = json.data.idUrlLocation;
+        this.state = ({ pswFormVisible: !json.data.idLoginNamesDefault, xpathFormVisible: json.data.idXpathFormDefault });
+        this.forceUpdate();
     }
 
     componentWillUnmount() {
@@ -156,6 +155,8 @@ class Body extends Component {
             json.data.idLoginPsw = document.getElementById(this.idLoginPsw).value.split(/\s/);
         } else {
             json.data.idLoginNamesDefault = false;
+            json.data.idLoginNames = "";
+            json.data.idLoginPsw = "";
         }
         json.data.idUrlLocation = document.getElementById(this.idUrlLocation).value;
         localStorage.setItem("BruteForceTab", JSON.stringify(json));

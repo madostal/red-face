@@ -1,6 +1,6 @@
 var async = require("async");
 var taskHome = require("./TaskHome");
-var database = require("../utils/Database.js");
+var database = require("../utils/Database");
 var library = require("../utils/Library");
 var BruteForceTask = require("./BruteForceTask");
 var OtherTask = require("./OtherTask");
@@ -80,7 +80,7 @@ class Core {
 
 				switch (tasktodo.type) {
 					case taskHome.TaskType.bruteForce:
-						lastTask = new BruteForceTask(tasktodo.id);
+						lastTask = new BruteForceTask(tasktodo.id, self.taskData.serverHome);
 						break;
 					case taskHome.TaskType.other:
 						lastTask = new OtherTask(tasktodo.id, self.taskData.serverHome);

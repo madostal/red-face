@@ -39,6 +39,7 @@
     "semantic-ui-css": "^2.2.10",
     "semantic-ui-react": "^0.71.2",
     "socket.io": "^2.0.3",
+    "string-similarity": "^1.2.0",
     "style-loader": "^0.18.2",
     "superagent": "^3.5.2",
     "sync-request": "^4.1.0",
