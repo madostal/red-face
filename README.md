@@ -20,7 +20,7 @@
 * [ES6](https://babeljs.io/docs/learn-es2015/)
 * [React](https://facebook.github.io/react/)
 * [React Router](https://github.com/reactjs/react-router)
-* [StandardJS](http://standardjs.com/)
+* [ESLint](https://eslint.org/)
 
 ## Other Features
 
@@ -68,7 +68,7 @@ node script/api.js
 * `src/components/common` - Common components that are shared throughout the app
 * `src/components/pages` - Main domain/app folder. Contains an `App.jsx` and `Router.jsx`.
 * `src/main.jsx` - Main entrypoint into application.
-* `scripts/api.js` - REST JSON server
+* `scripts/api.js` - Server
 
 ## Note
 
