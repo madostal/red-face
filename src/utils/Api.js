@@ -1,18 +1,18 @@
-const socket = require("socket.io-client")("http://localhost:4200");
+const socket = require('socket.io-client')('http://localhost:4200')
 
 class Api {
 
-  getSocket() {
-    return socket;
-  }
+	getSocket() {
+		return socket
+	}
 
-  constructor(options) {
-    //
-  }
+	constructor() {
+		//
+	}
 
-  socketRequest(method, params) {
-    socket.emit(method, params);
-  }
+	socketRequest(method, params) {
+		socket.emit(method, params)
+	}
 }
 
-export default new Api();
+export default new Api()

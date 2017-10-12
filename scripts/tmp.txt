@@ -1,0 +1,25 @@
+STD ERRORdebug: Starting task id: 56
+Connection to database was successful
+STD ERRORdebug: Task id: 56, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 57
+Connection to database was successful
+STD ERRORdebug: Task id: 57, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 58
+Connection to database was successful
+STD ERRORdebug: Task id: 58, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 59
+Connection to database was successful
+STD ERRORdebug: Task id: 59, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 60
+Connection to database was successful
+STD ERRORdebug: Task id: 60, subtask count: 2
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...

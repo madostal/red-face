@@ -1,14 +1,12 @@
-import React, { Component } from "react";
-
+import React from 'react'
 import {
 	Button,
 	Message,
-	Icon
-} from "semantic-ui-react";
+	Icon,
+} from 'semantic-ui-react'
+import Link from 'react-router'
 
-import { Link } from "react-router";
-
-export default class TaskSummarySection extends Component {
+export default class TaskSummarySection extends React.Component {
 
 	render() {
 		return (

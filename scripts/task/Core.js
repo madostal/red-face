@@ -1,61 +1,62 @@
-const async = require("async");
-const taskHome = require("./TaskHome");
-const database = require("../utils/Database");
-const library = require("../utils/Library");
-const BruteForceTask = require("./BruteForceTask");
-const OtherTask = require("./OtherTask");
-const logger = require("../Logger");
+const async = require('async')
+const taskHome = require('./TaskHome')
+const database = require('../utils/Database')
+const library = require('../utils/Library')
+const BruteForceTask = require('./BruteForceTask')
+const OtherTask = require('./OtherTask')
+const logger = require('../Logger')
 
 class Core {
 
 	constructor(taskId) {
-		logger.log("debug", ["Starting task id: ", taskId].join(""));
+		logger.log('debug', ['Starting task id: ', taskId].join(''))
 		//actual task id
-		this.taskId = taskId;
+		this.taskId = taskId
 		//list of subtask todo
-		this.subTasks = [];
+		this.subTasks = []
 		//task data
-		this.taskData = null;
+		this.taskData = null
 	}
 
 	start() {
-		var self = this;
-		database.connection.query("SELECT * FROM task WHERE id = ?", [this.taskId], function (err, fields) {
+		let self = this
+		database.connection.query('SELECT * FROM task WHERE id = ?', [this.taskId], function (err, fields) {
 			if (err) {
-				throw err;
+				throw err
 			}
-			self.taskData = fields[0];
-			self._loadInfo();
-		});
+			self.taskData = fields[0]
+			self._loadInfo()
+		})
 	}
 
 	/**
 	 * Load info from database and create subtasks for job
 	 */
 	_loadInfo() {
-		var self = this;
-		database.connection.query("SELECT * FROM subtask WHERE task_id = ?", [this.taskId], function (err, fields) {
+		let self = this
+		database.connection.query('SELECT * FROM subtask WHERE task_id = ?', [this.taskId], function (err, fields) {
 			if (err) {
-				throw err;
+				throw err
 			}
 
 			fields.forEach(function (loop) {
-				self.subTasks.push(loop);
-			});
+				self.subTasks.push(loop)
+			})
 
-			logger.log("debug", ["Task id: ", self.taskId, ", subtask count: ", self.subTasks.length].join(""));
+			logger.log('debug', ['Task id: ', self.taskId, ', subtask count: ', self.subTasks.length].join(''))
 
-			console.log(self.taskData.serverHome);
+			console.log(self.taskData.serverHome)
 			library.urlExists(self.taskData.serverHome, function (err, exists) {
 				if (exists) {
-					console.log(["'", self.taskData.serverHome, "' exist, starting testing..."].join(""));
-					self._startJob();
-				} else {
-					console.log(["'", self.taskData.serverHome, "' doesn't exist, ending testing..."].join(""));
+					console.log(['\'', self.taskData.serverHome, '\' exist, starting testing...'].join(''))
+					self._startJob()
+				}
+				else {
+					console.log(['\'', self.taskData.serverHome, '\' doesn\'t exist, ending testing...'].join(''))
 					//todo all task set to closed
 				}
-			});
-		});
+			})
+		})
 	}
 
 	/**
@@ -64,45 +65,46 @@ class Core {
 	_startJob() {
 		if (this.subTasks.length !== 0) {
 
-			var tasktodo = this.subTasks.pop();
+			let tasktodo = this.subTasks.pop()
 
-			var self = this;
-			database.connection.query("SELECT * FROM log WHERE subTask_id = ? LIMIT 1", [tasktodo.id], function (err, field) {
+			var self = this
+			database.connection.query('SELECT * FROM log WHERE subTask_id = ? LIMIT 1', [tasktodo.id], function (err, field) {
 				if (err) {
-					console.error(err);
-					throw err;
+					console.error(err)
+					throw err
 				}
 
 				//send message to parent process and inform him about switched file for log
-				self._setStream(field[0].path);
+				self._setStream(field[0].path)
 
-				var lastTask;
+				var lastTask
 
 				switch (tasktodo.type) {
 					case taskHome.TaskType.bruteForce:
-						lastTask = new BruteForceTask(tasktodo.id, self.taskData.serverHome);
+						lastTask = new BruteForceTask(tasktodo.id, self.taskData.serverHome)
 						break;
 					case taskHome.TaskType.other:
-						lastTask = new OtherTask(tasktodo.id, self.taskData.serverHome);
+						lastTask = new OtherTask(tasktodo.id, self.taskData.serverHome)
 						break;
 					default:
-						console.log("UNKNOWN TASK TYPE: " + tasktodo.type);
+						console.log('UNKNOWN TASK TYPE: ' + tasktodo.type)
 						break;
 				}
 
 				async.waterfall([
 					function (callback) {
-						lastTask.start(callback);
+						lastTask.start(callback)
 					}, function (callback) {
-						self._markSubTaskDone(tasktodo.id, callback);
-					}
+						self._markSubTaskDone(tasktodo.id, callback)
+					},
 				], function (err) {
-					self._startJob();
-				});
-			});
-		} else {
+					self._startJob()
+				})
+			})
+		}
+		else {
 			//task array is empty, ve are done
-			this._shutDown();
+			this._shutDown()
 		}
 	}
 
@@ -110,8 +112,8 @@ class Core {
 	 * Shut downl taks process with successfully exit code
 	 */
 	_shutDown() {
-		logger.log("debug", ["Shut down task id: ", this.taskId].join(""));
-		process.exit(0);
+		logger.log('debug', ['Shut down task id: ', this.taskId].join(''))
+		process.exit(0)
 	}
 
 	/**
@@ -120,7 +122,7 @@ class Core {
 	 * @param {string} log file
 	 */
 	_setStream(stream) {
-		process.send({ file: stream });
+		process.send({ file: stream })
 	}
 
 	/**
@@ -128,16 +130,16 @@ class Core {
 	 *
 	 */
 	_markSubTaskDone(tasktodo, wfCallback) {
-		var params = [taskHome.TaskState.done, library.getMySQLTime(), this.taskId];
-		database.connection.query("UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ", params, function (err) {
+		let params = [taskHome.TaskState.done, library.getMySQLTime(), this.taskId]
+		database.connection.query('UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ', params, function (err) {
 			if (err) {
-				console.error(err);
-				throw err;
+				console.error(err)
+				throw err
 			}
-			wfCallback(null);
-		});
+			wfCallback(null)
+		})
 	}
 }
 
 new Core(process.argv.slice(2)[0])
-	.start();
+	.start()

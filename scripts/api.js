@@ -7,7 +7,7 @@ const express = require("express");
 const app = express();
 const server = require("http")
   .createServer(app);
-  const io = require("socket.io")(server);
+const io = require("socket.io")(server);
 
 
 const database = require("./utils/Database.js");
@@ -88,7 +88,7 @@ io.on("connection", function (socket) {
           throw err;
         }
         fields = fields[0];
-        
+
         io.emit("there-is-task-detail", fields);
       });
     }
