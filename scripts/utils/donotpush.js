@@ -1,47 +1,47 @@
-const stringSimilarity = require('string-similarity');
-const Crawler = require('./Crawler');
-const webDriver = require('../utils/WebDriver');
+const stringSimilarity = require('string-similarity')
+const Crawler = require('./Crawler')
+const webDriver = require('../utils/WebDriver')
 // var home = 'http://oks.kiv.zcu.cz';
 // var home = 'http://localhost';
 // home = 'http://localhost:3000';
 
-const webDriver = new webDriver();
+const webDriver = new webDriver()
 
-const startTime = new Date();
+const startTime = new Date()
 function myCosine(t1, t2) {
-    var s = stringSimilarity.compareTwoStrings(t1, t2);
+	let s = stringSimilarity.compareTwoStrings(t1, t2)
 
-    console.log(s);
+	console.log(s)
 }
-webDriver.goTo("https://badoo.com/signin/?f=top", 0);
-webDriver.doLogin("q", "q", "//form//input[@type='text' or @type='email']//ancestor::form//input[@type='password']//ancestor::form");
-var failText = webDriver.getDocumentText();
-for (var i = 0; i < 100; i++) {
+webDriver.goTo('https://badoo.com/signin/?f=top', 0)
+webDriver.doLogin('q', 'q', '//form//input[@type=\'text\' or @type=\'email\']//ancestor::form//input[@type=\'password\']//ancestor::form')
+let failText = webDriver.getDocumentText()
+for (let i = 0; i < 100; i++) {
 
-    webDriver.goBack(0);
+	webDriver.goBack(0)
 
-    webDriver.doLogin("a", "b", "//form//input[@type='text' or @type='email']//ancestor::form//input[@type='password']//ancestor::form", 0);
+	webDriver.doLogin('a', 'b', '//form//input[@type=\'text\' or @type=\'email\']//ancestor::form//input[@type=\'password\']//ancestor::form', 0)
 
-    var newText = webDriver.getDocumentText(0);
-   
-    myCosine(failText, newText);
+	let newText = webDriver.getDocumentText(0)
+
+	myCosine(failText, newText)
 
 
 }
- 
+
 
 // later record end time
-var endTime = new Date();
+let endTime = new Date()
 
 // time difference in ms
-var timeDiff = endTime - startTime;
+let timeDiff = endTime - startTime
 
 // strip the ms
-timeDiff /= 1000;
+timeDiff /= 1000
 
 // get seconds (Original had 'round' which incorrectly counts 0:28, 0:29, 1:30 ... 1:59, 1:0)
-var seconds = Math.round(timeDiff % 60);
-console.log(seconds + "s");
+let seconds = Math.round(timeDiff % 60)
+console.log(seconds + 's')
 
 // instance.crawle();
 
@@ -50,11 +50,10 @@ console.log(seconds + "s");
 // var home = 'http://oks.kiv.zcu.cz';
 
 
-
 // function
 
-// // instance.goTo(home); 
-// stack.push([false, home]);  
+// // instance.goTo(home);
+// stack.push([false, home]);
 // var url = getUnvisited();
 // while (url !== null) {
 
@@ -62,9 +61,9 @@ console.log(seconds + "s");
 //     instance.goTo(url[1]);
 //     var lastLinkst = instance.extractAllLinks();
 
-//     lastLinkst.forEach(function (value) {    
-//         if (!this._contains(value) && (value.startsWith(home) && value !== url)) {            
-//                 stack.push([false, value]);           
+//     lastLinkst.forEach(function (value) {
+//         if (!this._contains(value) && (value.startsWith(home) && value !== url)) {
+//                 stack.push([false, value]);
 //         }
 //     });
 

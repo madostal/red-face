@@ -1,14 +1,14 @@
-const LOG_FILE_NAME = "red-face";
+const LOG_FILE_NAME = 'red-face'
 
-var winston = require("winston");
+let winston = require('winston')
 
-var logger = new (winston.Logger)({
+let logger = new (winston.Logger)({
 	transports: [
 		new (winston.transports.Console)(),
-		new (winston.transports.File)({ filename: [LOG_FILE_NAME, ".log"].join("") })
-	]
-});
+		new (winston.transports.File)({ filename: [LOG_FILE_NAME, '.log'].join('') }),
+	],
+})
 
-logger.setLevels({ debug: 0, info: 1, silly: 2, warn: 3, error: 4, });
+logger.setLevels({ debug: 0, info: 1, silly: 2, warn: 3, error: 4 })
 
-module.exports = logger;
+module.exports = logger

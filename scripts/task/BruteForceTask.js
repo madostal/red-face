@@ -1,6 +1,5 @@
 const jetpack = require('fs-jetpack')
 const stringSimilarity = require('string-similarity')
-
 const database = require('../utils/Database.js')
 const taskParent = require('./TaskParent.js')
 const WebDriver = require('../utils/WebDriver')
@@ -16,7 +15,7 @@ module.exports = class BruteForceTask extends taskParent {
 	start(coreCallback) {
 		let self = this
 		console.log(this.taskId)
-		database.connection.query('SELECT * FROM bruteforceTask WHERE subTask_id = ? LIMIT 1', [this.taskId], function (err, field) {
+		database.connection.query('SELECT * FROM bruteforceTask WHERE subTask_id = ? LIMIT 1', [this.taskId], (err, field) => {
 			if (err) {
 				console.error(err)
 				throw err
@@ -34,28 +33,30 @@ module.exports = class BruteForceTask extends taskParent {
 
 			webDriver.goTo(self.serverHome, 0)
 			webDriver.doLogin('red-face', '-1', field.loginFormXPathExpr, field.loginNameXPathExpr, field.loginpswXPathExpr, 0)
-			var errorPage = webDriver.getDocumentText(0)
+			let errorPage = webDriver.getDocumentText(0)
 
-			var data = self._parseInputData(jetpack.read(field.testFilePath))
-			data = self._createCombos(data[0], data[1])
+			console.log("READING FIE:" +field.testFilePath)
+			let data = self._parseInputData(jetpack.read(field.testFilePath))
+			console.log(data)
+			data = self._createCombos(data[0][0].split(/\r?\n/), data[1][0].split(/\r?\n/))
 			console.log(['There are ', data.length, ' combination for test'].join(''))
 
-			var startTime = new Date()
-			var count = 0
+			let startTime = new Date()
+			let count = 0
 			for (let i = 0; i < data.length; i++) {
 				count++
-				console.log(['Testing', data[i][0], data[i][1]].join(' '))
+				console.log(['---------------------Testing', data[i][0], data[i][1]].join(' '))
 
 				webDriver.goTo(self.serverHome, 0)
 				webDriver.doLogin(data[i][0], data[i][1], field.loginFormXPathExpr, field.loginNameXPathExpr, field.loginpswXPathExpr, 0)
 
-				var tmp = webDriver.getDocumentText(0)
-				var similarity = stringSimilarity.compareTwoStrings(errorPage, tmp)
+				let tmp = webDriver.getDocumentText(0)
+				let similarity = stringSimilarity.compareTwoStrings(errorPage, tmp)
 
 				if ((similarity * 100) < 1) {
 					console.log('Probably found credentials')
 					console.log([data[i][0], data[i][1]].join(' '))
-					break;
+					break
 				}
 			}
 
@@ -73,22 +74,23 @@ module.exports = class BruteForceTask extends taskParent {
 	 *
 	 * @param {String} uri
 	 */
-	_createUri(serverHome, uri) {
-		if (serverHome.endsWith('/') && uri.startsWith('/')) {
-			return [serverHome, uri.substr(1)].join('')
+	_createUri(serverHomeInput, uri) {
+		console.log(serverHomeInput + " VS " + uri)
+		if (serverHomeInput.endsWith('/') && uri.startsWith('/')) {
+			return [serverHomeInput, uri.substr(1)].join('')
 		}
 
-		if (!serverHome.endsWith('/') && !uri.startsWith('/')) {
-			return [serverHome, '/', uri].join('')
+		if (!serverHomeInput.endsWith('/') && !uri.startsWith('/')) {
+			return [serverHomeInput, '/', uri].join('')
 		}
 
-		return [serverHome, uri].join('')
+		return [serverHomeInput, uri].join('')
 	}
 
 	/**
 	 * Parse input text loaded from file to array of [login, psw]
-	 * 
-	 * @param {String[String[]]} data 
+	 *
+	 * @param {String[String[]]} data
 	 */
 	_parseInputData(data) {
 		let arr1 = []; let arr2 = []; let tmp = arr1
@@ -96,7 +98,7 @@ module.exports = class BruteForceTask extends taskParent {
 		for (let loop of data.split('\r\n')) {
 			if (loop.length === 0) {
 				tmp = arr2
-				continue;
+				continue
 			}
 			tmp.push(loop)
 		}
@@ -106,9 +108,9 @@ module.exports = class BruteForceTask extends taskParent {
 
 	/**
 	 * Create all combinations of two arrays
-	 * 
-	 * @param {String[]} array1 
-	 * @param {String[]} array2 
+	 *
+	 * @param {String[]} array1
+	 * @param {String[]} array2
 	 */
 	_createCombos(array1, array2) {
 		let combos = []

@@ -11,57 +11,50 @@ import {
 import { browserHistory } from 'react-router'
 import BruteForceTab from 'common/createTaskSection/BruteForceTab'
 import OtherTab from 'common/createTaskSection/OtherTab'
-import newId from '../../utils/Newid'
 import Api from 'utils/Api'
 
-function readStorage() {
-	return JSON.parse(localStorage.getItem('MainTab'))
-}
-
-function createStorageIfNotExist() {
+const createStorageIfNotExist = () => {
 	let json = JSON.stringify({
-		'idTaskName': '',
-		'idServerHome': '',
+		'taskName': '',
+		'serverHome': '',
 	})
 	localStorage.setItem('MainTab', json)
 	return json
+}
+
+const readStorage = () => {
+	return JSON.parse(localStorage.getItem('MainTab'))
 }
 
 export default class CreateTaskSection extends React.Component {
 
 	constructor(props) {
 		super(props)
+
+		let json = null
 		if (localStorage.getItem('MainTab') === null) {
-			createStorageIfNotExist()
+			json = createStorageIfNotExist()
 		}
-
-		this._createTask = this._createTask.bind(this)
-		this._removeAllTasks = this._removeAllTasks.bind(this)
+		else {
+			json = readStorage()
+		}
+		this.state = {
+			taskName: json.taskName,
+			serverHome: json.serverHome,
+		}
 	}
 
-	componentWillMount() {
-		this.idTaskName = newId()
-		this.idServerHome = newId()
-	}
-
-	componentDidMount() {
-		let json = readStorage()
-		document.getElementById(this.idTaskName).value = json.idTaskName
-		document.getElementById(this.idServerHome).value = json.idServerHome
-	}
-
-	componentWillUnmount() {
+	componentWillUnmount = () => {
 		this._saveData()
 	}
 
-	_saveData() {
-		let json = readStorage()
-		json.idTaskName = document.getElementById(this.idTaskName).value
-		json.idServerHome = document.getElementById(this.idServerHome).value
-		localStorage.setItem('MainTab', JSON.stringify(json))
+	_componentOnChangeText = (d, e) => {
+		this.setState({
+			[e.id]: e.value,
+		})
 	}
 
-	_createTask() {
+	_createTask = () => {
 		this._saveData()
 		browserHistory.push('/task-summary')
 		let bruteForceTab = JSON.parse(localStorage.getItem('BruteForceTab'))
@@ -76,8 +69,8 @@ export default class CreateTaskSection extends React.Component {
 
 		let json = JSON.stringify({
 			data: {
-				'taskname': document.getElementById(this.idTaskName).value,
-				'serverhome': document.getElementById(this.idServerHome).value,
+				'taskName': this.state.taskName,
+				'serverHome': this.state.serverHome,
 				'taskdata': {
 					'bruteforcetab': bruteForceTab,
 					'othertab': otherTab,
@@ -85,15 +78,20 @@ export default class CreateTaskSection extends React.Component {
 			},
 		})
 		Api.socketRequest('taskcreate', json)
-
 	}
 
-	_removeAllTasks() {
+	_saveData = () => {
+		let json = readStorage()
+		json = this.state
+		localStorage.setItem('MainTab', JSON.stringify(json))
+	}
+
+	_removeAllTasks = () => {
 		localStorage.clear()
 		window.location.reload()
 	}
 
-	render() {
+	render = () => {
 
 		const panes = [
 			{ menuItem: 'Brute force', render: () => <Tab.Pane><BruteForceTab /></Tab.Pane> },
@@ -117,22 +115,22 @@ export default class CreateTaskSection extends React.Component {
 					<Grid>
 						<Grid.Row columns={2} textAlign="right">
 							<Grid.Column>
-								<Input id={this.idServerHome} placeholder="Server home" />
+								<Input id={'serverHome'} onChange={(d, e) => this._componentOnChangeText(d, e)} value={this.state.serverHome} placeholder="Server home" />
 							</Grid.Column>
 							<Grid.Column>
 							</Grid.Column>
 						</Grid.Row>
 						<Grid.Row columns={2} textAlign="right">
 							<Grid.Column>
-								<Input id={this.idTaskName} placeholder="Task name" />
+								<Input id={'taskName'} onChange={(d, e) => this._componentOnChangeText(d, e)} value={this.state.taskName} placeholder="Task name" />
 							</Grid.Column>
 							<Grid.Column>
-								<Button onClick={this._createTask} color="green">Start task</Button>
+								<Button onClick={() => this._createTask()} color="green">Start task</Button>
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>
 					<Divider inverted />
-					<Button onClick={this._removeAllTasks} inverted color="red" size="tiny">Remove</Button>
+					<Button onClick={() => this._removeAllTasks()} inverted color="red" size="tiny">Remove</Button>
 				</Segment>
 			</div >
 		)

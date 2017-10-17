@@ -9,32 +9,33 @@ import {
 	Message,
 	Input,
 } from 'semantic-ui-react'
-import newId from '../../../utils/Newid'
+
 import { TASK_DISABLE_WARNING_MESSAGE, TASK_DISABLE_WARNING_MESSAGE_HEADER } from '../../../language/Variables'
 
 const defaultXPathForm = '//form//input[@type=\'text\' or @type=\'email\']//ancestor::form//input[@type=\'password\']//ancestor::form'
 const defaultXPathFormInput = ['(', [defaultXPathForm, '//input'].join(''), ')[1]'].join('')
 const defaultXPathFormPsw = ['(', [defaultXPathForm, '//input'].join(''), ')[2]'].join('')
 
-function createStorageIfNotExist() {
+const createStorageIfNotExist = () => {
 	let json = JSON.stringify({
 		'enable': false,
 		data: {
-			'idXpathFormDefault': true,
-			'idLoginFormXPathExpr': defaultXPathForm,
-			'idLoginNameXPathExpr': defaultXPathFormInput,
-			'idLoginpswXPathExpr': defaultXPathFormPsw,
-			'idLoginNamesDefault': true,
-			'idLoginNames': '',
-			'idLoginPsw': '',
-			'idUrlLocation': '',
+			'useDefaulXPath': true,
+			'loginFormXPathExpr': defaultXPathForm,
+			'loginNameXPathExpr': defaultXPathFormInput,
+			'loginPswXPathExpr': defaultXPathFormPsw,
+			'useLoginNamesDefault': true,
+			'loginNames': '',
+			'loginPsws': '',
+			'location': '',
 		},
 	})
+	console.log("SAVING NVOY")
 	localStorage.setItem('BruteForceTab', json)
 	return json
 }
 
-function readStorage() {
+const readStorage = () => {
 	return JSON.parse(localStorage.getItem('BruteForceTab'))
 }
 
@@ -42,7 +43,8 @@ export default class BruteForceTab extends React.Component {
 
 	constructor(props) {
 		super(props)
-		let storage
+
+		let storage = null
 		if (localStorage.getItem('BruteForceTab') === null) {
 			storage = createStorageIfNotExist()
 		}
@@ -58,29 +60,33 @@ export default class BruteForceTab extends React.Component {
 		}
 	}
 
-	_checkBoxAction(e, d) {
+	_checkBoxAction = (e, d) => {
 		let json = readStorage()
 
 		json.enable = !d.checked
 		if (d.checked) {
-			this.setState({ error: TASK_DISABLE_WARNING_MESSAGE })
-			this.setState({ setUpVisible: false })
+			this.setState({
+				error: TASK_DISABLE_WARNING_MESSAGE,
+				setUpVisible: false,
+			})
 		}
 		else {
-			this.setState({ error: undefined })
-			this.setState({ setUpVisible: true })
+			this.setState({
+				error: undefined,
+				setUpVisible: true,
+			})
 		}
 		localStorage.setItem('BruteForceTab', JSON.stringify(json))
 	}
 
-	render() {
+	render = () => {
 		return (
 			<div>
 				<Header as="h3">Brute Force</Header>
 				<Grid >
 					<Grid.Row textAlign="right">
 						<Grid.Column>
-							<Checkbox id="A" checked={this.state.setUpVisible} label="Enable" toggle onClick={(e, d) => this._checkBoxAction(e, d)} />
+							<Checkbox checked={this.state.setUpVisible} label="Enable" toggle onClick={(e, d) => this._checkBoxAction(e, d)} />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
@@ -104,105 +110,84 @@ class Body extends React.Component {
 
 	constructor(props) {
 		super(props)
-
+		let json = readStorage()
 		this.state = {
-			xpathFormVisible: true,
-			pswFormVisible: true,
+			useDefaulXPath: json.data.useDefaulXPath,
+			loginFormXPathExpr: json.data.loginFormXPathExpr,
+			loginNameXPathExpr: json.data.loginNameXPathExpr,
+			loginPswXPathExpr: json.data.loginPswXPathExpr,
+			useLoginNamesDefault: json.data.useLoginNamesDefault,
+			loginNames: !json.data.useLoginNamesDefault ? (Array.isArray(json.data.loginNames) ? json.data.loginNames.join('\r\n') : json.data.loginNames) : '',
+			loginPsws: !json.data.useLoginNamesDefault ? (Array.isArray(json.data.loginPsws) ? json.data.loginPsws.join('\r\n') : json.data.loginPsws) : '',
+			location: json.data.location,
 		}
 	}
 
-	componentWillMount() {
-		this.idLoginFormXPathExpr = newId()
-		this.idLoginNameXPathExpr = newId()
-		this.idLoginpswXPathExpr = newId()
-		this.idLoginFormCheckbox = newId()
-
-		this.idLoginNames = newId()
-		this.idLoginPsw = newId()
-		this.idLoginNamesCheckbox = newId()
-
-		this.idUrlLocation = newId()
-	}
-
-	componentDidMount() {
+	componentWillUnmount = () => {
 		let json = readStorage()
-
-		document.getElementById(this.idLoginFormCheckbox).firstChild.checked = json.data.idXpathFormDefault
-		document.getElementById(this.idLoginFormXPathExpr).value = json.data.idLoginFormXPathExpr
-		document.getElementById(this.idLoginNameXPathExpr).value = json.data.idLoginNameXPathExpr
-		document.getElementById(this.idLoginpswXPathExpr).value = json.data.idLoginpswXPathExpr
-
-		document.getElementById(this.idLoginNamesCheckbox).firstChild.checked = !json.data.idLoginNamesDefault
-		document.getElementById(this.idLoginNames).value = Array.isArray(json.data.idLoginNames) ? json.data.idLoginNames.join('\r\n') : ''
-		document.getElementById(this.idLoginPsw).value = Array.isArray(json.data.idLoginPsw) ? json.data.idLoginPsw.join('\r\n') : ''
-
-		document.getElementById(this.idUrlLocation).value = json.data.idUrlLocation
-		this.state = ({ pswFormVisible: !json.data.idLoginNamesDefault, xpathFormVisible: json.data.idXpathFormDefault })
-		this.forceUpdate()
-	}
-
-	componentWillUnmount() {
-		let json = readStorage()
-		let tmpLoginFormCheckbox = document.getElementById(this.idLoginFormCheckbox).firstChild.checked
-		json.data.idXpathFormDefault = tmpLoginFormCheckbox
-		json.data.idLoginFormXPathExpr = (tmpLoginFormCheckbox ? defaultXPathForm : document.getElementById(this.idLoginFormXPathExpr).value)
-		json.data.idLoginNameXPathExpr = (tmpLoginFormCheckbox ? defaultXPathFormInput : document.getElementById(this.idLoginNameXPathExpr).value)
-		json.data.idLoginpswXPathExpr = (tmpLoginFormCheckbox ? defaultXPathFormPsw : document.getElementById(this.idLoginpswXPathExpr).value)
-
-		if (!document.getElementById(this.idLoginNamesCheckbox).firstChild.checked) {
-			json.data.idLoginNamesDefault = true
-			json.data.idLoginNames = document.getElementById(this.idLoginNames).value.split(/\s/)
-			json.data.idLoginPsw = document.getElementById(this.idLoginPsw).value.split(/\s/)
+		json = {
+			enable: json.enable,
+			data: this.state,
 		}
-		else {
-			json.data.idLoginNamesDefault = false
-			json.data.idLoginNames = ''
-			json.data.idLoginPsw = ''
-		}
-		json.data.idUrlLocation = document.getElementById(this.idUrlLocation).value
 		localStorage.setItem('BruteForceTab', JSON.stringify(json))
 	}
 
-	_switchAutomaticallyXPath() {
-		this.setState({ xpathFormVisible: !this.state.xpathFormVisible })
-		if (!this.state.xpathFormVisible) {
-			document.getElementById(this.idLoginFormXPathExpr).value = defaultXPathForm
-			document.getElementById(this.idLoginNameXPathExpr).value = defaultXPathFormInput
-			document.getElementById(this.idLoginpswXPathExpr).value = defaultXPathFormPsw
+	_componentOnChangeText = (d, e) => {
+		this.setState({
+			[e.id]: e.value,
+		})
+	}
+
+	_componentOnChangeCheck = (d, e) => {
+		this.setState({
+			[e.id]: e.checked,
+		})
+	}
+
+	_switchAutomaticallyXPath = () => {
+		this.setState({ useDefaulXPath: !this.state.useDefaulXPath })
+		if (!this.state.useDefaulXPath) {
+			this.setState({
+				loginFormXPathExpr: defaultXPathForm,
+				loginNameXPathExpr: defaultXPathFormInput,
+				loginPswXPathExpr: defaultXPathFormPsw,
+			})
 		}
 	}
 
-	_switchAutomaticallyDatabase() {
-		this.setState({ pswFormVisible: !this.state.pswFormVisible })
-		if (!this.state.pswFormVisible) {
-			document.getElementById(this.idLoginNames).value = ''
-			document.getElementById(this.idLoginPsw).value = ''
+	_switchAutomaticallyDatabase = () => {
+		this.setState({ useLoginNamesDefault: !this.state.useLoginNamesDefault })
+		if (!this.state.useLoginNamesDefault) {
+			this.setState({
+				loginNames: '',
+				loginPsws: '',
+			})
 		}
 	}
 
-	render() {
+	render = () => {
 		return (
 			<div>
 				<Form >
 					<Header as="h5">Login form XPath expression</Header>
-					<TextArea id={this.idLoginFormXPathExpr} placeholder="Specify login form XPath expression" disabled={this.state.xpathFormVisible} />
+					<TextArea onChange={(d, e) => this._componentOnChangeText(d, e)} id={'loginFormXPathExpr'} value={this.state.loginFormXPathExpr} placeholder="Specify login form XPath expression" disabled={this.state.useDefaulXPath} />
 				</Form>
 				<Divider hidden />
 				<Form >
 					<Header as="h5">Input name XPath expression</Header>
-					<TextArea id={this.idLoginNameXPathExpr} placeholder="Specify input name XPath expression" disabled={this.state.xpathFormVisible} />
+					<TextArea onChange={(d, e) => this._componentOnChangeText(d, e)} id={'loginNameXPathExpr'} value={this.state.loginNameXPathExpr} placeholder="Specify input name XPath expression" disabled={this.state.useDefaulXPath} />
 				</Form>
 				<Divider hidden />
 				<Form >
 					<Header as="h5">Input password XPath expression</Header>
-					<TextArea id={this.idLoginpswXPathExpr} placeholder="Specify input password XPath expression" disabled={this.state.xpathFormVisible} />
+					<TextArea onChange={(d, e) => this._componentOnChangeText(d, e)} id={'loginPswXPathExpr'} value={this.state.loginPswXPathExpr} placeholder="Specify input password XPath expression" disabled={this.state.useDefaulXPath} />
 				</Form>
 				<Divider hidden />
 
 				<Grid >
 					<Grid.Row textAlign="right">
 						<Grid.Column>
-							<Checkbox id={this.idLoginFormCheckbox} checked={this.state.xpathFormVisible} label={{ children: 'Automatically' }} onClick={() => this._switchAutomaticallyXPath()} />
+							<Checkbox onChange={(d, e) => this._componentOnChangeCheck(d, e)} id={'useDefaulXPath'} checked={this.state.useDefaulXPath} label={{ children: 'Automatically' }} onClick={() => this._switchAutomaticallyXPath()} />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
@@ -211,13 +196,13 @@ class Body extends React.Component {
 						<Grid.Column>
 							<Form >
 								<Header as="h5">Login names</Header>
-								<TextArea id={this.idLoginNames} placeholder="Login names" disabled={this.state.pswFormVisible} />
+								<TextArea onChange={(d, e) => this._componentOnChangeText(d, e)} id={'loginNames'} value={this.state.loginNames} placeholder="Login names" disabled={this.state.useLoginNamesDefault} />
 							</Form>
 						</Grid.Column>
 						<Grid.Column>
 							<Form >
 								<Header as="h5">Passwords</Header>
-								<TextArea id={this.idLoginPsw} placeholder="Passwords" disabled={this.state.pswFormVisible} />
+								<TextArea onChange={(d, e) => this._componentOnChangeText(d, e)} id={'loginPsws'} value={this.state.loginPsws} placeholder="Passwords" disabled={this.state.useLoginNamesDefault} />
 							</Form>
 						</Grid.Column>
 					</Grid.Row>
@@ -225,13 +210,13 @@ class Body extends React.Component {
 				<Grid >
 					<Grid.Row textAlign="right">
 						<Grid.Column>
-							<Checkbox id={this.idLoginNamesCheckbox} checked={this.state.pswFormVisible} label={{ children: 'Use database' }} onClick={() => this._switchAutomaticallyDatabase()} />
+							<Checkbox onChange={(d, e) => this._componentOnChangeCheck(d, e)} id={'useLoginNamesDefault'} checked={this.state.useLoginNamesDefault} label={{ children: 'Use database' }} onClick={() => this._switchAutomaticallyDatabase()} />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
 				<Form >
 					<Header as="h5">URL location</Header>
-					<Input id={this.idUrlLocation} placeholder="Specify url where is form located" fluid />
+					<Input onChange={(d, e) => this._componentOnChangeText(d, e)} id={'location'} value={this.state.location} placeholder="Specify url where is form located" fluid />
 				</Form>
 				<Divider hidden />
 			</div>

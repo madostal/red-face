@@ -25,6 +25,8 @@ class Core {
 				throw err
 			}
 			self.taskData = fields[0]
+			console.log("TASK ADTA")
+			console.log(self.taskData)
 			self._loadInfo()
 		})
 	}

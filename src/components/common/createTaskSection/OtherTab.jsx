@@ -7,28 +7,27 @@ import {
 	Grid,
 	Message,
 } from 'semantic-ui-react'
-import newId from '../../../utils/Newid'
 import { TASK_DISABLE_WARNING_MESSAGE, TASK_DISABLE_WARNING_MESSAGE_HEADER } from '../../../language/Variables'
 
-function createStorageIfNotExist() {
+const createStorageIfNotExist = () => {
 	let json = JSON.stringify({
 		'enable': false,
 		data: {
-			'idTestJavascriptImport': false,
-			'idTestHttpHttps': false,
-			'idTestGitConfig': false,
-			'idTestPortScan': false,
-			'testPortScanData': {
-				'from': 1,
-				'to': 1000,
-			},
+			'testJavascriptImport': false,
+			'testHttpHttps': false,
+			'testGitConfig': false,
+			'testPortScan': false,
+			// 'testPortScanData': {
+			'testPortScanDataFrom': 1,
+			'testPortScanDataTo': 1000,
+			// },
 		},
 	})
 	localStorage.setItem('OtherTab', json)
 	return json
 }
 
-function readStorage() {
+const readStorage = () => {
 	return JSON.parse(localStorage.getItem('OtherTab'))
 }
 
@@ -51,23 +50,27 @@ export default class OtherTab extends React.Component {
 		}
 	}
 
-	_checkBoxAction(e, d) {
+	_checkBoxAction = (e, d) => {
 		let json = readStorage()
 		if (d.checked) {
-			this.setState({ error: TASK_DISABLE_WARNING_MESSAGE })
-			this.setState({ setUpVisible: false })
+			this.setState({
+				error: TASK_DISABLE_WARNING_MESSAGE,
+				setUpVisible: false,
+			})
+
 			json.enable = false
 		}
 		else {
-			this.setState({ error: undefined })
-			this.setState({ setUpVisible: true })
+			this.setState({
+				error: undefined,
+				setUpVisible: true,
+			})
 			json.enable = true
 		}
 		localStorage.setItem('OtherTab', JSON.stringify(json))
 	}
 
-	render() {
-		let { error } = this.state
+	render = () => {
 		return (
 			<div>
 				<div>
@@ -98,46 +101,53 @@ export default class OtherTab extends React.Component {
 }
 
 class Body extends React.Component {
+	constructor(props) {
+		super(props)
 
-	componentWillMount() {
-		this.idTestJavascriptImport = newId()
-		this.idTestHttpHttps = newId()
-		this.idTestGitConfig = newId()
-		this.idTestPortScan = newId()
-		this.idTestPortScanBotVal = newId()
-		this.idTestPortScanTopVal = newId()
+		let json = readStorage()
+		this.state = {
+			testJavascriptImport: json.data.testJavascriptImport,
+			testHttpHttps: json.data.testHttpHttps,
+			testGitConfig: json.data.testGitConfig,
+			testPortScan: json.data.testPortScan,
+			testPortScanDataFrom: json.data.testPortScanDataFrom,
+			testPortScanDataTo: json.data.testPortScanDataTo,
+		}
 	}
 
-	componentDidMount() {
-		let json = readStorage()
-		document.getElementById(this.idTestJavascriptImport).getElementsByTagName('input')[0].checked = json.data.idTestJavascriptImport
-		document.getElementById(this.idTestHttpHttps).getElementsByTagName('input')[0].checked = json.data.idTestHttpHttps
-		document.getElementById(this.idTestGitConfig).getElementsByTagName('input')[0].checked = json.data.idTestGitConfig
-		document.getElementById(this.idTestPortScan).getElementsByTagName('input')[0].checked = json.data.idTestPortScan
-		document.getElementById(this.idTestPortScanBotVal).value = json.data.testPortScanData.from
-		document.getElementById(this.idTestPortScanTopVal).value = json.data.testPortScanData.to
+	_componentOnChangeText = (d, e) => {
+		this.setState({
+			[e.id]: e.value,
+		})
 	}
 
-	componentWillUnmount() {
+	_componentOnChangeCheck = (d, e) => {
+		this.setState({
+			[e.id]: e.checked,
+		})
+	}
+
+	componentWillUnmount = () => {
 		let json = readStorage()
-		json.data.idTestJavascriptImport = document.getElementById(this.idTestJavascriptImport).getElementsByTagName('input')[0].checked
-		json.data.idTestHttpHttps = document.getElementById(this.idTestHttpHttps).getElementsByTagName('input')[0].checked
-		json.data.idTestGitConfig = document.getElementById(this.idTestGitConfig).getElementsByTagName('input')[0].checked
-		json.data.idTestPortScan = document.getElementById(this.idTestPortScan).getElementsByTagName('input')[0].checked
-		json.data.testPortScanData = { 'from': parseInt(document.getElementById(this.idTestPortScanBotVal).value), 'to': parseInt(document.getElementById(this.idTestPortScanTopVal).value) }
+		json = {
+			enable: json.enable,
+			data: this.state,
+		}
 		localStorage.setItem('OtherTab', JSON.stringify(json))
 	}
 
-	render() {
+	render = () => {
 		return (
 			< div >
-				<Checkbox id={this.idTestJavascriptImport} label={<label>Test javascript import</label>} />
+				<Checkbox onChange={(d, e) => this._componentOnChangeCheck(d, e)} checked={this.state.testJavascriptImport} id={'testJavascriptImport'} label={<label>Test javascript import</label>} />
 				<Divider hidden />
-				<Checkbox id={this.idTestHttpHttps} label={<label>Test http and https</label>} />
+				<Checkbox onChange={(d, e) => this._componentOnChangeCheck(d, e)} checked={this.state.testHttpHttps} id={'testHttpHttps'} label={<label>Test http and https</label>} />
 				<Divider hidden />
-				<Checkbox id={this.idTestGitConfig} label={<label>Test GIT config</label>} />
+				<Checkbox onChange={(d, e) => this._componentOnChangeCheck(d, e)} checked={this.state.testGitConfig} id={'testGitConfig'} label={<label>Test GIT config</label>} />
 				<Divider hidden />
-				<Checkbox id={this.idTestPortScan} label={<label>Port scanner</label>} /> <Input id={this.idTestPortScanBotVal} placeholder="From" /> <Input id={this.idTestPortScanTopVal} placeholder="To" />
+				<Checkbox onChange={(d, e) => this._componentOnChangeCheck(d, e)} checked={this.state.testPortScan} id={'testPortScan'} label={<label>Port scanner</label>} />
+				<Input onChange={(d, e) => this._componentOnChangeText(d, e)} value={this.state.testPortScanDataFrom} id={'testPortScanDataFrom'} placeholder="From" />
+				<Input onChange={(d, e) => this._componentOnChangeText(d, e)} value={this.state.testPortScanDataTo} id={'testPortScanDataTo'} placeholder="To" />
 				<Divider hidden />
 				<Divider hidden />
 			</div >

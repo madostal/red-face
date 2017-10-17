@@ -23,3 +23,993 @@ Connection to database was successful
 STD ERRORdebug: Task id: 60, subtask count: 2
 https://www.centrum.cz/
 'https://www.centrum.cz/' exist, starting testing...
+STD ERRORD:\Programování\red-face\scripts\task\BruteForceTask.js:15
+	start = (coreCallback) => {
+	      ^
+
+SyntaxError: Unexpected token =
+    at createScript (vm.js:74:10)
+    at Object.runInThisContext (vm.js:116:10)
+    at Module._compile (module.js:533:28)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Module.require (module.js:513:17)
+    at require (internal/module.js:11:18)
+    at Object.<anonymous> (D:\Programování\red-face\scripts\task\Core.js:5:24)
+STD ERRORD:\Programování\red-face\scripts\task\BruteForceTask.js:15
+	start = (coreCallback) => {
+	      ^
+
+SyntaxError: Unexpected token =
+    at createScript (vm.js:74:10)
+    at Object.runInThisContext (vm.js:116:10)
+    at Module._compile (module.js:533:28)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Module.require (module.js:513:17)
+    at require (internal/module.js:11:18)
+    at Object.<anonymous> (D:\Programování\red-face\scripts\task\Core.js:5:24)
+STD ERRORD:\Programování\red-face\scripts\task\BruteForceTask.js:15
+	start = (coreCallback) => {
+	      ^
+
+SyntaxError: Unexpected token =
+    at createScript (vm.js:74:10)
+    at Object.runInThisContext (vm.js:116:10)
+    at Module._compile (module.js:533:28)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Module.require (module.js:513:17)
+    at require (internal/module.js:11:18)
+    at Object.<anonymous> (D:\Programování\red-face\scripts\task\Core.js:5:24)
+STD ERRORD:\Programování\red-face\scripts\task\BruteForceTask.js:75
+	_createUri = (serverHome, uri) => {
+	           ^
+
+SyntaxError: Unexpected token =
+    at createScript (vm.js:74:10)
+    at Object.runInThisContext (vm.js:116:10)
+    at Module._compile (module.js:533:28)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Module.require (module.js:513:17)
+    at require (internal/module.js:11:18)
+    at Object.<anonymous> (D:\Programování\red-face\scripts\task\Core.js:5:24)
+STD ERRORD:\Programování\red-face\scripts\task\BruteForceTask.js:75
+	_createUri = (serverHome, uri) => {
+	           ^
+
+SyntaxError: Unexpected token =
+    at createScript (vm.js:74:10)
+    at Object.runInThisContext (vm.js:116:10)
+    at Module._compile (module.js:533:28)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Module.require (module.js:513:17)
+    at require (internal/module.js:11:18)
+    at Object.<anonymous> (D:\Programování\red-face\scripts\task\Core.js:5:24)
+STD ERRORD:\Programování\red-face\scripts\task\TaskParent.js:8
+	setLogFile = (logFile) => {
+	           ^
+
+SyntaxError: Unexpected token =
+    at createScript (vm.js:74:10)
+    at Object.runInThisContext (vm.js:116:10)
+    at Module._compile (module.js:533:28)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Module.require (module.js:513:17)
+    at require (internal/module.js:11:18)
+    at Object.<anonymous> (D:\Programování\red-face\scripts\task\BruteForceTask.js:4:20)
+STD ERRORdebug: Starting task id: 67
+Connection to database was successful
+STD ERRORdebug: Task id: 67, subtask count: 1
+https://www.centrum.cz
+'https://www.centrum.cz' exist, starting testing...
+STD ERRORdebug: Starting task id: 68
+Connection to database was successful
+STD ERRORdebug: Task id: 68, subtask count: 1
+https://www.centrum.cz
+'https://www.centrum.cz' exist, starting testing...
+STD ERRORdebug: Starting task id: 69
+69
+Connection to database was successful
+STD ERRORdebug: Task id: 69, subtask count: 1
+https://www.centrum.cz
+'https://www.centrum.cz' exist, starting testing...
+STD ERRORdebug: Starting task id: 70
+AAAAAAAAAAAAAAAAA70
+Connection to database was successful
+STD ERRORdebug: Task id: 70, subtask count: 1
+https://www.centrum.cz
+'https://www.centrum.cz' exist, starting testing...
+STD ERRORdebug: Starting task id: 71
+Connection to database was successful
+RowDataPacket {
+  id: 71,
+  addTime: 2017-10-17T18:52:07.000Z,
+  startTime: 2017-10-17T18:52:07.000Z,
+  endTime: null,
+  taskName: null,
+  taskKey: 'GGgJ9QGAjY',
+  state: 1,
+  serverHome: 'https://www.centrum.cz' }
+STD ERRORdebug: Task id: 71, subtask count: 1
+https://www.centrum.cz
+'https://www.centrum.cz' exist, starting testing...
+STD ERRORdebug: Starting task id: 72
+Connection to database was successful
+RowDataPacket {
+  id: 72,
+  addTime: 2017-10-17T18:52:25.000Z,
+  startTime: 2017-10-17T18:52:25.000Z,
+  endTime: null,
+  taskName: null,
+  taskKey: 'wrcYPXuLNu',
+  state: 1,
+  serverHome: 'https://www.centrum.cz' }
+STD ERRORdebug: Task id: 72, subtask count: 1
+https://www.centrum.cz
+'https://www.centrum.cz' exist, starting testing...
+STD ERRORdebug: Starting task id: 73
+Connection to database was successful
+RowDataPacket {
+  id: 73,
+  addTime: 2017-10-17T18:56:12.000Z,
+  startTime: 2017-10-17T18:56:12.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'fljjlDIDma',
+  state: 1,
+  serverHome: 'https://www.centrum.cz' }
+STD ERRORdebug: Task id: 73, subtask count: 1
+https://www.centrum.cz
+'https://www.centrum.cz' exist, starting testing...
+STD ERRORdebug: Starting task id: 74
+Connection to database was successful
+RowDataPacket {
+  id: 74,
+  addTime: 2017-10-17T18:57:15.000Z,
+  startTime: 2017-10-17T18:57:15.000Z,
+  endTime: null,
+  taskName: null,
+  taskKey: 'txDqx7YDxi',
+  state: 1,
+  serverHome: null }
+STD ERRORdebug: Task id: 74, subtask count: 1
+null
+'' doesn't exist, ending testing...
+STD ERRORdebug: Starting task id: 75
+Connection to database was successful
+RowDataPacket {
+  id: 75,
+  addTime: 2017-10-17T18:59:25.000Z,
+  startTime: 2017-10-17T18:59:25.000Z,
+  endTime: null,
+  taskName: null,
+  taskKey: 'bO2x7FxJ63',
+  state: 1,
+  serverHome: null }
+STD ERRORdebug: Task id: 75, subtask count: 1
+null
+'' doesn't exist, ending testing...
+STD ERRORdebug: Starting task id: 76
+Connection to database was successful
+RowDataPacket {
+  id: 76,
+  addTime: 2017-10-17T19:01:19.000Z,
+  startTime: 2017-10-17T19:01:19.000Z,
+  endTime: null,
+  taskName: null,
+  taskKey: '1nCv3cZCgM',
+  state: 1,
+  serverHome: null }
+STD ERRORdebug: Task id: 76, subtask count: 1
+null
+'' doesn't exist, ending testing...
+STD ERRORdebug: Starting task id: 77
+Connection to database was successful
+RowDataPacket {
+  id: 77,
+  addTime: 2017-10-17T19:02:00.000Z,
+  startTime: 2017-10-17T19:01:59.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '7kQ1eZ2eVp',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 77, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 78
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 78,
+  addTime: 2017-10-17T19:07:19.000Z,
+  startTime: 2017-10-17T19:07:19.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'GiwZ9QJPjD',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 78, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 79
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 79,
+  addTime: 2017-10-17T19:09:05.000Z,
+  startTime: 2017-10-17T19:09:05.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '7H0bKBt3fl',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 79, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 80
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 80,
+  addTime: 2017-10-17T19:09:53.000Z,
+  startTime: 2017-10-17T19:09:53.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'ezPxRXG87R',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 80, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 81
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 81,
+  addTime: 2017-10-17T19:10:44.000Z,
+  startTime: 2017-10-17T19:10:44.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'Ti5Me1UmqT',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 81, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 83
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 83,
+  addTime: 2017-10-17T19:33:07.000Z,
+  startTime: 2017-10-17T19:33:07.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'mNruGjf0Qq',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 83, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 84
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 84,
+  addTime: 2017-10-17T19:34:43.000Z,
+  startTime: 2017-10-17T19:34:43.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'Pqf6ZhyoQo',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 84, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 89
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 89,
+  addTime: 2017-10-17T19:47:00.000Z,
+  startTime: 2017-10-17T19:47:00.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'tBV1QY1Za5',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 89, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 90
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 90,
+  addTime: 2017-10-17T19:47:16.000Z,
+  startTime: 2017-10-17T19:47:16.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'DqwEs9oIHy',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+STD ERRORdebug: Task id: 90, subtask count: 1
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 91
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 91,
+  addTime: 2017-10-17T19:47:40.000Z,
+  startTime: 2017-10-17T19:47:40.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'XSvoCBIZuY',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 91, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 92
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 92,
+  addTime: 2017-10-17T19:51:58.000Z,
+  startTime: 2017-10-17T19:51:58.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '0vAQBxhM32',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+STD ERRORdebug: Task id: 92, subtask count: 1
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 93
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 93,
+  addTime: 2017-10-17T19:56:55.000Z,
+  startTime: 2017-10-17T19:56:55.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'Y88WQhHpVd',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 93, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 94
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 94,
+  addTime: 2017-10-17T20:00:18.000Z,
+  startTime: 2017-10-17T20:00:18.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'FgID5pBWu1',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 94, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 95
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 95,
+  addTime: 2017-10-17T20:00:57.000Z,
+  startTime: 2017-10-17T20:00:57.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'GKYoTjV4fk',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 95, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 96
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 96,
+  addTime: 2017-10-17T20:01:56.000Z,
+  startTime: 2017-10-17T20:01:56.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'rmWN95aGML',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+STD ERRORdebug: Task id: 96, subtask count: 1
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 97
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 97,
+  addTime: 2017-10-17T20:02:27.000Z,
+  startTime: 2017-10-17T20:02:27.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'MgHPe95d94',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 97, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 100
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 100,
+  addTime: 2017-10-17T20:10:33.000Z,
+  startTime: 2017-10-17T20:10:33.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'GVESqF4Xz5',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 100, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORD:\Programování\red-face\scripts\utils\WebDriver.js:114
+			}}, data), guardTime)
+			^
+
+SyntaxError: missing ) after argument list
+    at createScript (vm.js:74:10)
+    at Object.runInThisContext (vm.js:116:10)
+    at Module._compile (module.js:533:28)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Module.require (module.js:513:17)
+    at require (internal/module.js:11:18)
+    at Object.<anonymous> (D:\Programování\red-face\scripts\task\BruteForceTask.js:5:19)
+STD ERRORdebug: Starting task id: 102
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 102,
+  addTime: 2017-10-17T20:11:55.000Z,
+  startTime: 2017-10-17T20:11:55.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'nHpb4PzPHt',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 102, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 103
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 103,
+  addTime: 2017-10-17T20:12:31.000Z,
+  startTime: 2017-10-17T20:12:31.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '2DodXYeh3h',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 103, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 104
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 104,
+  addTime: 2017-10-17T20:14:02.000Z,
+  startTime: 2017-10-17T20:14:02.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'wiLlH2OpXb',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+STD ERRORdebug: Task id: 104, subtask count: 1
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 105
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 105,
+  addTime: 2017-10-17T20:14:56.000Z,
+  startTime: 2017-10-17T20:14:56.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'ZBHZbaxcNI',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 105, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 107
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 107,
+  addTime: 2017-10-17T20:20:49.000Z,
+  startTime: 2017-10-17T20:20:49.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '3dwpIp5xpz',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 107, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 108
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 108,
+  addTime: 2017-10-17T20:22:19.000Z,
+  startTime: 2017-10-17T20:22:19.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'nBwtAkBA6m',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 108, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 109
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 109,
+  addTime: 2017-10-17T20:25:45.000Z,
+  startTime: 2017-10-17T20:25:45.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'ecxoFb8mHJ',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+STD ERRORdebug: Task id: 109, subtask count: 1
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 110
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 110,
+  addTime: 2017-10-17T20:27:46.000Z,
+  startTime: 2017-10-17T20:27:46.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '1P9HLCQLBN',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 110, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 111
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 111,
+  addTime: 2017-10-17T20:28:19.000Z,
+  startTime: 2017-10-17T20:28:19.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '86sPcKr11k',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 111, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 112
+Connection to database was successful
+TASK ADTA
+STD ERRORdebug: Task id: 112, subtask count: 1
+RowDataPacket {
+  id: 112,
+  addTime: 2017-10-17T21:15:30.000Z,
+  startTime: 2017-10-17T21:15:30.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'SQMEjYJVTh',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 113
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 113,
+  addTime: 2017-10-17T21:17:54.000Z,
+  startTime: 2017-10-17T21:17:54.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'bj56NFhWwj',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 113, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 114
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 114,
+  addTime: 2017-10-17T21:22:04.000Z,
+  startTime: 2017-10-17T21:22:04.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '1UKT31gJ4J',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 114, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 115
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 115,
+  addTime: 2017-10-17T21:27:27.000Z,
+  startTime: 2017-10-17T21:27:27.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'z964s1lAYU',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+STD ERRORdebug: Task id: 115, subtask count: 1
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 117
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 117,
+  addTime: 2017-10-17T21:32:30.000Z,
+  startTime: 2017-10-17T21:32:30.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'obozOcB3Ek',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 117, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 118
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 118,
+  addTime: 2017-10-17T21:37:13.000Z,
+  startTime: 2017-10-17T21:37:13.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'ot71HKcXLH',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+STD ERRORdebug: Task id: 118, subtask count: 1
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 119
+Connection to database was successful
+TASK ADTA
+STD ERRORdebug: Task id: 119, subtask count: 1
+RowDataPacket {
+  id: 119,
+  addTime: 2017-10-17T22:05:15.000Z,
+  startTime: 2017-10-17T22:05:15.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'lGkTdeKtx3',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 120
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 120,
+  addTime: 2017-10-17T22:06:28.000Z,
+  startTime: 2017-10-17T22:06:28.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'RJlf2TnQsn',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+https://www.centrum.cz/
+STD ERRORdebug: Task id: 120, subtask count: 1
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 121
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 121,
+  addTime: 2017-10-17T22:06:52.000Z,
+  startTime: 2017-10-17T22:06:52.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '9krTlLEioo',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 121, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 122
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 122,
+  addTime: 2017-10-17T22:07:03.000Z,
+  startTime: 2017-10-17T22:07:03.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'FVBk9bUuYj',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 122, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 123
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 123,
+  addTime: 2017-10-17T22:07:24.000Z,
+  startTime: 2017-10-17T22:07:24.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'WqwNaigEHx',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 123, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 124
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 124,
+  addTime: 2017-10-17T22:07:49.000Z,
+  startTime: 2017-10-17T22:07:49.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'kBMBpjDFkt',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 124, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 125
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 125,
+  addTime: 2017-10-17T22:07:53.000Z,
+  startTime: 2017-10-17T22:07:53.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'EkYGXDLMLL',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 125, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 126
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 126,
+  addTime: 2017-10-17T22:08:09.000Z,
+  startTime: 2017-10-17T22:08:09.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '7Zege06QRl',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 126, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 127
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 127,
+  addTime: 2017-10-17T22:11:01.000Z,
+  startTime: 2017-10-17T22:11:01.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'uzST9pqPu8',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 127, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 128
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 128,
+  addTime: 2017-10-17T22:12:16.000Z,
+  startTime: 2017-10-17T22:12:16.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'odDztYmCSD',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 128, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 129
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 129,
+  addTime: 2017-10-17T22:14:33.000Z,
+  startTime: 2017-10-17T22:14:33.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'uAtBvhryFy',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 129, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 130
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 130,
+  addTime: 2017-10-17T22:15:36.000Z,
+  startTime: 2017-10-17T22:15:36.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'wZiwpFHGIp',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 130, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORD:\Programování\red-face\scripts\task\OtherTask.js:133
+			start: field.from,
+			^^^^^
+
+SyntaxError: Unexpected identifier
+    at createScript (vm.js:74:10)
+    at Object.runInThisContext (vm.js:116:10)
+    at Module._compile (module.js:533:28)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Module.require (module.js:513:17)
+    at require (internal/module.js:11:18)
+    at Object.<anonymous> (D:\Programování\red-face\scripts\task\Core.js:6:19)
+STD ERRORdebug: Starting task id: 132
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 132,
+  addTime: 2017-10-17T22:16:23.000Z,
+  startTime: 2017-10-17T22:16:23.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'uoPktdd0YG',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 132, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 133
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 133,
+  addTime: 2017-10-17T22:17:15.000Z,
+  startTime: 2017-10-17T22:17:15.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'RK3W9w5MJj',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 133, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 134
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 134,
+  addTime: 2017-10-17T22:18:08.000Z,
+  startTime: 2017-10-17T22:18:08.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'CGsKz9Be4n',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 134, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 135
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 135,
+  addTime: 2017-10-17T22:18:56.000Z,
+  startTime: 2017-10-17T22:18:56.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'lA8ppjWAOf',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 135, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 136
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 136,
+  addTime: 2017-10-17T22:19:44.000Z,
+  startTime: 2017-10-17T22:19:44.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'KVpUknQNfr',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 136, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 137
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 137,
+  addTime: 2017-10-17T22:20:17.000Z,
+  startTime: 2017-10-17T22:20:17.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: '7h9Zo9cWPI',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 137, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
+STD ERRORdebug: Starting task id: 138
+Connection to database was successful
+TASK ADTA
+RowDataPacket {
+  id: 138,
+  addTime: 2017-10-17T22:20:56.000Z,
+  startTime: 2017-10-17T22:20:56.000Z,
+  endTime: null,
+  taskName: 'test',
+  taskKey: 'EAcz9d1kwq',
+  state: 1,
+  serverHome: 'https://www.centrum.cz/' }
+STD ERRORdebug: Task id: 138, subtask count: 1
+https://www.centrum.cz/
+'https://www.centrum.cz/' exist, starting testing...
