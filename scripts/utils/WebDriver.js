@@ -8,10 +8,10 @@ const webdriver = require('selenium-webdriver'),
 const CHROME_OPTIONS = {
 	// "args": ["--test-type", "--start-maximized", "--headless"]
 	'args': [
-		'--test-type', 'disable-web-security',
+//		'--test-type', 'disable-web-security', '--log-level=3', '--silent',
 	],
 	'prefs': {
-		'profile.managed_default_content_settings.images': 2,
+	//	'profile.managed_default_content_settings.images': 2,
 	},
 }
 
@@ -36,9 +36,10 @@ module.exports = class WebDriver {
 
 	screenShot(path) {
 		this._simplePromiseGuard(() => this.driver.takeScreenshot()
-			.then(function (image, err) {
-				require('fs').writeFile(path, image, 'base64', function (err) {
-					//
+			.then((image, err) => {
+				console.log(['Failed to print screenshot from selenium:', err].join(' '))
+				require('fs').writeFile(path, image, 'base64', (err) => {
+					console.log(['Failed to print screenshot from selenium:', err].join(' '))
 				})
 			}))
 	}
@@ -117,14 +118,60 @@ module.exports = class WebDriver {
 			}), guardTime)
 	}
 
+	/**
+	 * function execute() {
+			YOUR CODE
+		}
+	 *
+	 * @param {*} script
+	 * @param {*} guardTime
+	 */
+	executeScript(script, params, guardTime = GUARD_LOCK_TIME_MS) {
+		return this._simplePromiseGuard(() =>
+			this.driver.executeAsyncScript((script, params) => {
+				let callback = arguments[arguments.length - 1]
+
+				eval(script)
+				callback(execute(params))
+			}, script, params), guardTime)
+	}
+
+	testAlertPresentAndClose(guardTime = GUARD_LOCK_TIME_MS) {
+		return this._simplePromiseGuard(new Promise((resolve, reject) => {
+
+			this.driver.switchTo().alert().then(() => {
+				this.driver.switchTo().alert().accept()
+				resolve(true)
+			},
+				() => {
+					resolve(false)
+				})
+
+
+		}), guardTime)
+	}
+
+	sendKeys(xPath, text) {
+		this.driver.findElement(By.xpath(xPath)).sendKeys(text);
+	}
+
 	_simplePromiseGuard(fn, sleepTime = GUARD_LOCK_TIME_MS) {
 		let returnData
 		let state = false
-		fn()
-			.then((data) => {
-				returnData = data
-				state = true
-			})
+		if (typeof fn === 'function') {
+			fn()
+				.then((data) => {
+					returnData = data
+					state = true
+				})
+		}
+		else {
+			fn
+				.then((data) => {
+					returnData = data
+					state = true
+				})
+		}
 
 		while (!state) {
 			sleep(sleepTime)

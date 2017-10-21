@@ -6,7 +6,7 @@ module.exports = class Crawler {
 		this.home = home
 		this.webDriver = new WebDriver()
 		this.urls = new Array()
-        // visited - url - writable elemets
+		// visited - url - writable elemets
 		this.urls.push([false, home, false])
 	}
 
@@ -43,14 +43,14 @@ module.exports = class Crawler {
 
 			this.webDriver.goTo(url[1])
 
-            //check if page has some input, text area etc..
+			//check if page has some input, text area etc..
 			if (this.webDriver.hasWritableElements()) {
 				this._setHasWritable(url[1])
 			}
 
 			let lastLinkst = this.webDriver.extractAllLinks()
 
-			for (var i = 0; i < lastLinkst.length; i++) {
+			for (let i = 0; i < lastLinkst.length; i++) {
 				let value = lastLinkst[i]
 				if (!this._wasCrawled(value) && (value.startsWith(this.home) && value !== url)) {
 					this.urls.push([false, value, false])
@@ -60,14 +60,19 @@ module.exports = class Crawler {
 			url = this._getUnvisited()
 		}
 
-		for (var i = 0; i < this.urls.length; i++) {
-			console.log(this.urls[i][1] + ', ' + this.urls[i][2])
-		}
-
 		this._shutDown()
 	}
 
 	_shutDown() {
 		this.webDriver.closeDriver()
+	}
+
+	getUrls() {
+		let output = [];
+		(this.urls).forEach((item) => {
+			//remove first flag - was url visited
+			output.push([item[1], item[2]])
+		})
+		return output
 	}
 }
