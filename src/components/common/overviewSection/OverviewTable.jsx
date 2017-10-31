@@ -20,9 +20,9 @@ export default class OverviewTable extends React.Component {
 		this.state = {
 			result: [],
 			redirect: false,
-			modalRemoveTaskOpen: false,
-			modalStopTaskOpen: false,
-			modalRepeatOpen: false,
+			modalRemoveTaskOpen: {},
+			modalStopTaskOpen: {},
+			modalRepeatOpen: {},
 			modalRemoveAll: false,
 		}
 
@@ -35,11 +35,9 @@ export default class OverviewTable extends React.Component {
 				}
 			})
 
-			this.state = {
+			this.setState({
 				result: lastRowData,
-			}
-
-			this.forceUpdate()
+			})
 		}.bind(this))
 
 		Api.getSocket().on('there-are-tasks', function (data) {
@@ -66,26 +64,34 @@ export default class OverviewTable extends React.Component {
 		Api.socketRequest('give-me-tasks', {})
 	}
 
-	_open(e, item) {
+	_open = (e, item) => {
 		browserHistory.push(['/detail-section?key=', item.key].join(''))
 	}
 
-	_repeat(item) {
+	_repeat = (item) => {
 		console.log('Calling repeat task id: ' + item.id)
 		Api.socketRequest('repeat-task', { id: item.id })
 		//TODO UPDATE VIEW
 	}
 
-	_removeAll() {
+	_removeAll = () => {
+		this.setState({
+			result: [],
+			redirect: false,
+			modalRemoveTaskOpen: {},
+			modalStopTaskOpen: {},
+			modalRepeatOpen: {},
+			modalRemoveAll: false,
+		})
 		Api.socketRequest('remove-all-tasks', {})
 	}
 
-	_stop(item) {
+	_stop = (item) => {
 		console.log('Calling stop task id: ' + item.id)
 		Api.socketRequest('stop-task', { id: item.id })
 	}
 
-	_delete(item) {
+	_delete = (item) => {
 		Api.socketRequest('remove-task', { id: item.id })
 
 		let { result } = this.state
@@ -97,7 +103,7 @@ export default class OverviewTable extends React.Component {
 		this.forceUpdate()
 	}
 
-	componentDidMount() {
+	componentDidMount = () => {
 		let self = this
 		this.interval = setInterval(function () {
 			self.forceUpdate()
@@ -107,13 +113,21 @@ export default class OverviewTable extends React.Component {
 		}
 	}
 
-	componentWillUnmount() {
+	componentWillUnmount = () => {
 		clearInterval(this.interval)
 		Api.getSocket().removeAllListeners('there-are-tasks')
 		Api.getSocket().removeAllListeners('update-overview')
 	}
 
-	render() {
+	_modalAction = (itemid, open, modalstate) => {
+		console.log(this.state[modalstate])
+		let tmp = this.state[modalstate]
+		tmp[itemid] = open;
+		this.setState({ [modalstate]: tmp })
+		console.log(this.state[modalstate])
+	}
+
+	render = () => {
 		let { result } = this.state
 		return (
 			<div>
@@ -180,22 +194,17 @@ export default class OverviewTable extends React.Component {
 											<Button onClick={(e) => this._open(e, item)} color="blue" icon><Icon name="search" /></Button>
 
 
-											<Modal size="tiny" trigger={<Button disabled={item.state === 1} color="green" icon onClick={() => this.setState({ modalRepeatOpen: true })}><Icon name="repeat" /></Button>} open={this.state.modalRepeatOpen}>
+											<Modal size="tiny" trigger={<Button disabled={item.state === 1} color="green" icon onClick={() => this._modalAction(item.id, true, 'modalRepeatOpen')}><Icon name="repeat" /></Button>} open={this.state.modalRepeatOpen[item.id] || false}>
 												<Header icon="trash" content="Remove task?" />
 												<Modal.Content>Are you sure, that you want to repeat this task?</Modal.Content>
 												<Modal.Actions>
 													<Button color="red" onClick={() => {
-														this.setState({
-															modalRepeatOpen: false,
-														})
+														this._modalAction(item.id, false, 'modalRepeatOpen')
 													}}>
 														<Icon name="remove" /> No
 												</Button>
 													<Button color="green" onClick={() => {
-														this.setState({
-															modalRepeatOpen: false,
-														})
-
+														this._modalAction(item.id, false, 'modalRepeatOpen')
 														this._repeat(item)
 													}}>
 														<Icon name="checkmark" /> Yes
@@ -203,28 +212,17 @@ export default class OverviewTable extends React.Component {
 												</Modal.Actions>
 											</Modal>
 
-											<Modal size="tiny" trigger={<Button disabled={item.state === 1} inverted color="red" icon onClick={() => this.setState({ modalRemoveTaskOpen: true })}><Icon name="trash" /></Button>} open={this.state.modalRemoveTaskOpen}>
+											<Modal size="tiny" trigger={<Button disabled={item.state === 1} inverted color="red" icon onClick={() => { this._modalAction(item.id, true, 'modalRemoveTaskOpen') }}><Icon name="trash" /></Button>} open={this.state.modalRemoveTaskOpen[item.id] || false}>
 												<Header icon="trash" content="Remove task?" />
 												<Modal.Content>Are you sure, that you want to remove this task?</Modal.Content>
 												<Modal.Actions>
 													<Button color="red" onClick={() => {
-														console.log('NO')
-														console.log(item.id)
-														this.setState({
-															modalRemoveTaskOpen: false,
-														})
+														this._modalAction(item.id, false, 'modalRemoveTaskOpen')
 													}}>
 														<Icon name="remove" /> No
 												</Button>
 													<Button color="green" onClick={() => {
-														console.log('YES')
-														const tmp = item.id
-														console.log("AAAAAAAAAAAAAAAAAAAAA : " + tmp)
-														console.log(item.id)
-														this.setState({
-															modalRemoveTaskOpen: false,
-														})
-
+														this._modalAction(item.id, false, 'modalRemoveTaskOpen')
 														this._delete(item)
 													}}>
 														<Icon name="checkmark" /> Yes
@@ -232,22 +230,17 @@ export default class OverviewTable extends React.Component {
 												</Modal.Actions>
 											</Modal>
 
-											<Modal size="tiny" trigger={<Button disabled={item.state !== 1} inverted color="orange" icon onClick={() => this.setState({ modalStopTaskOpen: true })}><Icon name="stop" /></Button>} open={this.state.modalStopTaskOpen}>
+											<Modal size="tiny" trigger={<Button disabled={item.state !== 1} inverted color="orange" icon onClick={() => this._modalAction(item.id, true, 'modalStopTaskOpen')}><Icon name="stop" /></Button>} open={this.state.modalStopTaskOpen[item.id] || false}>
 												<Header icon="trash" content="Stop task?" />
 												<Modal.Content>Are you sure, that you want to stop this task?</Modal.Content>
 												<Modal.Actions>
 													<Button color="red" onClick={() => {
-														this.setState({
-															modalStopTaskOpen: false,
-														})
+														this._modalAction(item.id, false, 'modalStopTaskOpen')
 													}}>
 														<Icon name="remove" /> No
 												</Button>
 													<Button color="green" onClick={() => {
-														this.setState({
-															modalStopTaskOpen: false,
-														})
-
+														this._modalAction(item.id, false, 'modalStopTaskOpen')
 														this._stop(item)
 													}}>
 														<Icon name="checkmark" /> Yes
