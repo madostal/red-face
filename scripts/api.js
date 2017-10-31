@@ -34,20 +34,13 @@ const serverSetUp = () => {
  * So set this task to failed state
  */
 function checkDeadTasks() {
-	// let params = [taskHome.TaskState.failed, library.getMySQLTime(), taskHome.TaskState.done]
-	// database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE id IN (SELECT task_id FROM subTask WHERE STATE != ?) ', params, function (err) {
-	// 	if (err) {
-	// 		logger.log('error', err)
-	// 		throw err
-	// 	}
-	// })
-
-	// database.connection.query('UPDATE subTask SET state = ?, endTime = ? WHERE STATE != ?', params, function (err) {
-	// 	if (err) {
-	// 		logger.log('error', err)
-	// 		throw err
-	// 	}
-	// })
+	let params = [taskHome.TaskState.killed, library.getMySQLTime(), taskHome.TaskState.running, taskHome.TaskState.created]
+	database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE (state = ? OR state = ?)', params, function (err) {
+		if (err) {
+			logger.log('error', err)
+			throw err
+		}
+	})
 }
 
 io.on('connection', function (socket) {
