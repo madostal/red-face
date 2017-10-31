@@ -26,6 +26,10 @@ module.exports = class Pool {
 		this._appendDataToFile(JSON.stringify(data.data), configFile)
 
 		let params = { taskName: data.data.taskName, serverHome: data.data.serverHome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10), configPath: configFile, logPath: this._createLogFile(data.data.taskName) }
+		this.insertNewTaskToDb(params)
+	}
+
+	insertNewTaskToDb(params) {
 		database.connection.query('INSERT INTO task SET ?', params, (err, result) => {
 			if (err) {
 				console.error(err)
@@ -103,17 +107,17 @@ module.exports = class Pool {
 	}
 
 	_createConfigFile(taskname) {
-		return ['config', '/', 'red_face_config_', taskname, '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
+		return ['writable', '/', 'config', '/', 'red_face_config_', taskname, '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
 	}
 
 	_createLogFile(taskname) {
-		let file = [this.logFolderPath, '/', 'red_face_log_', taskname, '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
+		let file = ['writable', '/', this.logFolderPath, '/', 'red_face_log_', taskname, '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
 		this._appendDataToFile('Starting...\n', file)
 		return file
 	}
 
 	_createBruteForcePswFile() {
-		let file = [TMP_FOLDER_PATH, '/', 'red_face_taks_psw', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
+		let file = ['writable', '/', TMP_FOLDER_PATH, '/', 'red_face_taks_psw', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
 		return file
 	}
 
@@ -123,11 +127,83 @@ module.exports = class Pool {
 
 	killTask(taskId) {
 		let proc = this.processMap.get(taskId)
-		if (proc === null) {
+		if (!proc   ) {
 			console.log('Proces is empty, err')
 			return
 		}
 
 		proc.kill('SIGINT')
+	}
+
+	repeatTask(id) {
+		let params = [id]
+		database.connection.query('SELECT * FROM TASK WHERE ID = ?', params, (err, result) => {
+			if (err) {
+				logger.log('error', err)
+				throw err
+			}
+			let rowRes = result[0]
+			let params = { taskName: rowRes.taskName, serverHome: rowRes.serverHome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10), configPath: rowRes.configPath, logPath: this._createLogFile(rowRes.taskName) }
+			this.insertNewTaskToDb(params)
+		})
+	}
+
+	removeTask(id) {
+		let params = [id]
+		database.connection.query('SELECT * FROM TASK WHERE ID = ?', params, (err, result) => {
+			if (err) {
+				logger.log('error', err)
+				throw err
+			}
+			let rowRes = result[0]
+			console.log(rowRes)
+			if (rowRes.state === taskHome.TaskState.running) {
+				this.killTask(rowRes.id)
+			}
+			let params = [rowRes.configPath]
+			database.connection.query('SELECT * FROM TASK WHERE configPath = ?', params, (err, result) => {
+				if (err) {
+					logger.log('error', err)
+					throw err
+				}
+
+				let params = [id]
+				database.connection.query('DELETE FROM TASK WHERE ID = ?', params, (err) => {
+					if (err) {
+						logger.log('error', err)
+						throw err
+					}
+				})
+
+				if (result.length === 1) {
+					//delete config file file
+					fs.unlink(result[0].configPath, (err) => {
+						if (err) {
+							logger.log('error', err)
+							throw err
+						}
+					})
+				}
+				//delete log file
+				fs.unlink(result[0].logPath, (err) => {
+					if (err) {
+						logger.log('error', err)
+						throw err
+					}
+				})
+			})
+		})
+	}
+
+	removeAllTasks() {
+		database.connection.query('SELECT id FROM task', (err, result) => {
+			if (err) {
+				logger.log('error', err)
+				throw err
+			}
+			for (let i = 0; i < result.length; i++) {
+				this.removeTask(result[i].id, true)
+			}
+		})
 	}
 }

@@ -89,22 +89,22 @@ io.on('connection', function (socket) {
 
 	socket.on('remove-task', function (input) {
 		let params = [input.id]
-		database.connection.query('DELETE FROM TASK WHERE ID = ?', params, function (err) {
-			if (err) {
-				logger.log('error', err)
-				throw err
-			}
-		})
+
+		poolInstance.removeTask(input.id)
 	})
 
 	socket.on('repeat-task', function (input) {
 		logger.log('debug', ['Repeat task id: ', input.id].join(''))
-		//TODO
+		poolInstance.repeatTask(input.id)
 	})
 
 	socket.on('stop-task', function (input) {
 		logger.log('debug', ['Stop task id: ', input.id].join(''))
 		poolInstance.killTask(input.id)
+	})
+
+	socket.on('remove-all-tasks', () => {
+		poolInstance.removeAllTasks()
 	})
 })
 

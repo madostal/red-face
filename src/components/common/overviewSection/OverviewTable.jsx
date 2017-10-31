@@ -7,6 +7,7 @@ import {
 	Header,
 	Loader,
 	Table,
+	Divider,
 } from 'semantic-ui-react'
 import Api from 'utils/Api'
 import Library from 'utils/Library'
@@ -22,6 +23,7 @@ export default class OverviewTable extends React.Component {
 			modalRemoveTaskOpen: false,
 			modalStopTaskOpen: false,
 			modalRepeatOpen: false,
+			modalRemoveAll: false,
 		}
 
 		Api.getSocket().on('update-overview', function (data) {
@@ -54,11 +56,11 @@ export default class OverviewTable extends React.Component {
 				rowData.push(tmp)
 			})
 
-			this.state = {
+			this.setState({
 				result: rowData,
-			}
-
-			this.forceUpdate()
+			})
+			console.log(this.state)
+			// this.forceUpdate()
 		}.bind(this))
 
 		Api.socketRequest('give-me-tasks', {})
@@ -72,6 +74,10 @@ export default class OverviewTable extends React.Component {
 		console.log('Calling repeat task id: ' + item.id)
 		Api.socketRequest('repeat-task', { id: item.id })
 		//TODO UPDATE VIEW
+	}
+
+	_removeAll() {
+		Api.socketRequest('remove-all-tasks', {})
 	}
 
 	_stop(item) {
@@ -174,7 +180,7 @@ export default class OverviewTable extends React.Component {
 											<Button onClick={(e) => this._open(e, item)} color="blue" icon><Icon name="search" /></Button>
 
 
-											<Modal size="tiny" trigger={<Button disabled={item.state === 1} color="green" icon><Icon name="repeat" /></Button>} open={this.state.modalRepeatOpen}>
+											<Modal size="tiny" trigger={<Button disabled={item.state === 1} color="green" icon onClick={() => this.setState({ modalRepeatOpen: true })}><Icon name="repeat" /></Button>} open={this.state.modalRepeatOpen}>
 												<Header icon="trash" content="Remove task?" />
 												<Modal.Content>Are you sure, that you want to repeat this task?</Modal.Content>
 												<Modal.Actions>
@@ -197,7 +203,7 @@ export default class OverviewTable extends React.Component {
 												</Modal.Actions>
 											</Modal>
 
-											<Modal size="tiny" trigger={<Button disabled={item.state === 1} inverted color="red" icon><Icon name="trash" /></Button>} open={this.state.modalRemoveTaskOpen}>
+											<Modal size="tiny" trigger={<Button disabled={item.state === 1} inverted color="red" icon onClick={() => this.setState({ modalRemoveTaskOpen: true })}><Icon name="trash" /></Button>} open={this.state.modalRemoveTaskOpen}>
 												<Header icon="trash" content="Remove task?" />
 												<Modal.Content>Are you sure, that you want to remove this task?</Modal.Content>
 												<Modal.Actions>
@@ -212,6 +218,8 @@ export default class OverviewTable extends React.Component {
 												</Button>
 													<Button color="green" onClick={() => {
 														console.log('YES')
+														const tmp = item.id
+														console.log("AAAAAAAAAAAAAAAAAAAAA : " + tmp)
 														console.log(item.id)
 														this.setState({
 															modalRemoveTaskOpen: false,
@@ -224,7 +232,7 @@ export default class OverviewTable extends React.Component {
 												</Modal.Actions>
 											</Modal>
 
-											<Modal size="tiny" trigger={<Button disabled={item.state !== 1} inverted color="orange" icon><Icon name="stop" /></Button>} open={this.state.modalStopTaskOpen}>
+											<Modal size="tiny" trigger={<Button disabled={item.state !== 1} inverted color="orange" icon onClick={() => this.setState({ modalStopTaskOpen: true })}><Icon name="stop" /></Button>} open={this.state.modalStopTaskOpen}>
 												<Header icon="trash" content="Stop task?" />
 												<Modal.Content>Are you sure, that you want to stop this task?</Modal.Content>
 												<Modal.Actions>
@@ -253,6 +261,30 @@ export default class OverviewTable extends React.Component {
 						</Table.Body>
 					)}
 				</Table>
+				<Divider hidden />
+				<Modal size="tiny" trigger={<Button color="red" icon onClick={() => this.setState({ modalRemoveAll: true })}>Remove all<Icon name="trash" /></Button>} open={this.state.modalRemoveAll}>
+					<Header icon="trash" content="Remove task?" />
+					<Modal.Content>Are you sure, that you want to ALL tasks? </Modal.Content>
+					<Modal.Actions>
+						<Button color="red" onClick={() => {
+							this.setState({
+								modalRemoveAll: false,
+							})
+						}}>
+							<Icon name="remove" /> No
+												</Button>
+						<Button color="green" onClick={() => {
+							console.log(this.state)
+							this.setState({
+								modalRemoveAll: false,
+							})
+							console.log(this.state)
+							this._removeAll()
+						}}>
+							<Icon name="checkmark" /> Yes
+												</Button>
+					</Modal.Actions>
+				</Modal>
 			</div>
 		)
 	}

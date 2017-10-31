@@ -1,4 +1,4 @@
-
+const fs = require('fs')
 const jetpack = require('fs-jetpack')
 const WebDriver = require('../utils/WebDriver')
 const stringSimilarity = require('string-similarity')
@@ -30,6 +30,13 @@ class BruteForceSubTask {
 			}
 		}
 		webDriver.closeDriver()
+
+		fs.unlink(path, (err) => {
+			if (err) {
+				throw err
+			}
+		})
+
 		console.log(['Closing worker id', id].join(' '))
 	}
 }

@@ -42,14 +42,16 @@ module.exports = class BruteForceTask extends taskParent {
 		let count = 0
 		let rem = data.length
 
+		let listOfChilds = []
 		for (let i = 0; i < data.length; i++) {
-			let path = ['tmp', '/', 'red_face_config_', 'bruteforce', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
+			let path = ['writable', '/', 'tmp', '/', 'red_face_config_', 'bruteforce', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
 			console.log(path)
 			jetpack.write(path, data[i])
 
 			const process = spawn('node', ['./task/BruteForceSubTask.js', path, this.configPath, serverHome, i], {
 				stdio: ['ipc', 'pipe', 'pipe'],
 			})
+			listOfChilds.push(process)
 
 			process.stdout.on('data', (data) => {
 				console.log(`stderr: ${data}`)
@@ -65,6 +67,14 @@ module.exports = class BruteForceTask extends taskParent {
 			})
 
 		}
+
+		process.on('exit', () => {
+			console.log(listOfChilds.length)
+			for (let i = 0; i < listOfChilds.length; i++) {
+				console.log(listOfChilds[i])
+				listOfChilds[i].kill('SIGINT')
+			}
+		})
 
 		while (rem > 0) {
 			sleep(1000)
