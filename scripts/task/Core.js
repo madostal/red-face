@@ -5,27 +5,25 @@ const library = require('../utils/Library')
 const BruteForceTask = require('./BruteForceTask')
 const OtherTask = require('./OtherTask')
 const logger = require('../Logger')
+const jetpack = require('fs-jetpack')
 
 class Core {
 
 	constructor(taskId) {
 		logger.log('debug', ['Starting task id: ', taskId].join(''))
-		//actual task id
+
 		this.taskId = taskId
-		//list of subtask todo
-		this.subTasks = []
-		//task data
 		this.taskData = null
+		this.taskConfig = null
 	}
 
 	start() {
 		let self = this
-		database.connection.query('SELECT * FROM task WHERE id = ?', [this.taskId], function (err, fields) {
+		database.connection.query('SELECT * FROM task WHERE id = ?', [this.taskId], (err, fields) => {
 			if (err) {
 				throw err
 			}
 			self.taskData = fields[0]
-			console.log("TASK ADTA")
 			console.log(self.taskData)
 			self._loadInfo()
 		})
@@ -35,29 +33,17 @@ class Core {
 	 * Load info from database and create subtasks for job
 	 */
 	_loadInfo() {
-		let self = this
-		database.connection.query('SELECT * FROM subtask WHERE task_id = ?', [this.taskId], function (err, fields) {
-			if (err) {
-				throw err
+		this.taskConfig = JSON.parse(jetpack.read(this.taskData.configPath))
+		console.log('LOADING INFO')
+		console.log(this.taskConfig)
+		library.urlExists(this.taskData.serverHome, (err, exists) => {
+			if (exists) {
+				console.log(['\'', this.taskData.serverHome, '\' exist, starting testing...'].join(''))
+				this._startJob()
 			}
-
-			fields.forEach(function (loop) {
-				self.subTasks.push(loop)
-			})
-
-			logger.log('debug', ['Task id: ', self.taskId, ', subtask count: ', self.subTasks.length].join(''))
-
-			console.log(self.taskData.serverHome)
-			library.urlExists(self.taskData.serverHome, function (err, exists) {
-				if (exists) {
-					console.log(['\'', self.taskData.serverHome, '\' exist, starting testing...'].join(''))
-					self._startJob()
-				}
-				else {
-					console.log(['\'', self.taskData.serverHome, '\' doesn\'t exist, ending testing...'].join(''))
-					//todo all task set to closed
-				}
-			})
+			else {
+				console.log(['\'', this.taskData.serverHome, '\' doesn\'t exist, ending testing...'].join(''))
+			}
 		})
 	}
 
@@ -65,49 +51,21 @@ class Core {
 	 * Take each sub task in loop and synchrony do a task job
 	 */
 	_startJob() {
-		if (this.subTasks.length !== 0) {
+		this._setStream(this.taskData.logPath)
 
-			let tasktodo = this.subTasks.pop()
-
-			var self = this
-			database.connection.query('SELECT * FROM log WHERE subTask_id = ? LIMIT 1', [tasktodo.id], function (err, field) {
-				if (err) {
-					console.error(err)
-					throw err
-				}
-
-				//send message to parent process and inform him about switched file for log
-				self._setStream(field[0].path)
-
-				var lastTask
-
-				switch (tasktodo.type) {
-					case taskHome.TaskType.bruteForce:
-						lastTask = new BruteForceTask(tasktodo.id, self.taskData.serverHome)
-						break;
-					case taskHome.TaskType.other:
-						lastTask = new OtherTask(tasktodo.id, self.taskData.serverHome)
-						break;
-					default:
-						console.log('UNKNOWN TASK TYPE: ' + tasktodo.type)
-						break;
-				}
-
-				async.waterfall([
-					function (callback) {
-						lastTask.start(callback)
-					}, function (callback) {
-						self._markSubTaskDone(tasktodo.id, callback)
-					},
-				], function (err) {
-					self._startJob()
-				})
-			})
+		if (this.taskConfig.taskdata.bruteforcetab !== null && this.taskConfig.taskdata.bruteforcetab.enable) {
+			new BruteForceTask(this.taskConfig, this.taskData.configPath).start()
 		}
-		else {
-			//task array is empty, ve are done
-			this._shutDown()
+		if (this.taskConfig.taskdata.othertab !== null && this.taskConfig.taskdata.othertab.enable) {
+			new OtherTask(this.taskConfig ).start()
 		}
+		if (this.taskConfig.taskdata.xsstab !== null && this.taskConfig.taskdata.xsstab.enable) {
+			console.log('xsstab TAB ENABLE')
+		}
+		if (this.taskConfig.taskdata.sqltab !== null && this.taskConfig.taskdata.sqltab.enable) {
+			console.log('sqltab TAB ENABLE')
+		}
+		this._shutDown()
 	}
 
 	/**
@@ -133,7 +91,7 @@ class Core {
 	 */
 	_markSubTaskDone(tasktodo, wfCallback) {
 		let params = [taskHome.TaskState.done, library.getMySQLTime(), this.taskId]
-		database.connection.query('UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ', params, function (err) {
+		database.connection.query('UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ', params, (err) => {
 			if (err) {
 				console.error(err)
 				throw err

@@ -8,76 +8,69 @@ const taskParent = require('./TaskParent.js')
 const database = require('../utils/Database.js')
 const logger = require('../Logger')
 const request = require('sync-request')
+const sleep = require('system-sleep')
+
 
 const PATH_GIT_CONFIG = '/task_settings/configuration/git_config'
 
 module.exports = class OtherTask extends taskParent {
 
-	constructor(taskId, serverHome) {
-		super(taskId)
-		this.serverHome = serverHome
+	constructor(jsonconfig) {
+		super(jsonconfig)
+		this.serverHome = jsonconfig.serverHome
 	}
 
-	start(coreCallback) {
-		let self = this
-
-		database.connection.query('SELECT * FROM otherTask WHERE subTask_id = ? LIMIT 1', [this.taskId], (err, field) => {
-			if (err) {
-				console.error(err)
-				throw err
-			}
-
-			field = field[0]
-			console.log('OTheR TASK:')
-			console.log(field)
-			async.waterfall([
-				function (callback) {
-					if (field.testHttpHttps === 1) {
-						self._doHttpHttps(callback)
-					}
-					else {
-						callback(null)
-					}
-				},
-				function (callback) {
-					if (field.testJavascriptImport === 1) {
-						self._doJavascriptImport(callback)
-					}
-					else {
-						callback(null)
-					}
-				},
-				function (callback) {
-					if (field.testGitConfig === 1) {
-						self._doGitConfig(callback)
-					}
-					else {
-						callback(null)
-					}
-				},
-				function (callback) {
-					if (field.testPortScan === 1) {
-						database.connection.query('SELECT * FROM portScan WHERE otherTask_id = ? LIMIT 1', [field.id], (err, field) => {
-							if (err) {
-								console.error(err)
-								throw err
-							}
-							console.log(field)
-							self._doPortScan(field[0], self.serverHome, callback)
-						})
-					}
-					else {
-						callback(null)
-					}
-				},
-			], (err) => {
-				console.log('Other task done...')
-				coreCallback(null)
+	start() {
+		console.log("AAAAAAAAAAAAAA")
+		console.log(this.jsonconfig)
+		console.log(this.jsonconfig.taskdata.othertab.data.testJavascriptImport)
+		let state = false
+		async.parallel([
+			(callback) => {
+				if (this.jsonconfig.taskdata.othertab.data.testJavascriptImport) {
+					this._doJavascriptImport(callback)
+				} else {
+					callback()
+				}
+			}, (callback) => {
+				if (this.jsonconfig.taskdata.othertab.data.testHttpHttps) {
+					this._doHttpHttps(callback)
+				} else {
+					callback()
+				}
+			}, (callback) => {
+				if (this.jsonconfig.taskdata.othertab.data.testGitConfig) {
+					this._doGitConfig(callback)
+				} else {
+					callback()
+				}
+			}, (callback) => {
+				if (this.jsonconfig.taskdata.othertab.data.testPortScan) {
+					this._doPortScan([this.jsonconfig.taskdata.othertab.data.testPortScanDataFrom,
+						this.jsonconfig.taskdata.othertab.data.testPortScanDataTo], this.serverHome, callback)
+				} else {
+					callback()
+				}
+			}], (err) => {
+				if (err) {
+					console.error(err)
+					throw err
+				}
+				state = true
 			})
-		})
+
+		while (!state) {
+			sleep(1000)
+		}
+		console.log("ALL DONE")
 	}
 
-	_doHttpHttps(callback) {
+	_doJavascriptImport(cb) {
+		logger.log('debug', 'Starting javascript import test')
+		cb()
+	}
+
+	_doHttpHttps(cb) {
 		logger.log('debug', 'Starting http/https test')
 		console.log(['Checking ', this.serverHome, ' server protocol'].join(''))
 		let url = this.serverHome;
@@ -92,16 +85,11 @@ module.exports = class OtherTask extends taskParent {
 
 			console.log(['Server ', this.serverHome, ' using ', protocol.replace(':', ''), ' protocol'].join(''))
 			browser.close()
-			callback(null)
+			cb()
 		})()
 	}
 
-	_doJavascriptImport(coreCallback) {
-		logger.log('debug', 'Starting javascript import test')
-		coreCallback(null)
-	}
-
-	_doGitConfig(coreCallback) {
+	_doGitConfig(cb) {
 		logger.log('debug', 'Starting gitconfig test')
 
 		let homeUrl = this.serverHome
@@ -119,11 +107,11 @@ module.exports = class OtherTask extends taskParent {
 				callback(null)
 			},
 		], (err) => {
-			coreCallback(null)
+			cb(null)
 		})
 	}
 
-	_doPortScan(field, serverHome, callback) {
+	_doPortScan(field, serverHome, cb) {
 		let tmpHost = serverHome.replace(/(^\w+:|^)\/\//, '').replace('www.', '').replace('/', '')
 		logger.log('debug', 'Starting portscan test')
 
@@ -146,7 +134,7 @@ module.exports = class OtherTask extends taskParent {
 				}
 			})
 			.on('end', () => {
-				callback(null)
+				cb(null)
 			})
 	}
 }

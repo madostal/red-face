@@ -1,6 +1,6 @@
 require('chromedriver')
 const sleep = require('system-sleep')
-
+let fs = require('fs')
 const webdriver = require('selenium-webdriver'),
 	By = webdriver.By,
 	until = webdriver.until
@@ -8,10 +8,10 @@ const webdriver = require('selenium-webdriver'),
 const CHROME_OPTIONS = {
 	// "args": ["--test-type", "--start-maximized", "--headless"]
 	'args': [
-//		'--test-type', 'disable-web-security', '--log-level=3', '--silent',
+		'--test-type', 'disable-web-security', '--log-level=3', '--silent', '--start-maximized', '--headless',
 	],
 	'prefs': {
-	//	'profile.managed_default_content_settings.images': 2,
+		'profile.managed_default_content_settings.images': 2,
 	},
 }
 
@@ -35,13 +35,20 @@ module.exports = class WebDriver {
 	}
 
 	screenShot(path) {
-		this._simplePromiseGuard(() => this.driver.takeScreenshot()
-			.then((image, err) => {
-				console.log(['Failed to print screenshot from selenium:', err].join(' '))
-				require('fs').writeFile(path, image, 'base64', (err) => {
-					console.log(['Failed to print screenshot from selenium:', err].join(' '))
-				})
-			}))
+		// this._simplePromiseGuard(() => this.driver.takeScreenshot()
+		// .then((image, err) => {
+		// 	console.log(['Failed to print screenshot from selenium:', err].join(' '))
+		// 	require('fs').writeFile(path, image, 'base64', (err) => {
+		// 		console.log(['Failed to print screenshot from selenium:', err].join(' '))
+		// 	})
+		// }))
+
+		this.driver.takeScreenshot().then((data) => {
+			fs.writeFile('a.png', data.replace(/^data:image\/png;base64,/, ''), 'base64', (err) => {
+				if (err) throw err
+			})
+		})
+
 	}
 
 	goTo(url, guardTime = GUARD_LOCK_TIME_MS) {
@@ -75,7 +82,7 @@ module.exports = class WebDriver {
 			this.driver.executeAsyncScript(function () {
 				let callback = arguments[arguments.length - 1]
 
-				let selector = 'input[type="text"], input[type="password"], textarea'
+				let selector = 'input:not([readonly])[type="text"], input[type="password"], textarea'
 				callback(document.querySelectorAll(selector).length > 0)
 			})
 		)
@@ -152,7 +159,11 @@ module.exports = class WebDriver {
 	}
 
 	sendKeys(xPath, text) {
-		this.driver.findElement(By.xpath(xPath)).sendKeys(text);
+		this.driver.findElement(By.xpath(xPath)).sendKeys(text)
+	}
+
+	click(xPath) {
+		this.driver.findElement(By.xpath(xPath)).click()
 	}
 
 	_simplePromiseGuard(fn, sleepTime = GUARD_LOCK_TIME_MS) {

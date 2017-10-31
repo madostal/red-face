@@ -1,71 +1,79 @@
 const jetpack = require('fs-jetpack')
 const stringSimilarity = require('string-similarity')
-const database = require('../utils/Database.js')
 const taskParent = require('./TaskParent.js')
 const WebDriver = require('../utils/WebDriver')
 const library = require('../utils/Library')
+const sleep = require('system-sleep')
+const { spawn } = require('child_process')
 
 module.exports = class BruteForceTask extends taskParent {
 
-	constructor(taskId, serverHome) {
-		super(taskId)
-		this.serverHome = serverHome
+	constructor(jsonconfig, configPath) {
+		super(jsonconfig)
+		this.configPath = configPath
+		// this.testik = new WebDriver()
+		// this.testik.goTo('https://www.google.cz/', 0)
 	}
 
-	start(coreCallback) {
-		let self = this
-		console.log(this.taskId)
-		database.connection.query('SELECT * FROM bruteforceTask WHERE subTask_id = ? LIMIT 1', [this.taskId], (err, field) => {
-			if (err) {
-				console.error(err)
-				throw err
-			}
-			field = field[0]
+	start() {
+		let serverHome = this._createUri(this.jsonconfig.serverHome, this.jsonconfig.taskdata.bruteforcetab.data.location)
+		// let webDriver = new WebDriver()
+		console.log(this.jsonconfig.taskdata.bruteforcetab.data)
+		console.log('Starting BruteForceTask')
+		console.log(['Location of login form is: ', this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr].join(''))
+		console.log(['Location of login name input is: ', this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr].join(''))
+		console.log(['Location of login password input is: ', this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr].join(''))
 
-			self.serverHome = self._createUri(self.serverHome, field.urlLocation)
+		let data = null
+		if (this.jsonconfig.taskdata.bruteforcetab.data.useLoginNamesDefault) {
+			let fileData = this._parseInputData(jetpack.read('./task_settings/defaulbruteforce').split(/\r?\n/))
+			data = this._createCombos(fileData[0], fileData[1])
+		} else {
+			data = this._createCombos(this.jsonconfig.taskdata.bruteforcetab.data.loginNames.split(/\r?\n/), this.jsonconfig.taskdata.bruteforcetab.data.loginPsws.split(/\r?\n/))
+		}
+		let totalToTest = data.length
+		console.log(data)
+		let countOfProc = this.jsonconfig.taskdata.bruteforcetab.data.nodes
+		data = this._chunkArr(data, Math.floor(data.length / countOfProc))
+		// console.log(data)ss
+		console.log(['There are ', data.length, ' combination for test on ', countOfProc, ' snodes'].join(''))
 
-			let webDriver = new WebDriver()
+		let startTime = new Date()
+		let count = 0
+		let rem = data.length
 
-			console.log('Starting BruteForceTask')
-			console.log(['Location of login form is: ', field.loginFormXPathExpr].join(''))
-			console.log(['Location of login name input is: ', field.loginNameXPathExpr].join(''))
-			console.log(['Location of login password input is: ', field.loginpswXPathExpr].join(''))
+		for (let i = 0; i < data.length; i++) {
+			let path = ['tmp', '/', 'red_face_config_', 'bruteforce', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
+			console.log(path)
+			jetpack.write(path, data[i])
 
-			webDriver.goTo(self.serverHome, 0)
-			webDriver.doLogin('red-face', '-1', field.loginFormXPathExpr, field.loginNameXPathExpr, field.loginpswXPathExpr, 0)
-			let errorPage = webDriver.getDocumentText(0)
+			const process = spawn('node', ['./task/BruteForceSubTask.js', path, this.configPath, serverHome, i], {
+				stdio: ['ipc', 'pipe', 'pipe'],
+			})
 
-			console.log("READING FIE:" +field.testFilePath)
-			let data = self._parseInputData(jetpack.read(field.testFilePath))
-			console.log(data)
-			data = self._createCombos(data[0][0].split(/\r?\n/), data[1][0].split(/\r?\n/))
-			console.log(['There are ', data.length, ' combination for test'].join(''))
+			process.stdout.on('data', (data) => {
+				console.log(`stderr: ${data}`)
+			})
 
-			let startTime = new Date()
-			let count = 0
-			for (let i = 0; i < data.length; i++) {
-				count++
-				console.log(['---------------------Testing', data[i][0], data[i][1]].join(' '))
+			process.stderr.on('data', (data) => {
+				console.log(`stderr: ${data}`)
+			})
 
-				webDriver.goTo(self.serverHome, 0)
-				webDriver.doLogin(data[i][0], data[i][1], field.loginFormXPathExpr, field.loginNameXPathExpr, field.loginpswXPathExpr, 0)
+			process.on('close', (code) => {
+				rem--
+				console.log("Closing code: " + code)
+			})
 
-				let tmp = webDriver.getDocumentText(0)
-				let similarity = stringSimilarity.compareTwoStrings(errorPage, tmp)
+		}
 
-				if ((similarity * 100) < 1) {
-					console.log('Probably found credentials')
-					console.log([data[i][0], data[i][1]].join(' '))
-					break
-				}
-			}
-
-			console.log(['Avarage:', ((new Date() - startTime) / count), 'ms peer test'].join(' '))
-			console.log(['It took', library.timeDiffNow(startTime), count, 'accout-password tested'].join(' '))
-
-			webDriver.closeDriver()
-			coreCallback(null)
-		})
+		while (rem > 0) {
+			sleep(1000)
+		}
+		console.log("TIME")
+		console.log(startTime)
+		console.log(new Date())
+		console.log(['Avarage:', ((new Date() - startTime) / totalToTest), 'ms peer one test'].join(' '))
+		console.log(['It took', library.timeDiffNow(startTime), totalToTest, 'accout-password tested'].join(' '))
 	}
 
 	/**
@@ -95,7 +103,7 @@ module.exports = class BruteForceTask extends taskParent {
 	_parseInputData(data) {
 		let arr1 = []; let arr2 = []; let tmp = arr1
 
-		for (let loop of data.split('\r\n')) {
+		for (let loop of data) {
 			if (loop.length === 0) {
 				tmp = arr2
 				continue
@@ -121,5 +129,16 @@ module.exports = class BruteForceTask extends taskParent {
 			}
 		}
 		return combos
+	}
+
+	_chunkArr(array, chunk) {
+		let out = []
+		let i, j, temparray
+		for (i = 0, j = array.length; i < j; i += chunk) {
+			temparray = array.slice(i, i + chunk)
+			// do whatever
+			out.push(temparray)
+		}
+		return out
 	}
 }

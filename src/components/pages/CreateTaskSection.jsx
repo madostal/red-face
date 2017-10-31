@@ -11,6 +11,8 @@ import {
 import { browserHistory } from 'react-router'
 import BruteForceTab from 'common/createTaskSection/BruteForceTab'
 import OtherTab from 'common/createTaskSection/OtherTab'
+import XSSTab from 'common/createTaskSection/XSSTab'
+import SQLTab from 'common/createTaskSection/SQLTab'
 import Api from 'utils/Api'
 
 const createStorageIfNotExist = () => {
@@ -67,6 +69,16 @@ export default class CreateTaskSection extends React.Component {
 			otherTab = null
 		}
 
+		let xssTab = JSON.parse(localStorage.getItem('XSSTab'))
+		if (xssTab != null && xssTab.enable === false) {
+			xssTab = null
+		}
+
+		let sqlTab = JSON.parse(localStorage.getItem('SQLTab'))
+		if (sqlTab != null && sqlTab.enable === false) {
+			sqlTab = null
+		}
+
 		let json = JSON.stringify({
 			data: {
 				'taskName': this.state.taskName,
@@ -74,6 +86,8 @@ export default class CreateTaskSection extends React.Component {
 				'taskdata': {
 					'bruteforcetab': bruteForceTab,
 					'othertab': otherTab,
+					'xsstab': xssTab,
+					'sqltab': sqlTab,
 				},
 			},
 		})
@@ -95,15 +109,9 @@ export default class CreateTaskSection extends React.Component {
 
 		const panes = [
 			{ menuItem: 'Brute force', render: () => <Tab.Pane><BruteForceTab /></Tab.Pane> },
+			{ menuItem: 'XSS', render: () => <Tab.Pane ><XSSTab /></Tab.Pane> },
+			{ menuItem: 'SQLTab', render: () => <Tab.Pane ><SQLTab /></Tab.Pane> },
 			{ menuItem: 'Other', render: () => <Tab.Pane><OtherTab /></Tab.Pane> },
-			{ menuItem: 'TODO2', render: () => <Tab.Pane >Tab 2 Content</Tab.Pane> },
-			{ menuItem: 'TODO3', render: () => <Tab.Pane >Tab 3 Content</Tab.Pane> },
-			{ menuItem: 'TODO4', render: () => <Tab.Pane >Tab 4 Content</Tab.Pane> },
-			{ menuItem: 'TODO5', render: () => <Tab.Pane >Tab 5 Content</Tab.Pane> },
-			{ menuItem: 'TODO6', render: () => <Tab.Pane >Tab 6 Content</Tab.Pane> },
-			{ menuItem: 'TODO7', render: () => <Tab.Pane >Tab 7 Content</Tab.Pane> },
-			{ menuItem: 'TODO8', render: () => <Tab.Pane >Tab 8 Content</Tab.Pane> },
-			{ menuItem: 'TODO9', render: () => <Tab.Pane loading>Tab 9 Content</Tab.Pane> },
 		]
 
 		return (

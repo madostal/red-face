@@ -27,7 +27,8 @@ const createStorageIfNotExist = () => {
 			'useLoginNamesDefault': true,
 			'loginNames': '',
 			'loginPsws': '',
-			'location': '',
+			'location': '/',
+			'nodes': '2',
 		},
 	})
 	console.log("SAVING NVOY")
@@ -120,6 +121,7 @@ class Body extends React.Component {
 			loginNames: !json.data.useLoginNamesDefault ? (Array.isArray(json.data.loginNames) ? json.data.loginNames.join('\r\n') : json.data.loginNames) : '',
 			loginPsws: !json.data.useLoginNamesDefault ? (Array.isArray(json.data.loginPsws) ? json.data.loginPsws.join('\r\n') : json.data.loginPsws) : '',
 			location: json.data.location,
+			nodes: json.data.nodes
 		}
 	}
 
@@ -217,6 +219,11 @@ class Body extends React.Component {
 				<Form >
 					<Header as="h5">URL location</Header>
 					<Input onChange={(d, e) => this._componentOnChangeText(d, e)} id={'location'} value={this.state.location} placeholder="Specify url where is form located" fluid />
+				</Form>
+				<Divider hidden />
+				<Form >
+					<Header as="h5">Parallel nodes</Header>
+					<Input onChange={(d, e) => this._componentOnChangeText(d, e)} id={'nodes'} value={this.state.nodes} placeholder="Specify how many nodes do you want use" fluid />
 				</Form>
 				<Divider hidden />
 			</div>

@@ -25,117 +25,23 @@ module.exports = class Pool {
 
 	insertNewTask(data) {
 		logger.log('debug', ['Insert new task ', JSON.stringify(data)].join(''))
-		let self = this
-		let params = { taskName: data.data.taskName, serverHome: data.data.serverHome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10) }
-		database.connection.query('INSERT INTO task SET ?', params, function (err, result) {
+
+		let configFile = this._createConfigFile(data.data.taskName)
+		this._appendDataToFile(JSON.stringify(data.data), configFile)
+
+		let params = { taskName: data.data.taskName, serverHome: data.data.serverHome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10), configPath: configFile, logPath: this._createLogFile(data.data.taskName) }
+		database.connection.query('INSERT INTO task SET ?', params, (err, result) => {
 			if (err) {
 				console.error(err)
 				throw err
 			}
 			let idTask = result.insertId
-
-			async.parallel([
-				function (callback) {
-					if (data.data.taskdata.othertab != null) {
-
-						let params = { state: taskHome.TaskState.created, task_id: idTask, type: taskHome.TaskType.other }
-						database.connection.query('INSERT INTO subTask SET ?', params, function (err, result) {
-							if (err) {
-								console.error(err)
-								throw err
-							}
-							let idSubTask = result.insertId
-
-							let params = { path: self._createLogFile('othertask'), subTask_id: idSubTask }
-							database.connection.query('INSERT INTO log SET ?', params, function (err) {
-								if (err) {
-									console.error(err)
-									throw err
-								}
-							})
-
-							params = { testPortScan: data.data.taskdata.othertab.data.testPortScan, testJavascriptImport: data.data.taskdata.othertab.data.testJavascriptImport, testHttpHttps: data.data.taskdata.othertab.data.testHttpHttps, testGitConfig: data.data.taskdata.othertab.data.testGitConfig, subTask_id: idSubTask }
-							database.connection.query('INSERT INTO otherTask SET ?', params, function (err, result) {
-								if (err) {
-									console.error(err)
-									throw err
-								}
-								if (data.data.taskdata.othertab.data.testPortScan === true) {
-									//is enable port scanning
-									params = { from: data.data.taskdata.othertab.data.testPortScanDataFrom, to: data.data.taskdata.othertab.data.testPortScanDataTo, otherTask_id: result.insertId }
-									database.connection.query('INSERT INTO portScan SET ?', params, function (err, result) {
-										if (err) {
-											console.error(err)
-											throw err
-										}
-										callback(null)
-									})
-								}
-								else {
-									callback(null)
-								}
-							})
-						})
-					}
-					else {
-						callback(null)
-					}
-				},
-				function (callback) {
-					if (data.data.taskdata.bruteforcetab != null) {
-
-						let params = { state: taskHome.TaskState.created, task_id: idTask, type: taskHome.TaskType.bruteForce }
-						database.connection.query('INSERT INTO subTask SET ?', params, function (err, result) {
-							if (err) {
-								console.error(err)
-								throw err
-							}
-							let idSubTask = result.insertId
-
-							let params = { path: self._createLogFile('bruteforcetask'), subTask_id: idSubTask }
-							database.connection.query('INSERT INTO log SET ?', params, function (err) {
-								if (err) {
-									console.error(err)
-									throw err
-								}
-							})
-
-							let fileName = (data.data.taskdata.bruteforcetab.data.idLoginNamesDefault) ? DEFAULT_BRUTE_FORCE_PATH : self._createBruteForcePswFile()
-
-							if (!(data.data.taskdata.bruteforcetab.data.useLoginNamesDefault)) {
-								jetpack.write(fileName, [data.data.taskdata.bruteforcetab.data.loginNames, data.data.taskdata.bruteforcetab.data.loginPsws].join('\r\n\r\n'))
-							}
-
-							params = { subTask_id: idSubTask, loginFormXPathExpr: data.data.taskdata.bruteforcetab.data.loginFormXPathExpr,
-								loginNameXPathExpr: data.data.taskdata.bruteforcetab.data.loginNameXPathExpr, loginpswXPathExpr: data.data.taskdata.bruteforcetab.data.loginPswXPathExpr,
-								 testFilePath: fileName, urlLocation: data.data.taskdata.bruteforcetab.data.location }
-
-							database.connection.query('INSERT INTO bruteforceTask SET ?', params, function (err, result) {
-								if (err) {
-									console.error(err)
-									throw err
-								}
-								callback(null)
-							})
-						})
-					}
-					else {
-						callback(null)
-					}
-				}], function (err) {
-				if (err) {
-					console.error(err)
-					throw err
-				}
-
-				if (self.activeProcess < self.allowProcess) {
-					self._startProcess(idTask)
-				}
-				else {
-					self.poolQueue.push(idTask)
-				}
-			})
-
+			if (this.activeProcess < this.allowProcess) {
+				this._startProcess(idTask)
+			}
+			else {
+				this.poolQueue.push(idTask)
+			}
 		})
 	}
 
@@ -144,7 +50,7 @@ module.exports = class Pool {
 		this.activeProcess++
 
 		let params = [taskHome.TaskState.running, library.getMySQLTime(), id]
-		database.connection.query('UPDATE task SET state = ?, startTime = ?  WHERE id = ?', params, function (err) {
+		database.connection.query('UPDATE task SET state = ?, startTime = ?  WHERE id = ?', params, (err) => {
 			if (err) {
 				console.error(err)
 				throw err
@@ -161,15 +67,15 @@ module.exports = class Pool {
 
 		process.stdout.on('data', (data) => {
 			console.log(`stderr: ${data}`)
-			this._appendLog(data, logFileName)
+			this._appendDataToFile(data, logFileName)
 			this.io.emit(['detail-', id].join(''), { 'data': data.toString('utf8') })
 
 		})
 
 		process.stderr.on('data', (data) => {
 			console.log(`stderr: ${data}`)
-			this._appendLog('STD ERROR', logFileName)
-			this._appendLog(data, logFileName)
+			this._appendDataToFile('STD ERROR', logFileName)
+			this._appendDataToFile(data, logFileName)
 		})
 
 		process.on('close', (code) => {
@@ -178,7 +84,7 @@ module.exports = class Pool {
 			let endTime = library.getMySQLTime()
 
 			let params = [taskFinishedState, endTime, id]
-			database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE  id= ? ', params, function (err) {
+			database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE  id= ? ', params, (err) => {
 				if (err) {
 					throw err
 				}
@@ -200,9 +106,13 @@ module.exports = class Pool {
 		})
 	}
 
+	_createConfigFile(taskname) {
+		return ['config', '/', 'red_face_config_', taskname, '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
+	}
+
 	_createLogFile(taskname) {
 		let file = [this.logFolderPath, '/', 'red_face_log_', taskname, '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
-		this._appendLog('Starting...\n', file)
+		this._appendDataToFile('Starting...\n', file)
 		return file
 	}
 
@@ -211,7 +121,7 @@ module.exports = class Pool {
 		return file
 	}
 
-	_appendLog(message, file) {
+	_appendDataToFile(message, file) {
 		fs.appendFileSync(file, message)
 	}
 
