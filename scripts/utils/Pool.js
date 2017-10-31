@@ -1,14 +1,10 @@
 const library = require('./Library.js')
 const fs = require('fs')
-const async = require('async')
 const { spawn } = require('child_process')
 const taskHome = require('../task/taskHome.js')
 const logger = require('../Logger.js')
-const jetpack = require('fs-jetpack')
 const database = require('./Database.js')
-
 const TMP_FOLDER_PATH = './tmp_folder'
-const DEFAULT_BRUTE_FORCE_PATH = 'task_settings/defaulbruteforce.txt'
 
 module.exports = class Pool {
 

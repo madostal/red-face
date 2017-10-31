@@ -3,9 +3,7 @@ const async = require('async')
 const scan = require('net-scan')
 const portNumbers = require('port-numbers')
 const puppeteer = require('puppeteer')
-
 const taskParent = require('./TaskParent.js')
-const database = require('../utils/Database.js')
 const logger = require('../Logger')
 const request = require('sync-request')
 const sleep = require('system-sleep')
@@ -21,9 +19,6 @@ module.exports = class OtherTask extends taskParent {
 	}
 
 	start() {
-		console.log("AAAAAAAAAAAAAA")
-		console.log(this.jsonconfig)
-		console.log(this.jsonconfig.taskdata.othertab.data.testJavascriptImport)
 		let state = false
 		async.parallel([
 			(callback) => {
@@ -47,7 +42,7 @@ module.exports = class OtherTask extends taskParent {
 			}, (callback) => {
 				if (this.jsonconfig.taskdata.othertab.data.testPortScan) {
 					this._doPortScan([this.jsonconfig.taskdata.othertab.data.testPortScanDataFrom,
-						this.jsonconfig.taskdata.othertab.data.testPortScanDataTo], this.serverHome, callback)
+					this.jsonconfig.taskdata.othertab.data.testPortScanDataTo], this.serverHome, callback)
 				} else {
 					callback()
 				}
@@ -96,10 +91,7 @@ module.exports = class OtherTask extends taskParent {
 		async.waterfall([
 			function (callback) {
 				let data = jetpack.read([process.cwd(), PATH_GIT_CONFIG].join('')).match(/[^\r\n]+/g)
-
-				let res = []
-
-				data.forEach((value) => {
+					data.forEach((value) => {
 					let url = [homeUrl, value].join('')
 					let res = request('GET', url)
 					console.log([url, ': ', res.statusCode].join(''))
