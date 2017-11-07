@@ -131,8 +131,10 @@ module.exports = class Pool {
 			console.log('Proces is empty, err')
 			return
 		}
-
-		proc.kill('SIGINT')
+		proc.send({ message: "kill" })
+		setTimeout(()=>{
+			proc.kill('SIGINT');
+		}, 1000)
 	}
 
 	repeatTask(id) {

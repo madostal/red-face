@@ -6,12 +6,19 @@ const stringSimilarity = require('string-similarity')
 class BruteForceSubTask {
 
 	start(path, configPath, serverHome, id) {
+
+		let webDriver = new WebDriver()
+		let forceExit = false
+
+		process.on('message', () => {
+			forceExit = true
+		})
+
 		this.jsonconfig = JSON.parse(jetpack.read(configPath))
 		let data = JSON.parse(jetpack.read(path))
 
 		console.log(['Starting worker bruteforce id', id, 'with', data.length, 'combinations'].join(' '))
 
-		let webDriver = new WebDriver()
 		webDriver.goTo(serverHome, 0)
 
 		webDriver.doLogin('red-face', '-1', this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr, 0)
@@ -28,6 +35,9 @@ class BruteForceSubTask {
 				console.log('!!!!! Probably found credentials')
 				console.log([data[i][0], data[i][1]].join(' '))
 			}
+			if(forceExit) {
+				break
+			}
 		}
 		webDriver.closeDriver()
 
@@ -37,6 +47,9 @@ class BruteForceSubTask {
 			}
 		})
 
+		if(forceExit) {
+			process.exit()
+		}
 		console.log(['Closing worker id', id].join(' '))
 	}
 }

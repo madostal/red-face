@@ -6,11 +6,13 @@ const library = require('../utils/Library')
 const sleep = require('system-sleep')
 const { spawn } = require('child_process')
 
+
 module.exports = class BruteForceTask extends taskParent {
 
 	constructor(jsonconfig, configPath) {
 		super(jsonconfig)
 		this.configPath = configPath
+		this.listOfChilds = []
 		// this.testik = new WebDriver()
 		// this.testik.goTo('https://www.google.cz/', 0)
 	}
@@ -28,7 +30,8 @@ module.exports = class BruteForceTask extends taskParent {
 		if (this.jsonconfig.taskdata.bruteforcetab.data.useLoginNamesDefault) {
 			let fileData = this._parseInputData(jetpack.read('./task_settings/defaulbruteforce').split(/\r?\n/))
 			data = this._createCombos(fileData[0], fileData[1])
-		} else {
+		}
+		else {
 			data = this._createCombos(this.jsonconfig.taskdata.bruteforcetab.data.loginNames.split(/\r?\n/), this.jsonconfig.taskdata.bruteforcetab.data.loginPsws.split(/\r?\n/))
 		}
 		let totalToTest = data.length
@@ -42,7 +45,7 @@ module.exports = class BruteForceTask extends taskParent {
 		let count = 0
 		let rem = data.length
 
-		let listOfChilds = []
+		//let listOfChilds = []
 		for (let i = 0; i < data.length; i++) {
 			let path = ['writable', '/', 'tmp', '/', 'red_face_config_', 'bruteforce', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
 			console.log(path)
@@ -51,7 +54,7 @@ module.exports = class BruteForceTask extends taskParent {
 			const process = spawn('node', ['./task/BruteForceSubTask.js', path, this.configPath, serverHome, i], {
 				stdio: ['ipc', 'pipe', 'pipe'],
 			})
-			listOfChilds.push(process)
+			this.listOfChilds.push(process)
 
 			process.stdout.on('data', (data) => {
 				console.log(`stderr: ${data}`)
@@ -63,23 +66,22 @@ module.exports = class BruteForceTask extends taskParent {
 
 			process.on('close', (code) => {
 				rem--
-				console.log("Closing code: " + code)
+				console.log('Closing code: ' + code)
 			})
 
 		}
 
-		process.on('exit', () => {
-			console.log(listOfChilds.length)
-			for (let i = 0; i < listOfChilds.length; i++) {
-				console.log(listOfChilds[i])
-				listOfChilds[i].kill('SIGINT')
+		process.on('message', () => {
+			for (let i = 0; i < this.listOfChilds.length; i++) {
+				this.listOfChilds[i].send({ message: 'kill' })
 			}
 		})
 
 		while (rem > 0) {
 			sleep(1000)
 		}
-		console.log("TIME")
+
+		console.log('TIME')
 		console.log(startTime)
 		console.log(new Date())
 		console.log(['Avarage:', ((new Date() - startTime) / totalToTest), 'ms peer one test'].join(' '))
@@ -93,7 +95,7 @@ module.exports = class BruteForceTask extends taskParent {
 	 * @param {String} uri
 	 */
 	_createUri(serverHomeInput, uri) {
-		console.log(serverHomeInput + " VS " + uri)
+		console.log(serverHomeInput + ' VS ' + uri)
 		if (serverHomeInput.endsWith('/') && uri.startsWith('/')) {
 			return [serverHomeInput, uri.substr(1)].join('')
 		}
