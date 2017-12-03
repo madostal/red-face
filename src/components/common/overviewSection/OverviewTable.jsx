@@ -1,5 +1,5 @@
 import React from 'react'
-import browserHistory from 'react-router'
+import { Link } from 'react-router'
 import {
 	Icon,
 	Button,
@@ -62,10 +62,6 @@ export default class OverviewTable extends React.Component {
 		}.bind(this))
 
 		Api.socketRequest('give-me-tasks', {})
-	}
-
-	_open = (e, item) => {
-		browserHistory.push(['/detail-section?key=', item.key].join(''))
 	}
 
 	_repeat = (item) => {
@@ -191,7 +187,7 @@ export default class OverviewTable extends React.Component {
 											}
 										</Table.Cell>
 										<Table.Cell textAlign="center">
-											<Button onClick={(e) => this._open(e, item)} color="blue" icon><Icon name="search" /></Button>
+											<Button as={Link} to={['/detail-section?key=', item.key].join('')} color="blue" icon><Icon name="search" /></Button>
 
 
 											<Modal size="tiny" trigger={<Button disabled={item.state === 1} color="green" icon onClick={() => this._modalAction(item.id, true, 'modalRepeatOpen')}><Icon name="repeat" /></Button>} open={this.state.modalRepeatOpen[item.id] || false}>
