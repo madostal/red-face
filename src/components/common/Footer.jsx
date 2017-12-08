@@ -4,8 +4,7 @@ import {
 	Menu,
 	Icon,
 } from 'semantic-ui-react'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.min.css'
+import { ToastContainer, toast } from 'react-toastify' 
 
 export default class Footer extends React.Component {
 
