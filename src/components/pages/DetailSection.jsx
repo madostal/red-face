@@ -9,7 +9,6 @@ import {
 } from 'semantic-ui-react'
 import Api from 'utils/Api'
 import Library from 'utils/Library'
-import newId from 'utils/Newid'
 
 export default class DetailSection extends React.Component {
 
@@ -22,16 +21,10 @@ export default class DetailSection extends React.Component {
 		}
 	}
 
-	componentWillMount() {
-		this.idLogArea = newId()
-	}
-
 	componentDidMount() {
-		let self = this
-
-		Api.getSocket().on('there-is-task-detail', function (data) {
+		Api.getSocket().on('there-is-task-detail', (data) => {
 			if (Object.keys(data).length > 0) {
-				this.state = {
+				this.setState({
 					taskId: data.id,
 					taskAddTime: data.addTime,
 					taskStartTime: data.startTime,
@@ -41,21 +34,24 @@ export default class DetailSection extends React.Component {
 					taskKey: data.taskKey,
 					taskState: data.state,
 					loading: false,
-				}
+					log: data.log,
+				})
 				if (!this.state.updateBinded) {
-					this.setState = {
+					this.setState({
 						updateBinded: true,
-					}
+					})
+
 					if (this.state.taskState === 1) {
 						//task running
-						Api.getSocket().on(['detail-', this.state.taskId].join(''), function (data) {
-							document.getElementById(self.idLogArea).innerText += data.data
+						Api.getSocket().on(['detail-', this.state.taskId].join(''), (data) => {
+							this.setState({
+								log: this.state.log + data.data
+							})
 						})
 					}
 				}
-				this.forceUpdate()
 			}
-		}.bind(this))
+		})
 
 		Api.socketRequest('give-me-task-detail', { key: this.props.location.query.key })
 	}
@@ -67,6 +63,7 @@ export default class DetailSection extends React.Component {
 
 	render() {
 		let { loading, taskId, taskAddTime, taskStartTime, taskEndTime, taskType, taskName, taskKey, taskState } = this.state
+
 		return (
 			<div className="home-section">
 
@@ -81,11 +78,11 @@ export default class DetailSection extends React.Component {
 						icon="warning sign"
 						header="This task does not exist"
 						list={
-						[
-							'Do you have the right link?',
-							'The task could be deleted.',
-							'Or any other unexpected error occurred.',
-						]
+							[
+								'Do you have the right link?',
+								'The task could be deleted.',
+								'Or any other unexpected error occurred.',
+							]
 						}
 					/>
 				)}
@@ -125,7 +122,7 @@ export default class DetailSection extends React.Component {
 									</List.Header>
 										<List.Description>
 											{
-												((function () {
+												((() => {
 													switch (taskState) {
 														case 1:
 															return 'Running'
@@ -163,7 +160,7 @@ export default class DetailSection extends React.Component {
 									<List.Item>
 										<List.Header>
 											State
-                        </List.Header>
+									</List.Header>
 										<List.Description>
 											{taskState}
 										</List.Description>
@@ -173,7 +170,7 @@ export default class DetailSection extends React.Component {
 							<Grid.Column width={3} textAlign="center" verticalAlign="middle">
 
 								{
-									((function () {
+									((() => {
 										switch (taskState) {
 											case 0:
 												return <Icon name="wait" size="huge" />
@@ -190,7 +187,14 @@ export default class DetailSection extends React.Component {
 								}
 							</Grid.Column>
 							<Divider />
-							<div id={this.idLogArea} />
+						</Grid.Row>
+
+						<Grid.Row columns={1} textAlign="left">
+							<Grid.Column>
+								<pre>
+									{this.state.log}
+								</pre>
+							</Grid.Column>
 						</Grid.Row>
 					</Grid>
 				)}

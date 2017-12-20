@@ -1,6 +1,6 @@
 const LOG_FOLDER = './log_folder'
 const SERVER_PORT = 4200
-
+const jetpack = require('fs-jetpack');
 const fs = require('fs')
 const express = require('express')
 const app = express()
@@ -75,13 +75,13 @@ io.on('connection', function (socket) {
 		}
 		else {
 			let params = [splitKey[0], splitKey[1]]
-			database.connection.query('SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?', params, function (err, fields) {
+			database.connection.query('SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?', params, (err, fields) => {
 				if (err) {
 					logger.log('error', err)
 					throw err
 				}
 				fields = fields[0]
-
+				fields.log = jetpack.read(fields.logPath)
 				io.emit('there-is-task-detail', fields)
 			})
 		}
