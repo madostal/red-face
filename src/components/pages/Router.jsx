@@ -13,7 +13,7 @@ import TaskSummarySection from './TaskSummarySection'
 
 export default class DashboardRouter extends React.Component {
 
-	render() {
+	render = () => {
 		return (
 			<Router history={browserHistory}>
 				<Route component={App}>

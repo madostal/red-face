@@ -26,9 +26,9 @@ export default class OverviewTable extends React.Component {
 			modalRemoveAll: false,
 		}
 
-		Api.getSocket().on('update-overview', function (data) {
+		Api.getSocket().on('update-overview', (data) => {
 			let lastRowData = this.state.result
-			lastRowData.forEach(function (loop) {
+			lastRowData.forEach((loop) => {
 				if (loop.id === data.taskdone) {
 					loop.state = 2
 					loop.endTime = data.endTime
@@ -38,11 +38,11 @@ export default class OverviewTable extends React.Component {
 			this.setState({
 				result: lastRowData,
 			})
-		}.bind(this))
+		})
 
-		Api.getSocket().on('there-are-tasks', function (data) {
+		Api.getSocket().on('there-are-tasks', (data) => {
 			let rowData = []
-			data.reverse().forEach(function (loop) {
+			data.reverse().forEach((loop) => {
 				let tmp = {
 					id: loop.id,
 					addTime: (loop.addTime),
@@ -59,7 +59,7 @@ export default class OverviewTable extends React.Component {
 			})
 			console.log(this.state)
 			// this.forceUpdate()
-		}.bind(this))
+		})
 
 		Api.socketRequest('give-me-tasks', {})
 	}
@@ -274,6 +274,7 @@ export default class OverviewTable extends React.Component {
 												</Button>
 					</Modal.Actions>
 				</Modal>
+				<Divider hidden />
 			</div>
 		)
 	}

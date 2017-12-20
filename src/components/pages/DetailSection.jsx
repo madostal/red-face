@@ -21,7 +21,7 @@ export default class DetailSection extends React.Component {
 		}
 	}
 
-	componentDidMount() {
+	componentDidMount = () => {
 		Api.getSocket().on('there-is-task-detail', (data) => {
 			if (Object.keys(data).length > 0) {
 				this.setState({
@@ -56,12 +56,12 @@ export default class DetailSection extends React.Component {
 		Api.socketRequest('give-me-task-detail', { key: this.props.location.query.key })
 	}
 
-	componentWillUnmount() {
+	componentWillUnmount = () => {
 		Api.getSocket().removeListener(['detail-', this.state.taskId].join(''))
 		Api.getSocket().removeListener('there-is-task-detail')
 	}
 
-	render() {
+	render = () => {
 		let { loading, taskId, taskAddTime, taskStartTime, taskEndTime, taskType, taskName, taskKey, taskState } = this.state
 
 		return (

@@ -4,11 +4,11 @@ import {
 	Message,
 	Icon,
 } from 'semantic-ui-react'
-import Link from 'react-router'
+import { Link } from 'react-router'
 
 export default class TaskSummarySection extends React.Component {
 
-	render() {
+	render = () => {
 		return (
 			<Message icon info>
 				<Icon name='check' />

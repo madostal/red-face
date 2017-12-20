@@ -15,7 +15,7 @@ export default class App extends React.Component {
 		super(props)
 	}
 
-	render() {
+	render = () => {
 
 		const path = this.props.location.pathname
 
