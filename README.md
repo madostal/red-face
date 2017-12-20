@@ -1,6 +1,6 @@
 # Red Face - security testing of web applications
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b48a90f177b74ea8b182ea156f629adc)](https://www.codacy.com/app/JaLe29/red-face?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JaLe29/red-face&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a7c3925f9a224d52a5d079b77c83d24e)](https://www.codacy.com/app/JaLe29/red-face?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JaLe29/red-face&amp;utm_campaign=Badge_Grade)
 
 ## What is Red Face
 
