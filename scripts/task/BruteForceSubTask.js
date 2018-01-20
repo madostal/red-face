@@ -5,7 +5,7 @@ const stringSimilarity = require('string-similarity')
 
 class BruteForceSubTask {
 
-	start(path, configPath, serverHome, id) {
+	async start(path, configPath, serverHome, id) {
 
 		let webDriver = new WebDriver()
 		let forceExit = false
@@ -19,38 +19,34 @@ class BruteForceSubTask {
 
 		console.log(['Starting worker bruteforce id', id, 'with', data.length, 'combinations'].join(' '))
 
-		webDriver.goTo(serverHome, 0)
+		await webDriver.goTo(serverHome)
 
-		webDriver.doLogin('red-face', '-1', this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr, 0)
-		let errorPage = webDriver.getDocumentText(0)
+		await webDriver.doLogin('red-face', '-1', this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
+		let errorPage = await webDriver.getDocumentText()
+
 		for (let i = 0; i < data.length; i++) {
-			console.log(['---------------------Testing', data[i][0], data[i][1]].join(' '))
-			webDriver.goTo(serverHome, 0)
-			webDriver.doLogin(data[i][0], data[i][1], this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr, 0)
-
-			let tmp = webDriver.getDocumentText(0)
+			console.log(['Worker:', id, , '|', 'Testing', data[i][0], data[i][1]].join(' '))
+			await webDriver.goTo(serverHome)
+			await webDriver.doLogin(data[i][0], data[i][1], this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
+			let tmp = await webDriver.getDocumentText()
 			let similarity = stringSimilarity.compareTwoStrings(errorPage, tmp)
-
 			if ((similarity * 100) < 1) {
 				console.log('!!!!! Probably found credentials')
 				console.log([data[i][0], data[i][1]].join(' '))
 			}
-			if(forceExit) {
+			if (forceExit) {
 				break
 			}
 		}
-		webDriver.closeDriver()
 
+		await webDriver.closeDriver()
 		fs.unlink(path, (err) => {
 			if (err) {
 				throw err
 			}
-		})
-
-		if(forceExit) {
+			console.log(['Closing worker id', id].join(' '))
 			process.exit()
-		}
-		console.log(['Closing worker id', id].join(' '))
+		})
 	}
 }
 
