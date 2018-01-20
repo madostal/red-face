@@ -53,7 +53,7 @@
 		"no-multiple-empty-lines": "warn",
 		"brace-style": [
 			"warn",
-			"stroustrup"
+			"1tbs"
 		],
 		"no-multi-spaces": [
 			"warn"
