@@ -1,7 +1,7 @@
 import React from 'react'
 import OverviewTable from 'common/overviewSection/OverviewTable'
 
-export default class Overview extends React.Component {
+export default class OverviewPage extends React.Component {
 
 	render = () => {
 		return (

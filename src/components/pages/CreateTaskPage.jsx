@@ -28,7 +28,7 @@ const readStorage = () => {
 	return JSON.parse(localStorage.getItem('MainTab'))
 }
 
-export default class CreateTaskSection extends React.Component {
+export default class CrreateTaskPage extends React.Component {
 
 	constructor(props) {
 		super(props)

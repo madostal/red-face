@@ -6,7 +6,7 @@ import {
 } from 'semantic-ui-react'
 import { Link } from 'react-router'
 
-export default class TaskSummarySection extends React.Component {
+export default class TaskSummaryPage extends React.Component {
 
 	render = () => {
 		return (

@@ -5,11 +5,10 @@ import {
 	browserHistory,
 } from 'react-router'
 import App from './App'
-import HomeSection from './HomeSection'
-import CreateTaskSection from './CreateTaskSection'
-import OverviewSection from './OverviewSection'
-import DetailSection from './DetailSection'
-import TaskSummarySection from './TaskSummarySection'
+import CreateTaskPage from './CreateTaskPage'
+import OverviewPage from './OverviewPage'
+import DetailPage from './DetailPage'
+import TaskSummaryPage from './TaskSummaryPage'
 
 export default class DashboardRouter extends React.Component {
 
@@ -17,12 +16,11 @@ export default class DashboardRouter extends React.Component {
 		return (
 			<Router history={browserHistory}>
 				<Route component={App}>
-					<Route path="/" component={HomeSection} />
-					<Route path="/home" component={HomeSection} />
-					<Route path="/overview" component={OverviewSection} />
-					<Route path="/create-task" component={CreateTaskSection} />
-					<Route path="/detail-section" component={DetailSection} />
-					<Route path="/task-summary" component={TaskSummarySection} />
+					<Route path="/" component={OverviewPage} />
+					<Route path="/overview" component={OverviewPage} />
+					<Route path="/create-task" component={CreateTaskPage} />
+					<Route path="/detail/:key" component={DetailPage} />
+					<Route path="/task-summary" component={TaskSummaryPage} />
 				</Route>
 			</Router>
 		)

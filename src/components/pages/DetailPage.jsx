@@ -7,14 +7,14 @@ import {
 	Icon,
 	Divider,
 } from 'semantic-ui-react'
+import PropTypes from 'prop-types'
 import Api from 'utils/Api'
 import Library from 'utils/Library'
 
-export default class DetailSection extends React.Component {
+export default class DetailPage extends React.Component {
 
 	constructor(props) {
 		super(props)
-
 		this.state = {
 			loading: true,
 			updateBinded: false,
@@ -53,7 +53,7 @@ export default class DetailSection extends React.Component {
 			}
 		})
 
-		Api.socketRequest('give-me-task-detail', { key: this.props.location.query.key })
+		Api.socketRequest('give-me-task-detail', { key: this.props.params.key })
 	}
 
 	componentWillUnmount = () => {
@@ -201,4 +201,10 @@ export default class DetailSection extends React.Component {
 			</div>
 		)
 	}
+}
+
+DetailPage.propTypes = {
+	params: PropTypes.shape({
+		key: PropTypes.string.isRequired,
+	}),
 }
