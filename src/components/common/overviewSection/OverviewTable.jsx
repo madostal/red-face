@@ -7,10 +7,20 @@ import {
 	Header,
 	Loader,
 	Table,
+	Dropdown,
+	Menu,
+	Grid,
 	Divider,
 } from 'semantic-ui-react'
 import Api from 'utils/Api'
 import Library from 'utils/Library'
+
+const PAGGING_OPTIONS = [
+	{ key: 1, text: '10', value: 10 },
+	{ key: 2, text: '50', value: 50 },
+	{ key: 3, text: '100', value: 100 },
+	{ key: 4, text: '1000', value: 100 },
+]
 
 export default class OverviewTable extends React.Component {
 
@@ -18,12 +28,17 @@ export default class OverviewTable extends React.Component {
 		super(props)
 
 		this.state = {
+			originalData: [],
 			result: [],
 			redirect: false,
 			modalRemoveTaskOpen: {},
 			modalStopTaskOpen: {},
 			modalRepeatOpen: {},
 			modalRemoveAll: false,
+
+			tableActivePage: 0,
+			tableActiveIndexDd: PAGGING_OPTIONS[0].value,
+			tableCountOfPages: 0,
 		}
 
 		Api.getSocket().on('update-overview', (data) => {
@@ -36,7 +51,7 @@ export default class OverviewTable extends React.Component {
 			})
 
 			this.setState({
-				result: lastRowData,
+				c: lastRowData,
 			})
 		})
 
@@ -55,10 +70,10 @@ export default class OverviewTable extends React.Component {
 			})
 
 			this.setState({
-				result: rowData,
+				originalData: rowData,
 			})
-			console.log(this.state)
-			// this.forceUpdate()
+			this._paggingAction(PAGGING_OPTIONS[0].value)
+			this._switchPage(0)
 		})
 
 		Api.socketRequest('give-me-tasks', {})
@@ -72,6 +87,7 @@ export default class OverviewTable extends React.Component {
 
 	_removeAll = () => {
 		this.setState({
+			originalData: [],
 			result: [],
 			redirect: false,
 			modalRemoveTaskOpen: {},
@@ -104,9 +120,7 @@ export default class OverviewTable extends React.Component {
 		this.interval = setInterval(function () {
 			self.forceUpdate()
 		}, 1000)
-		for (let i = 0; i < 10; i++) {
-			console.log(i)
-		}
+		//??
 	}
 
 	componentWillUnmount = () => {
@@ -116,15 +130,116 @@ export default class OverviewTable extends React.Component {
 	}
 
 	_modalAction = (itemid, open, modalstate) => {
-		console.log(this.state[modalstate])
 		let tmp = this.state[modalstate]
-		tmp[itemid] = open;
+		tmp[itemid] = open
 		this.setState({ [modalstate]: tmp })
-		console.log(this.state[modalstate])
+	}
+
+	_switchPage = (activePage, tableActiveIndexDdIn) => {
+		let resData = []
+		if (!tableActiveIndexDdIn) {
+			tableActiveIndexDdIn = this.state.tableActiveIndexDd
+		}
+		let down = activePage * tableActiveIndexDdIn
+		let top = (activePage * tableActiveIndexDdIn) + tableActiveIndexDdIn
+
+		for (let i = down; i < top; i++) {
+			if (this.state.originalData[i]) {
+				resData.push(this.state.originalData[i])
+			}
+		}
+		this.setState({
+			tableActivePage: activePage,
+			result: resData,
+		})
+		this.forceUpdate()
+	}
+
+	_paggingAction = (value) => {
+		let cop = Math.ceil(this.state.originalData.length / value) - 1
+		this.setState({
+			tableCountOfPages: cop,
+			tableActiveIndexDd: value,
+		})
+		this._switchPage(0, value)
+	}
+
+	_paggingDropDownClick = (e, { value }) => {
+		this._paggingAction(value)
+	}
+
+	_pageUp = () => {
+		if (this.state.tableActivePage === this.state.tableCountOfPages) {
+			return
+		}
+		let activePage = this.state.tableActivePage + 1
+		this.setState({
+			tableActivePage: activePage,
+		})
+		this._switchPage(activePage)
+	}
+
+	_pageUpLast = () => {
+		let activePage = this.state.tableCountOfPages
+		this.setState({
+			tableActivePage: activePage,
+		})
+		this._switchPage(activePage)
+	}
+
+	_pageDown = () => {
+		if (this.state.tableActivePage === 0) {
+			return
+		}
+		let activePage = this.state.tableActivePage - 1
+		this.setState({
+			tableActivePage: activePage,
+		})
+		this._switchPage(activePage)
+	}
+
+	_pageDownLast = () => {
+		let activePage = 0
+		this.setState({
+			tableActivePage: activePage,
+		})
+		this._switchPage(activePage)
+	}
+
+	_selectPage = (e, { name }) => {
+		this.setState({
+			tableActivePage: parseInt(name),
+		})
+		this._switchPage(name)
+	}
+
+	_buildPaggingItem = (i) => {
+		return <Menu.Item as='a'
+			name={i.toString()}
+			key={i.toString()}
+			onClick={this._selectPage}
+			active={this.state.tableActivePage === i}>
+			{i + 1}
+		</Menu.Item>
 	}
 
 	render = () => {
 		let { result } = this.state
+
+		let pagging = []
+		let activePage = this.state.tableActivePage
+		let countOfPages = this.state.tableCountOfPages
+
+		for (let i = activePage; i >= activePage - 2; i--) {
+			if (i < 0) break
+			pagging.unshift(this._buildPaggingItem(i))
+		}
+
+		for (let i = activePage + 1; i < activePage + 3; i++) {
+			if (i > countOfPages) break
+			pagging.push(this._buildPaggingItem(i))
+		}
+
 		return (
 			<div>
 				<Table celled padded selectable>
@@ -188,8 +303,6 @@ export default class OverviewTable extends React.Component {
 										</Table.Cell>
 										<Table.Cell textAlign="center">
 											<Button as={Link} to={['/detail/', item.key].join('')} color="blue" icon><Icon name="search" /></Button>
-
-
 											<Modal size="tiny" trigger={<Button disabled={item.state === 1} color="green" icon onClick={() => this._modalAction(item.id, true, 'modalRepeatOpen')}><Icon name="repeat" /></Button>} open={this.state.modalRepeatOpen[item.id] || false}>
 												<Header icon="trash" content="Remove task?" />
 												<Modal.Content>Are you sure, that you want to repeat this task?</Modal.Content>
@@ -249,6 +362,46 @@ export default class OverviewTable extends React.Component {
 							})}
 						</Table.Body>
 					)}
+					<Table.Footer>
+						<Table.Row>
+							<Table.HeaderCell colSpan='100%'>
+								<Grid columns='equal' reversed='computer'>
+									<Grid.Row>
+										<Grid.Column textAlign='right'>
+											<Menu floated='right' pagination>
+												<Menu.Item as='a' icon onClick={this._pageDownLast}>
+													<Icon name='left chevron' />
+													<Icon name='left chevron' />
+												</Menu.Item>
+												<Menu.Item as='a' icon onClick={this._pageDown}>
+													<Icon name='left chevron' />
+												</Menu.Item>
+												{pagging}
+												<Menu.Item as='a' icon onClick={this._pageUp}>
+													<Icon name='right chevron' />
+												</Menu.Item>
+												<Menu.Item as='a' icon onClick={this._pageUpLast}>
+													<Icon name='right chevron' />
+													<Icon name='right chevron' />
+												</Menu.Item>
+												<Menu.Item>
+													{this.state.tableCountOfPages + 1}
+												</Menu.Item>
+											</Menu>
+										</Grid.Column>
+										<Grid.Column textAlign='left'>
+											<Dropdown value={this.state.tableActiveIndexDd}
+												compact
+												selection
+												options={PAGGING_OPTIONS}
+												onChange={this._paggingDropDownClick}
+											/>
+										</Grid.Column>
+									</Grid.Row>
+								</Grid>
+							</Table.HeaderCell>
+						</Table.Row>
+					</Table.Footer>
 				</Table>
 				<Divider hidden />
 				<Modal size="tiny" trigger={<Button color="red" icon onClick={() => this.setState({ modalRemoveAll: true })}>Remove all<Icon name="trash" /></Button>} open={this.state.modalRemoveAll}>
@@ -263,11 +416,9 @@ export default class OverviewTable extends React.Component {
 							<Icon name="remove" /> No
 												</Button>
 						<Button color="green" onClick={() => {
-							console.log(this.state)
 							this.setState({
 								modalRemoveAll: false,
 							})
-							console.log(this.state)
 							this._removeAll()
 						}}>
 							<Icon name="checkmark" /> Yes
