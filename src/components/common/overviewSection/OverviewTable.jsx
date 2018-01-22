@@ -4,6 +4,7 @@ import {
 	Icon,
 	Button,
 	Modal,
+	Segment,
 	Header,
 	Loader,
 	Table,
@@ -12,6 +13,8 @@ import {
 	Grid,
 	Divider,
 } from 'semantic-ui-react'
+
+import TableNotes from './../TableNotes'
 import Api from 'utils/Api'
 import Library from 'utils/Library'
 
@@ -425,6 +428,11 @@ export default class OverviewTable extends React.Component {
 												</Button>
 					</Modal.Actions>
 				</Modal>
+				<Divider />
+				<Segment basic clearing floated='right' size='mini'>
+					<Header as='h5'>Explanation of the table</Header>
+					<TableNotes />
+				</Segment>
 				<Divider hidden />
 			</div>
 		)
