@@ -4,6 +4,7 @@ import {
 	Menu,
 	Icon,
 } from 'semantic-ui-react'
+import ScrollToTop from 'react-scroll-up'
 import { ToastContainer, toast } from 'react-toastify'
 
 export default class Footer extends React.Component {
@@ -59,11 +60,14 @@ export default class Footer extends React.Component {
 	render = () => {
 		return (
 			<div className="create-task-section">
+				<ScrollToTop showUnder={160}>
+					<Icon name='chevron up' />
+				</ScrollToTop>
 				<Sidebar as={Menu} animation="overlay" direction="bottom" visible={this.state.visible} inverted>
 					<Menu.Item name="home">
 						<Icon name="power cord" />
 						We are sorry, it"s seems that server is down
-                </Menu.Item>
+				</Menu.Item>
 				</Sidebar>
 				<ToastContainer
 					position="bottom-left"
