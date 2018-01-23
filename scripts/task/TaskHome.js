@@ -12,8 +12,7 @@ const TaskType = Object.freeze({
 	'other': 1,
 })
 
-module.exports =
-{
+module.exports = {
 	TaskState,
 	TaskType,
 }

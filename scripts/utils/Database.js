@@ -5,10 +5,10 @@ const connection = mysql.createConnection({
 	user: 'root',
 	password: '',
 	database: 'red-face',
-    // debug: true,
+	// debug: true,
 })
 
-connection.connect(function (err) {
+connection.connect(err => {
 	if (err) {
 		console.error(err)
 		throw err

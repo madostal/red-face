@@ -6,7 +6,7 @@ const moment = require('moment')
  *
  * @return {String} actual mysql TIMESTAMP
  */
-exports.getMySQLTime = function () {
+exports.getMySQLTime = () => {
 	return (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ')
 }
 
@@ -17,7 +17,7 @@ exports.getMySQLTime = function () {
  *
  * @return {String} text in your range
  */
-exports.getRandomTextInRange = function (range = 5) {
+exports.getRandomTextInRange = (range = 5) => {
 	let text = ''
 	let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 	for (let i = 0; i < range; i++) {
@@ -30,7 +30,7 @@ exports.getRandomTextInRange = function (range = 5) {
  * Check if URL exist using send request to url - can be used to validat url
  *
  */
-exports.urlExists = function (url, cb) {
+exports.urlExists = (url, cb) => {
 	request({ url: url, method: 'HEAD' }, (err, res) => {
 		if (err) {
 			return cb(null, false)
@@ -39,6 +39,6 @@ exports.urlExists = function (url, cb) {
 	})
 }
 
-exports.timeDiffNow = function (timeToDiff) {
+exports.timeDiffNow = (timeToDiff) => {
 	return moment.utc(moment(new Date()).diff(moment(timeToDiff))).format('HH:mm:ss')
 }
