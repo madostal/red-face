@@ -19,8 +19,10 @@ module.exports = class OtherTask extends taskParent {
 	}
 
 	start() {
+		console.log("CONFIG")
+		console.log(this.jsonconfig.taskdata.othertab.data)
 		let state = false
-		async.parallel([
+		async.waterfall([
 			(callback) => {
 				if (this.jsonconfig.taskdata.othertab.data.testJavascriptImport) {
 					this._doJavascriptImport(callback)
@@ -40,9 +42,12 @@ module.exports = class OtherTask extends taskParent {
 					callback()
 				}
 			}, (callback) => {
+				console.log('STARTING PORT SC')
 				if (this.jsonconfig.taskdata.othertab.data.testPortScan) {
-					this._doPortScan([this.jsonconfig.taskdata.othertab.data.testPortScanDataFrom,
-					this.jsonconfig.taskdata.othertab.data.testPortScanDataTo], this.serverHome, callback)
+					this._doPortScan({
+						from: this.jsonconfig.taskdata.othertab.data.testPortScanDataFrom,
+						to: this.jsonconfig.taskdata.othertab.data.testPortScanDataTo,
+					}, this.serverHome, callback)
 				} else {
 					callback()
 				}
@@ -91,7 +96,7 @@ module.exports = class OtherTask extends taskParent {
 		async.waterfall([
 			function (callback) {
 				let data = jetpack.read([process.cwd(), PATH_GIT_CONFIG].join('')).match(/[^\r\n]+/g)
-					data.forEach((value) => {
+				data.forEach((value) => {
 					let url = [homeUrl, value].join('')
 					let res = request('GET', url)
 					console.log([url, ': ', res.statusCode].join(''))
@@ -109,24 +114,30 @@ module.exports = class OtherTask extends taskParent {
 
 		console.log(['Starting port scan on range: ', field.from, ' - ', field.to, ' on ', tmpHost].join(''))
 
-		scan.port({
-			host: tmpHost,
-			start: field.from,
-			end: field.to,
-			timeout: 1000,
-			queue: 1000,
-		})
-			.on('open', (port) => {
-				let portString = portNumbers.getService(port)
-				if (portString === null) {
-					console.log(port)
-				}
-				else {
-					console.log([portString.name, ' on ', port, ' - (', portString.description, ')'].join(''))
-				}
+		if (!Number.isInteger(field.from) || !Number.isInteger(field.to)) {
+			console.log(['Invalids ports from: ', field.from, ', to: ', field.to].join(''))
+			cb()
+		} else {
+
+			scan.port({
+				host: tmpHost,
+				start: field.from,
+				end: field.to,
+				timeout: 1000,
+				queue: 1000,
 			})
-			.on('end', () => {
-				cb(null)
-			})
+				.on('open', (port) => {
+					let portString = portNumbers.getService(port)
+					if (portString === null) {
+						console.log(port)
+					}
+					else {
+						console.log([portString.name, ' on ', port, ' - (', portString.description, ')'].join(''))
+					}
+				})
+				.on('end', () => {
+					cb(null)
+				})
+		}
 	}
 }
