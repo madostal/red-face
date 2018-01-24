@@ -22,10 +22,10 @@ module.exports = class Pool {
 	insertNewTask(data) {
 		logger.log('debug', ['Insert new task ', JSON.stringify(data)].join(''))
 
-		let configFile = this._createConfigFile(data.data.taskName)
-		this._appendDataToFile(JSON.stringify(data.data), configFile)
+		let configFile = this._createConfigFile(data.taskName)
+		this._appendDataToFile(JSON.stringify(data), configFile)
 
-		let params = { taskName: data.data.taskName, serverHome: data.data.serverHome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10), configPath: configFile, logPath: this._createLogFile(data.data.taskName) }
+		let params = { taskName: data.taskName, serverHome: data.serverHome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10), configPath: configFile, logPath: this._createLogFile(data.taskName) }
 		this.insertNewTaskToDb(params)
 	}
 
@@ -46,6 +46,7 @@ module.exports = class Pool {
 	}
 
 	_startProcess(id) {
+
 		let logFileName = 'tmp.txt'
 		this.activeProcess++
 
@@ -127,12 +128,12 @@ module.exports = class Pool {
 
 	killTask(taskId) {
 		let proc = this.processMap.get(taskId)
-		if (!proc   ) {
+		if (!proc) {
 			console.log('Proces is empty, err')
 			return
 		}
 		proc.send({ message: "kill" })
-		setTimeout(()=>{
+		setTimeout(() => {
 			proc.kill('SIGINT');
 		}, 1000)
 	}

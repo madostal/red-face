@@ -53,18 +53,19 @@ class Core {
 	_startJob() {
 		this._setStream(this.taskData.logPath)
 
-		if (this.taskConfig.taskdata.bruteforcetab !== null && this.taskConfig.taskdata.bruteforcetab.enable) {
+		if (this.taskConfig.taskdata.bruteforcetab.data !== null && this.taskConfig.taskdata.bruteforcetab.data.enable) {
 			new BruteForceTask(this.taskConfig, this.taskData.configPath).start()
 		}
-		if (this.taskConfig.taskdata.othertab !== null && this.taskConfig.taskdata.othertab.enable) {
-			new OtherTask(this.taskConfig ).start()
+		if (this.taskConfig.taskdata.othertab.data !== null && this.taskConfig.taskdata.othertab.data.enable) {
+			new OtherTask(this.taskConfig).start()
 		}
-		if (this.taskConfig.taskdata.xsstab !== null && this.taskConfig.taskdata.xsstab.enable) {
+		if (this.taskConfig.taskdata.xsstab.data !== null && this.taskConfig.taskdata.xsstab.data.enable) {
 			console.log('xsstab TAB ENABLE')
 		}
-		if (this.taskConfig.taskdata.sqltab !== null && this.taskConfig.taskdata.sqltab.enable) {
-			console.log('sqltab TAB ENABLE')
-		}
+		// if (this.taskConfig.taskdata.sqltab.data !== null
+		// 	&& this.taskConfig.taskdata.sqltab.data.enable) {
+		// 	console.log('sqltab TAB ENABLE')
+		// }
 		this._shutDown()
 	}
 

@@ -61,7 +61,7 @@ const restarter = (flagName, type) => {
 
 const createDefaultStore = () => {
 	let obj = {
-		taskName: '',
+		taskname: '',
 		serverHome: '',
 		taskdata: {
 			bruteforcetab: {},
@@ -108,22 +108,36 @@ export default class CrreateTaskPage extends React.Component {
 
 	constructor(props) {
 		super(props)
-		this.state = createDefaultStore()
+		let conf = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME))
+
+		if (!conf) {
+			conf = createDefaultStore()
+		}
+		console.log('Constructor')
+		console.log(conf)
+		this.state = conf
 	}
 
 	_componentOnChangeText = (d, e) => {
+		//because set state is async
+		let tmp = this.state
+		tmp[e.id] = e.value
+
 		this.setState({
 			[e.id]: e.value,
 		})
+		console.log(this.state)
+		localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(tmp))
 	}
 
 	_createTask = () => {
+		console.log(this.state)
+		Api.socketRequest('taskcreate', JSON.stringify(this.state))
 		browserHistory.push('/task-summary')
-		Api.socketRequest('taskcreate', this.state)
 	}
 
 	_removeAllTasks = () => {
-		localStorage.clear()
+		localStorage.removeItem(LOCAL_STORAGE_NAME)
 		this.state = createDefaultStore()
 		this.forceUpdate()
 	}
@@ -146,7 +160,11 @@ export default class CrreateTaskPage extends React.Component {
 		this.setState({
 			taskdata: tmp,
 		})
-		localStorage.setItem(LOCAL_STORAGE_NAME, this.state)
+		localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify({
+			taskname: this.state.taskname,
+			serverHome: this.state.serverHome,
+			taskdata: tmp,
+		}))
 	}
 
 	render = () => {
@@ -214,14 +232,22 @@ export default class CrreateTaskPage extends React.Component {
 					<Grid>
 						<Grid.Row columns={2} textAlign="right">
 							<Grid.Column>
-								<Input id={'serverHome'} onChange={(d, e) => this._componentOnChangeText(d, e)} value={this.state.serverHome} placeholder="Server home" />
+								<Input
+									id={'serverHome'}
+									onChange={(d, e) => this._componentOnChangeText(d, e)}
+									value={this.state.serverHome}
+									placeholder="Server home" />
 							</Grid.Column>
 							<Grid.Column>
 							</Grid.Column>
 						</Grid.Row>
 						<Grid.Row columns={2} textAlign="right">
 							<Grid.Column>
-								<Input id={'taskName'} onChange={(d, e) => this._componentOnChangeText(d, e)} value={this.state.taskName} placeholder="Task name" />
+								<Input
+									id={'taskname'}
+									onChange={(d, e) => this._componentOnChangeText(d, e)}
+									value={this.state.taskname}
+									placeholder="Task name" />
 							</Grid.Column>
 							<Grid.Column>
 								<Button onClick={() => this._createTask()} color="green">Start task</Button>

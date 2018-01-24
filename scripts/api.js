@@ -43,21 +43,21 @@ function checkDeadTasks() {
 	})
 }
 
-io.on('connection', function (socket) {
+io.on('connection', (socket) => {
 
 	/**
 	 * On create new task
 	 */
-	socket.on('taskcreate', function (input) {
+	socket.on('taskcreate', (input) => {
 		let json = JSON.parse(input)
-		io.emit('taskcreate', json.data.taskname)
+		io.emit('taskcreate', json.taskname)
 		poolInstance.insertNewTask(json)
 	})
 
 	/**
 	 * Return all tasks
 	 */
-	socket.on('give-me-tasks', function (input) {
+	socket.on('give-me-tasks', (input) => {
 		database.connection.query('SELECT * FROM task', [], function (err, fields) {
 			if (err) {
 				logger.log('error', err)
@@ -67,7 +67,7 @@ io.on('connection', function (socket) {
 		})
 	})
 
-	socket.on('give-me-task-detail', function (input) {
+	socket.on('give-me-task-detail', (input) => {
 		let splitKey = input.key.split('_')
 		if (splitKey.length !== 2) {
 			//possible wrong key
@@ -87,18 +87,16 @@ io.on('connection', function (socket) {
 		}
 	})
 
-	socket.on('remove-task', function (input) {
-		let params = [input.id]
-
+	socket.on('remove-task', (input) => {
 		poolInstance.removeTask(input.id)
 	})
 
-	socket.on('repeat-task', function (input) {
+	socket.on('repeat-task', (input) => {
 		logger.log('debug', ['Repeat task id: ', input.id].join(''))
 		poolInstance.repeatTask(input.id)
 	})
 
-	socket.on('stop-task', function (input) {
+	socket.on('stop-task', (input) => {
 		logger.log('debug', ['Stop task id: ', input.id].join(''))
 		poolInstance.killTask(input.id)
 	})
