@@ -9,45 +9,106 @@ import {
 	Divider,
 } from 'semantic-ui-react'
 import { browserHistory } from 'react-router'
-import BruteForceTab from 'common/createTaskSection/BruteForceTab'
-import OtherTab from 'common/createTaskSection/OtherTab'
-import XSSTab from 'common/createTaskSection/XSSTab'
-import SQLTab from 'common/createTaskSection/SQLTab'
 import Api from 'utils/Api'
 
-const createStorageIfNotExist = () => {
-	let json = JSON.stringify({
-		'taskName': '',
-		'serverHome': '',
-	})
-	localStorage.setItem('MainTab', json)
-	return json
+import Parent from './../common/createTaskSection/Parent'
+
+import BruteForceTab from './../common/createTaskSection/childs/BruteForceTab'
+import XSSTab from './../common/createTaskSection/childs/XSSTab'
+import OtherTab from './../common/createTaskSection/childs/OtherTab'
+
+const defaultXPathForm = '//form//input[@type=\'text\' or @type=\'email\']//ancestor::form//input[@type=\'password\']//ancestor::form'
+const defaultXPathFormInput = ['(', [defaultXPathForm, '//input'].join(''), ')[1]'].join('')
+const defaultXPathFormPsw = ['(', [defaultXPathForm, '//input'].join(''), ')[2]'].join('')
+
+const DEFAULT_XSS = [
+	'\'\">><marquee><img src=x onerror=confirm(1)></marquee>\"></plaintext\></|\><script>prompt(1)</script>@gmail.com<isindex formaction=javascript:alert(/XSS/) type=submit>\'-->\"></script><script>alert(document.cookie)</script>\"><img/id=\"confirm&lpar;1)\"/alt=\"/\"src=\"/\"onerror=eval(id)>\'\"><img src=\"http://www.shellypalmer.com/wp-content/images/2015/07/hacked-compressor.jpg\">',
+	'second',
+]
+
+const BRUTE_FORCE_BOOL = {
+	enable: { enable: true },
+	useDefaulXPath: {
+		loginFormXPathExpr: defaultXPathForm,
+		loginNameXPathExpr: defaultXPathFormInput,
+		loginPswXPathExpr: defaultXPathFormPsw,
+	},
+	useLoginNamesDefault: {
+		loginNames: '',
+		loginPsws: '',
+	}
 }
 
-const readStorage = () => {
-	return JSON.parse(localStorage.getItem('MainTab'))
+const XSS_BOOL = {
+	useDefault: {
+		userSettings: DEFAULT_XSS,
+	},
 }
+
+const GLOBAL_DATA = {
+	bruteforcetab: BRUTE_FORCE_BOOL,
+	xsstab: XSS_BOOL,
+}
+
+const restarter = (flagName, type) => {
+	if (GLOBAL_DATA[type]) {
+		if (GLOBAL_DATA[type][flagName]) {
+			return GLOBAL_DATA[type][flagName]
+		}
+	}
+	return
+}
+
+const createDefaultStore = () => {
+	let obj = {
+		taskName: '',
+		serverHome: '',
+		taskdata: {
+			bruteforcetab: {},
+			othertab: {},
+			xsstab: {},
+			sqltab: {},
+		},
+	}
+
+	//bruteforce
+	obj.taskdata.bruteforcetab.data = {}
+	obj.taskdata.bruteforcetab.data.enable = false
+	obj.taskdata.bruteforcetab.data.useDefaulXPath = true
+	obj.taskdata.bruteforcetab.data.loginFormXPathExpr = defaultXPathForm
+	obj.taskdata.bruteforcetab.data.loginNameXPathExpr = defaultXPathFormInput
+	obj.taskdata.bruteforcetab.data.loginPswXPathExpr = defaultXPathFormPsw
+	obj.taskdata.bruteforcetab.data.useLoginNamesDefault = true
+	obj.taskdata.bruteforcetab.data.loginNames = ''
+	obj.taskdata.bruteforcetab.data.loginPsws = ''
+	obj.taskdata.bruteforcetab.data.location = '/'
+	obj.taskdata.bruteforcetab.data.nodes = '2'
+
+	//xss
+	obj.taskdata.xsstab.data = {}
+	obj.taskdata.xsstab.data.enable = false
+	obj.taskdata.xsstab.data.userSettings = DEFAULT_XSS
+	obj.taskdata.xsstab.data.useDefault = true
+
+	//other
+	obj.taskdata.othertab.data = {}
+	obj.taskdata.othertab.data.enable = false
+	obj.taskdata.othertab.data.testJavascriptImport = true
+	obj.taskdata.othertab.data.testHttpHttps = true
+	obj.taskdata.othertab.data.testGitConfig = true
+	obj.taskdata.othertab.data.testPortScan = true
+	obj.taskdata.othertab.data.testPortScanDataFrom = 1
+	obj.taskdata.othertab.data.testPortScanDataTo = 1000
+	return obj
+}
+
+const LOCAL_STORAGE_NAME = 'config'
 
 export default class CrreateTaskPage extends React.Component {
 
 	constructor(props) {
 		super(props)
-
-		let json = null
-		if (localStorage.getItem('MainTab') === null) {
-			json = createStorageIfNotExist()
-		}
-		else {
-			json = readStorage()
-		}
-		this.state = {
-			taskName: json.taskName,
-			serverHome: json.serverHome,
-		}
-	}
-
-	componentWillUnmount = () => {
-		this._saveData()
+		this.state = createDefaultStore()
 	}
 
 	_componentOnChangeText = (d, e) => {
@@ -57,61 +118,91 @@ export default class CrreateTaskPage extends React.Component {
 	}
 
 	_createTask = () => {
-		this._saveData()
 		browserHistory.push('/task-summary')
-		let bruteForceTab = JSON.parse(localStorage.getItem('BruteForceTab'))
-		if (bruteForceTab != null && bruteForceTab.enable === false) {
-			bruteForceTab = null
-		}
-
-		let otherTab = JSON.parse(localStorage.getItem('OtherTab'))
-		if (otherTab != null && otherTab.enable === false) {
-			otherTab = null
-		}
-
-		let xssTab = JSON.parse(localStorage.getItem('XSSTab'))
-		if (xssTab != null && xssTab.enable === false) {
-			xssTab = null
-		}
-
-		let sqlTab = JSON.parse(localStorage.getItem('SQLTab'))
-		if (sqlTab != null && sqlTab.enable === false) {
-			sqlTab = null
-		}
-
-		let json = JSON.stringify({
-			data: {
-				'taskName': this.state.taskName,
-				'serverHome': this.state.serverHome,
-				'taskdata': {
-					'bruteforcetab': bruteForceTab,
-					'othertab': otherTab,
-					'xsstab': xssTab,
-					'sqltab': sqlTab,
-				},
-			},
-		})
-		Api.socketRequest('taskcreate', json)
-	}
-
-	_saveData = () => {
-		let json = readStorage()
-		json = this.state
-		localStorage.setItem('MainTab', JSON.stringify(json))
+		Api.socketRequest('taskcreate', this.state)
 	}
 
 	_removeAllTasks = () => {
 		localStorage.clear()
-		window.location.reload()
+		this.state = createDefaultStore()
+		this.forceUpdate()
+	}
+
+	_print = (name, val, par) => {
+		if (typeof par === 'string' || par instanceof String) {
+			par = par.toLowerCase()
+		}
+
+		let tmp = this.state.taskdata
+		let restartData = restarter(name, par)
+		//req for restart data
+		if (val && restartData) {
+			tmp[par]['data'][name] = val
+			Object.keys(restartData).map(e => tmp[par]['data'][e] = restartData[e])
+		} else {
+			tmp[par]['data'][name] = val
+		}
+
+		this.setState({
+			taskdata: tmp,
+		})
+		localStorage.setItem(LOCAL_STORAGE_NAME, this.state)
 	}
 
 	render = () => {
 
 		const panes = [
-			{ menuItem: 'Brute force', render: () => <Tab.Pane><BruteForceTab /></Tab.Pane> },
-			{ menuItem: 'XSS', render: () => <Tab.Pane ><XSSTab /></Tab.Pane> },
-			{ menuItem: 'SQLTab', render: () => <Tab.Pane ><SQLTab /></Tab.Pane> },
-			{ menuItem: 'Other', render: () => <Tab.Pane><OtherTab /></Tab.Pane> },
+			{
+				menuItem: 'Brute force', render: () => <Tab.Pane>
+					<Parent
+						header='Brute force'
+						storeFn={this._print}
+						isEnable={this.state.taskdata.bruteforcetab.data.enable}
+						name='BruteForceTab'
+						child={
+							<BruteForceTab
+								storeFn={this._print}
+								data={this.state.taskdata.bruteforcetab}
+								name='BruteForceTab'
+							/>
+						}
+					/>
+				</Tab.Pane>,
+			},
+			{
+				menuItem: 'XSS', render: () => <Tab.Pane>
+					<Parent
+						header='XSS'
+						storeFn={this._print}
+						isEnable={this.state.taskdata.xsstab.data.enable}
+						name='XSSTab'
+						child={
+							<XSSTab
+								storeFn={this._print}
+								data={this.state.taskdata.xsstab}
+								name='XSSTab'
+							/>
+						}
+					/>
+				</Tab.Pane>,
+			},
+			{
+				menuItem: 'Other', render: () => <Tab.Pane>
+					<Parent
+						header='Other'
+						storeFn={this._print}
+						isEnable={this.state.taskdata.othertab.data.enable}
+						name='OtherTab'
+						child={
+							<OtherTab
+								storeFn={this._print}
+								data={this.state.taskdata.othertab}
+								name='OtherTab'
+							/>
+						}
+					/>
+				</Tab.Pane>,
+			},
 		]
 
 		return (
@@ -138,7 +229,7 @@ export default class CrreateTaskPage extends React.Component {
 						</Grid.Row>
 					</Grid>
 					<Divider inverted />
-					<Button onClick={() => this._removeAllTasks()} inverted color="red" size="tiny">Remove</Button>
+					<Button onClick={() => this._removeAllTasks()} inverted color="red" size="tiny">Remove last config</Button>
 				</Segment>
 			</div >
 		)
