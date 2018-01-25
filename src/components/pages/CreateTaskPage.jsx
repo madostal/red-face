@@ -7,6 +7,8 @@ import {
 	Header,
 	Input,
 	Divider,
+	TextArea,
+	Form,
 } from 'semantic-ui-react'
 import { browserHistory } from 'react-router'
 import Api from 'utils/Api'
@@ -132,7 +134,22 @@ export default class CrreateTaskPage extends React.Component {
 
 	_createTask = () => {
 		console.log(this.state)
-		Api.socketRequest('taskcreate', JSON.stringify(this.state))
+		let home = this.state.serverHome.split(/\r?\n/)
+		if (home.length > 1) {
+			//more the one task
+			let stateTmp = this.state
+			let iterator = 1
+			home.forEach(el => {
+				let toSend = stateTmp
+				toSend.serverHome = el
+				toSend.taskname = [toSend.taskname, ' ', iterator, '/', el.length].join('')
+				iterator++
+				Api.socketRequest('taskcreate', JSON.stringify(toSend))
+			})
+		} else {
+			Api.socketRequest('taskcreate', JSON.stringify(this.state))
+		}
+
 		browserHistory.push('/overview')
 	}
 
@@ -230,15 +247,17 @@ export default class CrreateTaskPage extends React.Component {
 				<Segment>
 					<Header as="h3">Starter</Header>
 					<Grid>
-						<Grid.Row columns={2} textAlign="right">
+						<Grid.Row columns={1} textAlign="right">
 							<Grid.Column>
-								<Input
-									id={'serverHome'}
-									onChange={(d, e) => this._componentOnChangeText(d, e)}
-									value={this.state.serverHome}
-									placeholder="Server home" />
-							</Grid.Column>
-							<Grid.Column>
+								<Form>
+									<TextArea
+										fluid
+										id={'serverHome'}
+										onChange={(d, e) => this._componentOnChangeText(d, e)}
+										value={this.state.serverHome}
+										placeholder="Server home"
+									/>
+								</Form>
 							</Grid.Column>
 						</Grid.Row>
 						<Grid.Row columns={2} textAlign="right">
@@ -247,7 +266,9 @@ export default class CrreateTaskPage extends React.Component {
 									id={'taskname'}
 									onChange={(d, e) => this._componentOnChangeText(d, e)}
 									value={this.state.taskname}
-									placeholder="Task name" />
+									placeholder="Task name"
+									fluid
+								/>
 							</Grid.Column>
 							<Grid.Column>
 								<Button onClick={() => this._createTask()} color="green">Start task</Button>
