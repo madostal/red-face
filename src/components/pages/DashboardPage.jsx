@@ -13,7 +13,7 @@ import Helper from '../common/popup/Helper'
 import CustomAccordion from '../common/CustomAccordion'
 import Api from 'utils/Api'
 
-export default class SystemPage extends React.Component {
+export default class DashboardPage extends React.Component {
 
 
 	constructor(props) {

@@ -251,7 +251,6 @@ export default class CrreateTaskPage extends React.Component {
 							<Grid.Column>
 								<Form>
 									<TextArea
-										fluid
 										id={'serverHome'}
 										onChange={(d, e) => this._componentOnChangeText(d, e)}
 										value={this.state.serverHome}

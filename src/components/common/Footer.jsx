@@ -6,6 +6,7 @@ import {
 } from 'semantic-ui-react'
 import ScrollToTop from 'react-scroll-up'
 import { ToastContainer, toast } from 'react-toastify'
+import Api from 'utils/Api'
 
 export default class Footer extends React.Component {
 
@@ -25,34 +26,38 @@ export default class Footer extends React.Component {
 
 
 	_toastInfo = (body) => {
-		this.state.toast = 'info'
+		this.setState({
+			toast: 'info',
+		})
 		toast.info(body)
 	}
 
 	_toastSuccess = (body) => {
-		this.state.toast = 'success'
+		this.setState({
+			toast: 'success',
+		})
 		toast.success(body)
 	}
 
 	_handleSocket = () => {
 
-		this.props.socket.on('connect_error', () => {
+		Api.getSocket().on('connect_error', () => {
 			this.setState({ visible: true })
 		})
 
-		this.props.socket.on('connect', () => {
+		Api.getSocket().on('connect', () => {
 			this.setState({ visible: false })
 		})
 
-		this.props.socket.on('taskcreate', (data) => {
+		Api.getSocket().on('taskcreate', (data) => {
 			this._toastInfo('The task ' + data + ' was scheduled')
 		})
 
-		this.props.socket.on('taskdone', () => {
+		Api.getSocket().on('taskdone', () => {
 			this._toastSuccess('Task done')
 		})
 
-		this.props.socket.on('taskstart', () => {
+		Api.getSocket().on('taskstart', () => {
 			this._toastInfo('Task start')
 		})
 	}

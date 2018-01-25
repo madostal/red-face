@@ -1,9 +1,9 @@
 import React from 'react'
-import HeaderMenu from 'common/HeaderMenu'
+import PropTypes from 'prop-types'
+import HeaderMenu from 'common/menu/HeaderMenu'
 import Footer from 'common/Footer'
-import '../../styles/userstyles.css'
-import '../../images/fav.ico'
-import Api from 'utils/Api'
+import '../styles/userstyles.css'
+import '../images/fav.ico'
 
 export default class App extends React.Component {
 
@@ -18,8 +18,12 @@ export default class App extends React.Component {
 				<div className="app-view-container ui container">
 					{this.props.children}
 				</div>
-				<Footer socket={Api.getSocket()} />
+				<Footer />
 			</div>
 		)
 	}
+}
+
+App.propTypes = {
+	children: PropTypes.element.isRequired,
 }

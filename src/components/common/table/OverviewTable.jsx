@@ -14,8 +14,8 @@ import {
 	Divider,
 } from 'semantic-ui-react'
 
-import TableNotes from './../TableNotes'
-import TableFilter from './../TableFiltex'
+import TableNotes from './TableNotes'
+import TableFilter from './TableFiltex'
 import Api from 'utils/Api'
 import Library from 'utils/Library'
 
@@ -151,7 +151,7 @@ export default class OverviewTable extends React.Component {
 
 		for (let i = down; i < top; i++) {
 			if (this.state.originalData[i]) {
-				console.log(this.state.filter)
+				// console.log(this.state.filter)
 				if (this.state.filter[this.state.originalData[i].state])
 					resData.push(this.state.originalData[i])
 			}

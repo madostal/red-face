@@ -10,7 +10,7 @@ export default class HeaderMenu extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			activeItem: 'home'
+			activeItem: 'home',
 		}
 	}
 
@@ -23,11 +23,11 @@ export default class HeaderMenu extends React.Component {
 		return (
 			<Menu fixed="top" inverted>
 				<div className="ui container">
+					<Menu.Item name='dashboard' active={(activeItem === 'dashboard')} as={Link} to="/dashboard">
+						<Icon name="dashboard" /> Dashboard
+					</Menu.Item>
 					<Menu.Item name='overview' active={(activeItem === 'overview')} as={Link} to="/overview">
 						<Icon name="list" /> Overview
-					</Menu.Item>
-					<Menu.Item name='system' active={(activeItem === 'system')} as={Link} to="/system">
-						<Icon name="cogs" /> System
 					</Menu.Item>
 					<Menu.Menu position="right" >
 						<Menu.Item name='createtask' active={(activeItem === 'createtask')} as={Link} to="/create-task">
