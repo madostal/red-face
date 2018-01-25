@@ -33,4 +33,5 @@ export default class BodyParent extends React.Component {
 
 BodyParent.propTypes = {
 	storeFn: PropTypes.func.isRequired,
+	name: PropTypes.string.isRequired,
 }

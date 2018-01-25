@@ -10,8 +10,8 @@ const io = require('socket.io')(server)
 const cpuStat = require('cpu-stat')
 
 const database = require('./utils/Database.js')
-const Pool = require('./utils/pool.js')
-const poolInstance = new Pool(io, LOG_FOLDER)
+
+const poolInstance = new (require('./utils/pool.js'))(io, LOG_FOLDER)
 
 const taskHome = require('./task/TaskHome.js')
 const library = require('./utils/Library.js')
@@ -45,23 +45,34 @@ function checkDeadTasks() {
 
 io.on('connection', (socket) => {
 
-	const systemStats = () => {
-		console.log("SETTING INTERVAL")
-		setInterval(() => {
-			cpuStat.usagePercent((err, percent, seconds) => {
-				if (err) {
-					return console.log(err);
-				}
-				let json = {
-					cpu: percent,
-				}
-				io.emit('system-stats', json)
-				console.log(json)
-			})
-		}, 1000)
-	}
+	/**
+	 * Get system statistics
+	 */
+	socket.on('get-system-stats', (input) => {
+		cpuStat.usagePercent((err, percent) => {
+			if (err) {
+				return console.log(err)
+			}
+			let json = {
+				cpu: percent,
+				activeProcess: poolInstance.getCountOfRunningProcess(),
+				maxProcess: poolInstance.getAllowProcess(),
+				queueStatus: poolInstance.getActualQueueSize(),
+			}
+			socket.emit('system-stats', json)
+		})
+	})
 
-	systemStats()
+	socket.on('set-system-settings', (input) => {
+		if (input.maxActiveTasks) {
+			let num = parseInt(input.maxActiveTasks)
+			if (Number.isInteger(num)) {
+				if (num > 0 && num < 100) {
+					poolInstance.setAllowProcess(input.maxActiveTasks)
+				}
+			}
+		}
+	})
 
 	/**
 	 * On create new task

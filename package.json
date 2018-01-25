@@ -40,6 +40,7 @@
 		"react-router-dom": "^4.2.2",
 		"react-scroll-up": "^1.3.3",
 		"react-toastify": "^3.3.0",
+		"recharts": "^1.0.0-beta.9",
 		"selenium-webdriver": "^3.6.0",
 		"semantic-ui-css": "^2.2.12",
 		"semantic-ui-react": "^0.71.5",

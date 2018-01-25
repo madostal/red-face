@@ -209,4 +209,30 @@ module.exports = class Pool {
 			}
 		})
 	}
+
+	/**
+	 *Return number of workers which are available for testing
+	 */
+	getAllowProcess() {
+		return this.allowProcess
+	}
+
+	setAllowProcess(num) {
+		//TODO update queue
+		this.allowProcess = num
+	}
+
+	/**
+	 * Return count of running process
+	 */
+	getCountOfRunningProcess() {
+		return this.activeProcess
+	}
+
+	/**
+	 * Return count of task in queue
+	 */
+	getActualQueueSize() {
+		return this.poolQueue.length
+	}
 }
