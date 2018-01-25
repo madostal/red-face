@@ -1,5 +1,6 @@
 import React from 'react'
 import CpuGraph from './../common/graph/CpuGraph'
+import TaskStatusRepresentation from './../common/graph/TaskStatusRepresentation'
 import {
 	Table,
 	Grid,
@@ -7,6 +8,7 @@ import {
 	Button,
 	Header,
 	Icon,
+	Divider,
 	Input,
 } from 'semantic-ui-react'
 import Helper from '../common/popup/Helper'
@@ -14,7 +16,6 @@ import CustomAccordion from '../common/CustomAccordion'
 import Api from 'utils/Api'
 
 export default class DashboardPage extends React.Component {
-
 
 	constructor(props) {
 		super(props)
@@ -31,6 +32,7 @@ export default class DashboardPage extends React.Component {
 			queueStatus: NaN,
 			data: [],
 			cpuusage: !true,
+			taskstate: this._makeRepresentationData([])
 		}
 
 		Api.getSocket().on('system-stats', (d) => {
@@ -39,8 +41,9 @@ export default class DashboardPage extends React.Component {
 				data: this._processBuffer(d.cpu),
 				actualActiveTasks: d.activeProcess,
 				maxActiveTasks: d.maxProcess,
-				queueStatus:d.queueStatus,
+				queueStatus: d.queueStatus,
 				maxActiveTasksEdited: (!this.wasLoaded ? d.maxProcess : this.state.maxActiveTasksEdited),
+				taskstate: this._makeRepresentationData(d.stats),
 			})
 
 			this.wasLoaded = true
@@ -48,6 +51,19 @@ export default class DashboardPage extends React.Component {
 		Api.socketRequest('get-system-stats', {})
 	}
 
+	_makeRepresentationData = (data) => {
+		let o = [
+			{ name: 'Planed', number: 0 },
+			{ name: 'In progress', number: 0 },
+			{ name: 'Successful', number: 0 },
+			{ name: 'Failed', number: 0 },
+			{ name: 'Killed', number: 0 },
+		]
+		data.forEach(e => {
+			o[e.state].number = e.count
+		})
+		return o
+	}
 	componentDidMount = () => {
 		this.interval = setInterval(() => Api.socketRequest('get-system-stats', {}), 1000)
 	}
@@ -120,7 +136,7 @@ export default class DashboardPage extends React.Component {
 								<Icon name='configure' />
 								<Header.Content>
 									| System overview
-								</Header.Content>
+							</Header.Content>
 							</Header>
 						}
 						content={
@@ -132,19 +148,19 @@ export default class DashboardPage extends React.Component {
 											<Header as='h4' >
 												<Header.Content>
 													CPU usage
-												</Header.Content>
+								</Header.Content>
 											</Header>
 										</Table.Cell>
 										<Table.Cell>
 											{this.state.cpupercentage}%
-										</Table.Cell>
+						</Table.Cell>
 									</Table.Row>
 									<Table.Row>
 										<Table.Cell>
 											<Header as='h4' >
 												<Header.Content>
 													Actual active tasks
-												</Header.Content>
+								</Header.Content>
 												<Header.Subheader>
 													<Helper
 														header='Actual active tasks'
@@ -161,8 +177,8 @@ export default class DashboardPage extends React.Component {
 										<Table.Cell>
 											<Header as='h4' >
 												<Header.Content>
-												Queue status
-												</Header.Content>
+													Queue status
+											</Header.Content>
 												<Header.Subheader>
 													<Helper
 														header='Queue status'
@@ -212,6 +228,24 @@ export default class DashboardPage extends React.Component {
 					<CustomAccordion
 						header={
 							<Header as='h3'>
+								<Icon name='tasks' />
+								<Header.Content>
+									| Task representation
+								</Header.Content>
+							</Header>
+						}
+						content={
+							<TaskStatusRepresentation
+								data={this.state.taskstate}
+							/>
+						}
+					/>
+				</Segment>
+
+				<Segment>
+					<CustomAccordion
+						header={
+							<Header as='h3'>
 								<Icon name='area graph' />
 								<Header.Content>
 									| CPU usage
@@ -237,6 +271,7 @@ export default class DashboardPage extends React.Component {
 						}
 					/>
 				</Segment>
+				<Divider hidden />
 			</div>
 		)
 	}

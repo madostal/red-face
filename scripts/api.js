@@ -53,13 +53,20 @@ io.on('connection', (socket) => {
 			if (err) {
 				return console.log(err)
 			}
-			let json = {
-				cpu: percent,
-				activeProcess: poolInstance.getCountOfRunningProcess(),
-				maxProcess: poolInstance.getAllowProcess(),
-				queueStatus: poolInstance.getActualQueueSize(),
-			}
-			socket.emit('system-stats', json)
+			database.connection.query('select state, count(*) as count from task group by state', (err, fields) => {
+				if (err) {
+					logger.log('error', err)
+					throw err
+				}
+				let json = {
+					cpu: percent,
+					activeProcess: poolInstance.getCountOfRunningProcess(),
+					maxProcess: poolInstance.getAllowProcess(),
+					queueStatus: poolInstance.getActualQueueSize(),
+					stats: fields,
+				}
+				socket.emit('system-stats', json)
+			})
 		})
 	})
 
