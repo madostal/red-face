@@ -9,6 +9,7 @@ import {
 	Header,
 	Icon,
 	Divider,
+	Statistic,
 	Input,
 } from 'semantic-ui-react'
 import Helper from '../common/popup/Helper'
@@ -139,87 +140,108 @@ export default class DashboardPage extends React.Component {
 							</Header.Content>
 							</Header>
 						}
-						content={
-							<Table basic='very' collapsing>
 
-								<Table.Body>
-									<Table.Row>
-										<Table.Cell>
-											<Header as='h4' >
-												<Header.Content>
-													CPU usage
-								</Header.Content>
-											</Header>
-										</Table.Cell>
-										<Table.Cell>
-											{this.state.cpupercentage}%
-						</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell>
-											<Header as='h4' >
-												<Header.Content>
-													Actual active tasks
-								</Header.Content>
-												<Header.Subheader>
-													<Helper
-														header='Actual active tasks'
-														content='Specifies how many tasks are currently in progress'
-													/>
-												</Header.Subheader>
-											</Header>
-										</Table.Cell>
-										<Table.Cell>
-											{this.state.actualActiveTasks}/{this.state.maxActiveTasks}
-										</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell>
-											<Header as='h4' >
-												<Header.Content>
-													Queue status
-											</Header.Content>
-												<Header.Subheader>
-													<Helper
-														header='Queue status'
-														content='Specifies how many tasks are waiting for the startup in queue'
-													/>
-												</Header.Subheader>
-											</Header>
-										</Table.Cell>
-										<Table.Cell>
-											{this.state.queueStatus}
-										</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell>
-											<Header as='h4' >
-												<Header.Content>
-													Max active tasks
-												</Header.Content>
-												<Header.Subheader>
-													<Helper
-														header='Max active tasks'
-														content='Specifies how many tasks can run parallel'
-													/>
-												</Header.Subheader>
-											</Header>
-										</Table.Cell>
-										<Table.Cell>
-											<Input action={
-												<Button
-													icon='save'
-													onClick={this._saveMaxActiveTasks}
-													active={this.state.maxActiveTasks === this.state.maxActiveTasksEdited}
-												/>
-											}
-												value={this.state.maxActiveTasksEdited}
-												onChange={this._maxActiveTasksChanged}
-											/>
-										</Table.Cell>
-									</Table.Row>
-								</Table.Body>
-							</Table>
+						content={
+
+							<Grid columns='equal' reversed='computer' >
+								<Grid.Row>
+									<Grid.Column textAlign='center' verticalAlign='middle'>
+										<Statistic>
+											<Statistic.Value>
+												{(() => {
+													let sum = 0
+													this.state.taskstate.forEach(e => sum += e.number)
+													return sum
+												})()}
+											</Statistic.Value>
+											<Statistic.Label>
+												total tasks
+												</Statistic.Label>
+										</Statistic>
+									</Grid.Column>
+									<Grid.Column textAlign='center' verticalAlign='middle'>
+										<Table basic='very' collapsing>
+											<Table.Body>
+												<Table.Row>
+													<Table.Cell>
+														<Header as='h4' >
+															<Header.Content>
+																CPU usage
+														</Header.Content>
+														</Header>
+													</Table.Cell>
+													<Table.Cell>
+														{this.state.cpupercentage}%
+												</Table.Cell>
+												</Table.Row>
+												<Table.Row>
+													<Table.Cell>
+														<Header as='h4' >
+															<Header.Content>
+																Actual active tasks
+														</Header.Content>
+															<Header.Subheader>
+																<Helper
+																	header='Actual active tasks'
+																	content='Specifies how many tasks are currently in progress'
+																/>
+															</Header.Subheader>
+														</Header>
+													</Table.Cell>
+													<Table.Cell>
+														{this.state.actualActiveTasks}/{this.state.maxActiveTasks}
+													</Table.Cell>
+												</Table.Row>
+												<Table.Row>
+													<Table.Cell>
+														<Header as='h4' >
+															<Header.Content>
+																Queue status
+															</Header.Content>
+															<Header.Subheader>
+																<Helper
+																	header='Queue status'
+																	content='Specifies how many tasks are waiting for the startup in queue'
+																/>
+															</Header.Subheader>
+														</Header>
+													</Table.Cell>
+													<Table.Cell>
+														{this.state.queueStatus}
+													</Table.Cell>
+												</Table.Row>
+												<Table.Row>
+													<Table.Cell>
+														<Header as='h4' >
+															<Header.Content>
+																Max active tasks
+															</Header.Content>
+															<Header.Subheader>
+																<Helper
+																	header='Max active tasks'
+																	content='Specifies how many tasks can run parallel'
+																/>
+															</Header.Subheader>
+														</Header>
+													</Table.Cell>
+													<Table.Cell>
+														<Input action={
+															<Button
+																icon='save'
+																onClick={this._saveMaxActiveTasks}
+																active={this.state.maxActiveTasks === this.state.maxActiveTasksEdited}
+															/>
+														}
+															value={this.state.maxActiveTasksEdited}
+															onChange={this._maxActiveTasksChanged}
+														/>
+													</Table.Cell>
+												</Table.Row>
+											</Table.Body>
+										</Table>
+									</Grid.Column>
+								</Grid.Row>
+							</Grid>
 						}
 					/>
 				</Segment>
@@ -255,7 +277,6 @@ export default class DashboardPage extends React.Component {
 						}
 					/>
 				</Segment>
-
 				<Segment>
 					<CustomAccordion
 						header={
