@@ -133,7 +133,7 @@ export default class CrreateTaskPage extends React.Component {
 	_createTask = () => {
 		console.log(this.state)
 		Api.socketRequest('taskcreate', JSON.stringify(this.state))
-		browserHistory.push('/task-summary')
+		browserHistory.push('/overview')
 	}
 
 	_removeAllTasks = () => {

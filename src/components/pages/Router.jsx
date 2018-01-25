@@ -8,7 +8,6 @@ import App from './App'
 import CreateTaskPage from './CreateTaskPage'
 import OverviewPage from './OverviewPage'
 import DetailPage from './DetailPage'
-import TaskSummaryPage from './TaskSummaryPage'
 import SystemPage from './SystemPage'
 
 export default class DashboardRouter extends React.Component {
@@ -22,7 +21,6 @@ export default class DashboardRouter extends React.Component {
 					<Route path="/system" component={SystemPage} />
 					<Route path="/create-task" component={CreateTaskPage} />
 					<Route path="/detail/:key" component={DetailPage} />
-					<Route path="/task-summary" component={TaskSummaryPage} />
 				</Route>
 			</Router>
 		)
