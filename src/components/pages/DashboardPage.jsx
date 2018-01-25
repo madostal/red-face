@@ -235,9 +235,23 @@ export default class DashboardPage extends React.Component {
 							</Header>
 						}
 						content={
-							<TaskStatusRepresentation
-								data={this.state.taskstate}
-							/>
+							<div>
+								<Grid columns='equal' reversed='computer'>
+									<Grid.Row>
+										<Grid.Column textAlign='right'>
+											<Helper
+												header='Task representation'
+												content='This chart show how task are represented in summary of all tasks'
+											/>
+										</Grid.Column>
+									</Grid.Row>
+								</Grid>
+								<Segment loading={this.state.loading} vertical>
+									<TaskStatusRepresentation
+										data={this.state.taskstate}
+									/>
+								</Segment>
+							</div>
 						}
 					/>
 				</Segment>
