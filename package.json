@@ -20,6 +20,7 @@
 		"body-parser": "^1.18.2",
 		"chromedriver": "^2.34.1",
 		"compression": "^1.7.1",
+		"cpu-stat": "^2.0.1",
 		"css-loader": "^0.28.9",
 		"deasync": "^0.1.12",
 		"express": "^4.16.2",

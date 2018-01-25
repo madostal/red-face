@@ -7,7 +7,7 @@ const app = express()
 const server = require('http')
 	.createServer(app)
 const io = require('socket.io')(server)
-
+const cpuStat = require('cpu-stat')
 
 const database = require('./utils/Database.js')
 const Pool = require('./utils/pool.js')
@@ -44,6 +44,24 @@ function checkDeadTasks() {
 }
 
 io.on('connection', (socket) => {
+
+	const systemStats = () => {
+		console.log("SETTING INTERVAL")
+		setInterval(() => {
+			cpuStat.usagePercent((err, percent, seconds) => {
+				if (err) {
+					return console.log(err);
+				}
+				let json = {
+					cpu: percent,
+				}
+				io.emit('system-stats', json)
+				console.log(json)
+			})
+		}, 1000)
+	}
+
+	systemStats()
 
 	/**
 	 * On create new task

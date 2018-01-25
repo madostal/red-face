@@ -25,11 +25,14 @@ export default class HeaderMenu extends React.Component {
 				<div className="ui container">
 					<Menu.Item name='overview' active={(activeItem === 'overview')} as={Link} to="/overview">
 						<Icon name="list" /> Overview
-						</Menu.Item>
+					</Menu.Item>
+					<Menu.Item name='system' active={(activeItem === 'system')} as={Link} to="/system">
+						<Icon name="cogs" /> System
+					</Menu.Item>
 					<Menu.Menu position="right" >
 						<Menu.Item name='createtask' active={(activeItem === 'createtask')} as={Link} to="/create-task">
 							<Icon name="plus" /> Create task
-						</Menu.Item>
+					</Menu.Item>
 					</Menu.Menu>
 				</div>
 			</Menu>
