@@ -1,5 +1,5 @@
 import React from 'react'
-import OverviewTable from 'common/overviewSection/OverviewTable'
+import OverviewTable from 'common/table/OverviewTable'
 
 export default class OverviewPage extends React.Component {
 
