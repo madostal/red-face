@@ -1,16 +1,13 @@
 const LOG_FOLDER = './log_folder'
 const SERVER_PORT = 4200
+
 const jetpack = require('fs-jetpack');
 const fs = require('fs')
-const express = require('express')
-const app = express()
 const server = require('http')
-	.createServer(app)
+	.createServer(require('express')())
 const io = require('socket.io')(server)
 const cpuStat = require('cpu-stat')
-
 const database = require('./utils/Database.js')
-
 const poolInstance = new (require('./utils/pool.js'))(io, LOG_FOLDER)
 
 const taskHome = require('./task/TaskHome.js')
@@ -18,6 +15,7 @@ const library = require('./utils/Library.js')
 const logger = require('./Logger.js')
 
 server.listen(SERVER_PORT)
+
 
 /**
  * Create directory for storings logs
@@ -33,9 +31,9 @@ const serverSetUp = () => {
  *
  * So set this task to failed state
  */
-function checkDeadTasks() {
+const checkDeadTasks = () => {
 	let params = [taskHome.TaskState.killed, library.getMySQLTime(), taskHome.TaskState.running, taskHome.TaskState.created]
-	database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE (state = ? OR state = ?)', params, function (err) {
+	database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE (state = ? OR state = ?)', params, (err) => {
 		if (err) {
 			logger.log('error', err)
 			throw err
@@ -48,24 +46,24 @@ io.on('connection', (socket) => {
 	/**
 	 * Get system statistics
 	 */
-	socket.on('get-system-stats', (input) => {
+	socket.on('get-system-stats', () => {
 		cpuStat.usagePercent((err, percent) => {
 			if (err) {
-				return console.log(err)
+				logger.log('error', err)
+				throw err
 			}
 			database.connection.query('select state, count(*) as count from task group by state', (err, fields) => {
 				if (err) {
 					logger.log('error', err)
 					throw err
 				}
-				let json = {
+				socket.emit('system-stats', {
 					cpu: percent,
 					activeProcess: poolInstance.getCountOfRunningProcess(),
 					maxProcess: poolInstance.getAllowProcess(),
 					queueStatus: poolInstance.getActualQueueSize(),
 					stats: fields,
-				}
-				socket.emit('system-stats', json)
+				})
 			})
 		})
 	})
@@ -93,8 +91,8 @@ io.on('connection', (socket) => {
 	/**
 	 * Return all tasks
 	 */
-	socket.on('give-me-tasks', (input) => {
-		database.connection.query('SELECT * FROM task', [], function (err, fields) {
+	socket.on('give-me-tasks', () => {
+		database.connection.query('SELECT * FROM task', (err, fields) => {
 			if (err) {
 				logger.log('error', err)
 				throw err

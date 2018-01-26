@@ -6,10 +6,12 @@ const logger = require('../Logger.js')
 const database = require('./Database.js')
 const TMP_FOLDER_PATH = './tmp_folder'
 
+const DEFAULT_POOL_SIZE = 2
+
 module.exports = class Pool {
 
 	constructor(io, logFolderPath) {
-		this.allowProcess = 2
+		this.allowProcess = DEFAULT_POOL_SIZE
 		this.activeProcess = 0
 
 		this.poolQueue = []
@@ -25,22 +27,27 @@ module.exports = class Pool {
 		let configFile = this._createConfigFile(data.taskName)
 		this._appendDataToFile(JSON.stringify(data), configFile)
 
-		let params = { taskName: data.taskName, serverHome: data.serverHome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10), configPath: configFile, logPath: this._createLogFile(data.taskName) }
-		this.insertNewTaskToDb(params)
+		this.insertNewTaskToDb({
+			taskName: data.taskName,
+			serverHome: data.serverHome,
+			state: taskHome.TaskState.created,
+			taskKey: library.getRandomTextInRange(10),
+			configPath: configFile,
+			logPath: this._createLogFile(data.taskName)
+		})
 	}
 
 	insertNewTaskToDb(params) {
 		database.connection.query('INSERT INTO task SET ?', params, (err, result) => {
 			if (err) {
-				console.error(err)
+				logger.log('error', err)
 				throw err
 			}
-			let idTask = result.insertId
+
 			if (this.activeProcess < this.allowProcess) {
-				this._startProcess(idTask)
-			}
-			else {
-				this.poolQueue.push(idTask)
+				this._startProcess(result.insertId)
+			} else {
+				this.poolQueue.push(result.insertId)
 			}
 		})
 	}
@@ -53,7 +60,7 @@ module.exports = class Pool {
 		let params = [taskHome.TaskState.running, library.getMySQLTime(), id]
 		database.connection.query('UPDATE task SET state = ?, startTime = ?  WHERE id = ?', params, (err) => {
 			if (err) {
-				console.error(err)
+				logger.log('error', err)
 				throw err
 			}
 		})
@@ -70,11 +77,9 @@ module.exports = class Pool {
 			console.log(`stderr: ${data}`)
 			this._appendDataToFile(data, logFileName)
 			this.io.emit(['detail-', id].join(''), { 'data': data.toString('utf8') })
-
 		})
 
 		process.stderr.on('data', (data) => {
-			console.log(`stderr: ${data}`)
 			this._appendDataToFile('STD ERROR', logFileName)
 			this._appendDataToFile(data, logFileName)
 		})
@@ -87,6 +92,7 @@ module.exports = class Pool {
 			let params = [taskFinishedState, endTime, id]
 			database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE  id= ? ', params, (err) => {
 				if (err) {
+					logger.log('error', err)
 					throw err
 				}
 			})
@@ -95,8 +101,18 @@ module.exports = class Pool {
 			this.processMap.delete(id)
 			console.log('Task id: ' + id + ' closed...')
 
-			this.io.emit('taskdone', { 'running': this.activeProcess, 'pending': this.poolQueue.length, 'taskdone': id, 'endTime': endTime })
-			this.io.emit('update-overview', { 'running': this.activeProcess, 'pending': this.poolQueue.length, 'taskdone': id, 'endTime': endTime })
+			this.io.emit('taskdone', {
+				running: this.activeProcess,
+				pending: this.poolQueue.length,
+				taskdone: id,
+				endTime: endTime,
+			})
+			this.io.emit('update-overview', {
+				running: this.activeProcess,
+				pending: this.poolQueue.length,
+				taskdone: id,
+				endTime: endTime,
+			})
 			this._forceStart()
 		})
 
@@ -106,18 +122,52 @@ module.exports = class Pool {
 	}
 
 	_createConfigFile(taskname) {
-		return ['writable', '/', 'config', '/', 'red_face_config_', taskname, '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
+		return [
+			'writable',
+			'/',
+			'config',
+			'/',
+			'red_face_config_',
+			taskname,
+			'_',
+			Date.now(),
+			'_',
+			library.getRandomTextInRange(),
+			'.txt',
+		].join('')
 	}
 
 	_createLogFile(taskname) {
-		let file = ['writable', '/', this.logFolderPath, '/', 'red_face_log_', taskname, '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
+		let file = [
+			'writable',
+			'/',
+			this.logFolderPath,
+			'/',
+			'red_face_log_',
+			taskname,
+			'_',
+			Date.now(),
+			'_',
+			library.getRandomTextInRange(),
+			'.txt',
+		].join('')
 		this._appendDataToFile('Starting...\n', file)
 		return file
 	}
 
 	_createBruteForcePswFile() {
-		let file = ['writable', '/', TMP_FOLDER_PATH, '/', 'red_face_taks_psw', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
-		return file
+		return [
+			'writable',
+			'/',
+			TMP_FOLDER_PATH,
+			'/',
+			'red_face_taks_psw',
+			'_',
+			Date.now(),
+			'_',
+			library.getRandomTextInRange(),
+			'.txt'
+		].join('')
 	}
 
 	_appendDataToFile(message, file) {
@@ -137,15 +187,20 @@ module.exports = class Pool {
 	}
 
 	repeatTask(id) {
-		let params = [id]
-		database.connection.query('SELECT * FROM TASK WHERE ID = ?', params, (err, result) => {
+		database.connection.query('SELECT * FROM TASK WHERE ID = ?', [id], (err, result) => {
 			if (err) {
 				logger.log('error', err)
 				throw err
 			}
 			let rowRes = result[0]
-			let params = { taskName: rowRes.taskName, serverHome: rowRes.serverHome, state: taskHome.TaskState.created, taskKey: library.getRandomTextInRange(10), configPath: rowRes.configPath, logPath: this._createLogFile(rowRes.taskName) }
-			this.insertNewTaskToDb(params)
+			this.insertNewTaskToDb({
+				taskName: rowRes.taskName,
+				serverHome: rowRes.serverHome,
+				state: taskHome.TaskState.created,
+				taskKey: library.getRandomTextInRange(10),
+				configPath: rowRes.configPath,
+				logPath: this._createLogFile(rowRes.taskName)
+			})
 		})
 	}
 
@@ -198,9 +253,7 @@ module.exports = class Pool {
 				logger.log('error', err)
 				throw err
 			}
-			for (let i = 0; i < result.length; i++) {
-				this.removeTask(result[i].id, true)
-			}
+			result.forEach(e => this.removeTask(e.id, true))
 		})
 	}
 
@@ -208,9 +261,7 @@ module.exports = class Pool {
 	 * After resize pool, start task in queue
 	 */
 	_forceStart() {
-		let size = this.getAllowProcess() - this.getCountOfRunningProcess()
-		console.log('Wake up size: ' + size)
-		for (let i = 0; i < size; i++) {
+		for (let i = 0; i < this.getAllowProcess() - this.getCountOfRunningProcess(); i++) {
 			if (this.poolQueue.length !== 0) {
 				this._startProcess(this.poolQueue.shift())
 			} else {
