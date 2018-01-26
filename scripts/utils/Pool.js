@@ -97,9 +97,7 @@ module.exports = class Pool {
 
 			this.io.emit('taskdone', { 'running': this.activeProcess, 'pending': this.poolQueue.length, 'taskdone': id, 'endTime': endTime })
 			this.io.emit('update-overview', { 'running': this.activeProcess, 'pending': this.poolQueue.length, 'taskdone': id, 'endTime': endTime })
-			if (this.poolQueue.length !== 0) {
-				this._startProcess(this.poolQueue.shift())
-			}
+			this._forceStart()
 		})
 
 		process.on('message', (data) => {
@@ -152,26 +150,22 @@ module.exports = class Pool {
 	}
 
 	removeTask(id) {
-		let params = [id]
-		database.connection.query('SELECT * FROM TASK WHERE ID = ?', params, (err, result) => {
+		database.connection.query('SELECT * FROM TASK WHERE ID = ?', [id], (err, result) => {
 			if (err) {
 				logger.log('error', err)
 				throw err
 			}
 			let rowRes = result[0]
-			console.log(rowRes)
 			if (rowRes.state === taskHome.TaskState.running) {
 				this.killTask(rowRes.id)
 			}
-			let params = [rowRes.configPath]
-			database.connection.query('SELECT * FROM TASK WHERE configPath = ?', params, (err, result) => {
+
+			database.connection.query('SELECT * FROM TASK WHERE configPath = ?', [rowRes.configPath], (err, result) => {
 				if (err) {
 					logger.log('error', err)
 					throw err
 				}
-
-				let params = [id]
-				database.connection.query('DELETE FROM TASK WHERE ID = ?', params, (err) => {
+				database.connection.query('DELETE FROM TASK WHERE ID = ?', [id], (err) => {
 					if (err) {
 						logger.log('error', err)
 						throw err
@@ -211,6 +205,21 @@ module.exports = class Pool {
 	}
 
 	/**
+	 * After resize pool, start task in queue
+	 */
+	_forceStart() {
+		let size = this.getAllowProcess() - this.getCountOfRunningProcess()
+		console.log('Wake up size: ' + size)
+		for (let i = 0; i < size; i++) {
+			if (this.poolQueue.length !== 0) {
+				this._startProcess(this.poolQueue.shift())
+			} else {
+				break
+			}
+		}
+	}
+
+	/**
 	 *Return number of workers which are available for testing
 	 */
 	getAllowProcess() {
@@ -218,8 +227,8 @@ module.exports = class Pool {
 	}
 
 	setAllowProcess(num) {
-		//TODO update queue
 		this.allowProcess = num
+		this._forceStart()
 	}
 
 	/**
