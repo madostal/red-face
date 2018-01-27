@@ -1,5 +1,4 @@
 require('chromedriver')
-const sleep = require('system-sleep')
 let fs = require('fs')
 const { Builder, By, Key, until } = require('selenium-webdriver');
 const webdriver = require('selenium-webdriver')

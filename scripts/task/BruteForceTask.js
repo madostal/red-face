@@ -1,7 +1,6 @@
 const jetpack = require('fs-jetpack')
 const taskParent = require('./TaskParent.js')
 const library = require('../utils/Library')
-const sleep = require('system-sleep')
 const { spawn } = require('child_process')
 
 module.exports = class BruteForceTask extends taskParent {
@@ -68,7 +67,7 @@ module.exports = class BruteForceTask extends taskParent {
 		})
 
 		while (rem > 0) {
-			sleep(1000)
+			require('deasync').sleep(1000)
 		}
 
 		console.log('TIME')

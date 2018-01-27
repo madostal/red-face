@@ -43,17 +43,12 @@ module.exports = class Pool {
 				logger.log('error', err)
 				throw err
 			}
-
-			if (this.activeProcess < this.allowProcess) {
-				this._startProcess(result.insertId)
-			} else {
-				this.poolQueue.push(result.insertId)
-			}
+			this.poolQueue.push(result.insertId)
+			this._forceStart()
 		})
 	}
 
 	_startProcess(id) {
-
 		let logFileName = 'tmp.txt'
 		this.activeProcess++
 
@@ -99,7 +94,6 @@ module.exports = class Pool {
 
 			this.activeProcess--
 			this.processMap.delete(id)
-			console.log('Task id: ' + id + ' closed...')
 
 			this.io.emit('taskdone', {
 				running: this.activeProcess,

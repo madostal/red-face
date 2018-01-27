@@ -6,7 +6,6 @@ const puppeteer = require('puppeteer')
 const taskParent = require('./TaskParent.js')
 const logger = require('../Logger')
 const request = require('sync-request')
-const sleep = require('system-sleep')
 
 
 const PATH_GIT_CONFIG = '/task_settings/configuration/git_config'
@@ -59,9 +58,7 @@ module.exports = class OtherTask extends taskParent {
 				state = true
 			})
 
-		while (!state) {
-			sleep(1000)
-		}
+		require('deasync').loopWhile(() => { return !state })
 		console.log("ALL DONE")
 	}
 
