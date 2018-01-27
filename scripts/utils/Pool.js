@@ -80,7 +80,7 @@ module.exports = class Pool {
 		})
 
 		process.on('close', (code) => {
-			let taskFinishedState = (code === 0) ? taskHome.TaskState.done : taskHome.TaskState.killed
+			let taskFinishedState = (code === 0) ? taskHome.TaskState.done : taskHome.TaskState.failed
 
 			let endTime = library.getMySQLTime()
 
