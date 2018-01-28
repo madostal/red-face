@@ -11,6 +11,7 @@ import {
 	Form,
 } from 'semantic-ui-react'
 import { browserHistory } from 'react-router'
+import Helper from '../common/popup/Helper'
 import Api from 'utils/Api'
 
 import Parent from './../common/createTaskSection/Parent'
@@ -27,6 +28,8 @@ const DEFAULT_XSS = [
 	'\'\">><marquee><img src=x onerror=confirm(1)></marquee>\"></plaintext\></|\><script>prompt(1)</script>@gmail.com<isindex formaction=javascript:alert(/XSS/) type=submit>\'-->\"></script><script>alert(document.cookie)</script>\"><img/id=\"confirm&lpar;1)\"/alt=\"/\"src=\"/\"onerror=eval(id)>\'\"><img src=\"http://www.shellypalmer.com/wp-content/images/2015/07/hacked-compressor.jpg\">',
 	'second',
 ]
+
+const DEFAULT_CRAWLER_DEEP = 10
 
 const BRUTE_FORCE_BOOL = {
 	enable: { enable: true },
@@ -65,6 +68,8 @@ const createDefaultStore = () => {
 	let obj = {
 		taskname: '',
 		serverHome: '',
+		crawlerisneed: false,
+		crawlerdeep: DEFAULT_CRAWLER_DEEP,
 		taskdata: {
 			bruteforcetab: {},
 			othertab: {},
@@ -174,12 +179,18 @@ export default class CrreateTaskPage extends React.Component {
 			tmp[par]['data'][name] = val
 		}
 
+		//do you need a crawler?
+		let crawlEnab = (tmp.bruteforcetab.data.enable || tmp.xsstab.data.enable)
+
 		this.setState({
 			taskdata: tmp,
+			crawlerisneed: crawlEnab,
 		})
 		localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify({
 			taskname: this.state.taskname,
 			serverHome: this.state.serverHome,
+			crawlerdeep: this.state.crawlerdeep,
+			crawlerisneed: crawlEnab,
 			taskdata: tmp,
 		}))
 	}
@@ -246,6 +257,8 @@ export default class CrreateTaskPage extends React.Component {
 				<Tab panes={panes} />
 				<Segment>
 					<Header as="h3">Starter</Header>
+					<Divider />
+					<Header as="h5">URLs</Header>
 					<Grid>
 						<Grid.Row columns={1} textAlign="right">
 							<Grid.Column>
@@ -259,6 +272,27 @@ export default class CrreateTaskPage extends React.Component {
 								</Form>
 							</Grid.Column>
 						</Grid.Row>
+						<Grid.Row columns={1} textAlign="left">
+
+							<Grid.Column>
+								<Header as="h5">Crawler max deep	<Helper
+									header='Crawler max deep'
+									content='Specifies the maximum crawler depth. Use -1 for unlimited deep.'
+								/>
+								</Header>
+								<Input
+									id={'crawlerdeep'}
+									onChange={(d, e) => this._componentOnChangeText(d, e)}
+									value={this.state.crawlerdeep}
+									placeholder="Max crawler deep"
+									disabled={!this.state.crawlerisneed}
+									fluid
+								/>
+
+							</Grid.Column>
+						</Grid.Row>
+
+						<Header as="h5">Task name</Header>
 						<Grid.Row columns={2} textAlign="right">
 							<Grid.Column>
 								<Input
