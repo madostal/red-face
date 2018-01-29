@@ -50,24 +50,8 @@ module.exports = class WebDriver {
 			.withCapabilities(chromeCapabilities)
 			.build()
 
-		this.driver.manage().timeouts().implicitlyWait(1)
-	}
-
-	screenShot(path) {
-		// this._simplePromiseGuard(() => this.driver.takeScreenshot()
-		// .then((image, err) => {
-		// 	console.log(['Failed to print screenshot from selenium:', err].join(' '))
-		// 	require('fs').writeFile(path, image, 'base64', (err) => {
-		// 		console.log(['Failed to print screenshot from selenium:', err].join(' '))
-		// 	})
-		// }))
-
-		this.driver.takeScreenshot().then((data) => {
-			fs.writeFile('a.png', data.replace(/^data:image\/png;base64,/, ''), 'base64', (err) => {
-				if (err) throw err
-			})
-		})
-
+		this.driver.manage().timeouts().implicitlyWait(5)
+		this.driver.manage().timeouts().pageLoadTimeout(5000)
 	}
 
 	async goTo(url) {
@@ -113,16 +97,58 @@ module.exports = class WebDriver {
 		return res
 	}
 
-	// goTo(url, guardTime = GUARD_LOCK_TIME_MS) {
-	// 	this._simplePromiseGuard(() => this.driver.get(url), guardTime)
-	// }
-
-	// goToAsynch(url) {
-	// 	this.driver.get(url)
-	// }
-
 	async closeDriver() {
 		await this.driver.quit()
+	}
+
+	/**
+	 * Return array of elements
+	 *
+	 * @param {string} xpath
+	 */
+	async getElements(xpath) {
+		return await this.driver.findElements(By.xpath(xpath))
+	}
+
+	/**
+	 * Return array of elements
+	 *
+	 * @param {array} arrayXPath
+	 */
+	async getElementsFromArray(arrayXPath) {
+		let res = []
+		for (let i = 0; i < arrayXPath.length; i++) {
+			res.push(...(await this.getElements(arrayXPath[i])))
+		}
+		return res
+	}
+
+	/**
+	 * Write specific text to selenium element
+	 *
+	 * @param {selenium element} element
+	 * @param {string} keys
+	 */
+	async sendKeysToElement(element, keys) {
+		await element.sendKeys(Key.chord(Key.CONTROL, 'a'), keys).catch((e) => { console.log('Canno\' write to'); console.log(e) })
+	}
+
+	/**
+	 * Return true, if alert is present
+	 *
+	 * Close if present
+	 *
+	 */
+	async testAlertPresentAndClose() {
+		let res
+
+		await this.driver.switchTo().alert().then(() => {
+			this.driver.switchTo().alert().accept()
+			res = true
+		}, () => {
+			res = false
+		})
+		return res
 	}
 
 	// extractAllLinks() {

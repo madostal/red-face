@@ -1,9 +1,11 @@
-const async = require('async')
+
 const taskHome = require('./TaskHome')
 const database = require('../utils/Database')
 const library = require('../utils/Library')
+const CrawlerTask = require('./CrawlerTask')
 const BruteForceTask = require('./BruteForceTask')
 const OtherTask = require('./OtherTask')
+const XSSTask = require('./XSSTask')
 const logger = require('../Logger')
 const jetpack = require('fs-jetpack')
 
@@ -34,8 +36,7 @@ class Core {
 	 */
 	_loadInfo() {
 		this.taskConfig = JSON.parse(jetpack.read(this.taskData.configPath))
-		console.log('LOADING INFO')
-		console.log(this.taskConfig)
+
 		library.urlExists(this.taskData.serverHome, (err, exists) => {
 			if (exists) {
 				console.log(['\'', this.taskData.serverHome, '\' exist, starting testing...'].join(''))
@@ -52,6 +53,11 @@ class Core {
 	 */
 	_startJob() {
 		this._setStream(this.taskData.logPath)
+		let crawlerOut
+		if (this.taskConfig.crawlerisneed) {
+			crawlerOut = new CrawlerTask(this.taskConfig.serverHome, this.taskConfig.crawlerdeep)
+				.getRes()
+		}
 
 		if (this.taskConfig.taskdata.bruteforcetab.data !== null && this.taskConfig.taskdata.bruteforcetab.data.enable) {
 			new BruteForceTask(this.taskConfig, this.taskData.configPath).start()
@@ -60,7 +66,8 @@ class Core {
 			new OtherTask(this.taskConfig).start()
 		}
 		if (this.taskConfig.taskdata.xsstab.data !== null && this.taskConfig.taskdata.xsstab.data.enable) {
-			console.log('xsstab TAB ENABLE')
+			// console.log('xsstab TAB ENABLE')
+			new XSSTask(this.taskConfig, null, crawlerOut).start()
 		}
 		// if (this.taskConfig.taskdata.sqltab.data !== null
 		// 	&& this.taskConfig.taskdata.sqltab.data.enable) {

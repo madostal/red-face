@@ -43,7 +43,31 @@ export default class XSSTab extends BodyParent {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-				<Form />
+
+				<Form >
+					<Header as="h5">Input password XPath expression</Header>
+					<TextArea
+						onChange={(d, e) => this._componentOnChangeText(d, e)}
+						id={'xssUrl'}
+						value={this.props.data.data.xssUrl}
+						placeholder="Specify url for testing"
+						disabled={this.props.data.data.useCrawler}
+					/>
+				</Form>
+				<Divider hidden />
+
+				<Grid >
+					<Grid.Row textAlign="right">
+						<Grid.Column>
+							<Checkbox
+								onChange={(d, e) => this._componentOnChangeCheck(d, e)}
+								id={'useCrawler'}
+								checked={this.props.data.data.useCrawler}
+								label={{ children: 'Use crawler' }}
+							/>
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
 			</div>
 		)
 	}

@@ -47,6 +47,8 @@ export default class OverviewTable extends React.Component {
 			filter: [true, true, true, true, true],
 		}
 
+		Api.socketRequest('give-me-tasks', {})
+
 		Api.getSocket().on('update-overview', (data) => {
 			let lastRowData = this.state.result
 			lastRowData.forEach((loop) => {
@@ -81,8 +83,6 @@ export default class OverviewTable extends React.Component {
 			this._paggingAction(PAGGING_OPTIONS[0].value)
 			this._switchPage(0)
 		})
-
-		Api.socketRequest('give-me-tasks', {})
 	}
 
 	_repeat = (item) => {
@@ -119,14 +119,6 @@ export default class OverviewTable extends React.Component {
 			result.splice(index, 1)
 		}
 		this.forceUpdate()
-	}
-
-	componentDidMount = () => {
-		let self = this
-		this.interval = setInterval(function () {
-			self.forceUpdate()
-		}, 1000)
-		//??
 	}
 
 	componentWillUnmount = () => {
