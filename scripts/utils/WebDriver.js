@@ -101,6 +101,14 @@ module.exports = class WebDriver {
 		await this.driver.quit()
 	}
 
+
+	/**
+	 * Return WebElement
+	 */
+	async getElement(xpath) {
+		return await this.driver.findElement(By.xpath(xpath))
+	}
+
 	/**
 	 * Return array of elements
 	 *
@@ -148,6 +156,61 @@ module.exports = class WebDriver {
 		}, () => {
 			res = false
 		})
+		return res
+	}
+
+	/**
+	 * Send form of webelement - if exist
+	 *
+	 * @param {WebElement} el
+	 */
+	async sendFormIfExist(el) {
+		let res
+		await this.driver.executeAsyncScript((e) => {
+			if (e.form) {
+				e.form.submit()
+			}
+			arguments[arguments.length - 1](res)
+		}, el).then(d => res = d).catch(() => { })
+	}
+
+	/**
+	 * Return xpath of selenium element
+	 *
+	 * @param {WebElement} el
+	 */
+	async findXPathOfElement(el) {
+		let res
+
+		await this.driver.executeAsyncScript((e) => {
+			const createXPathFromElement = (elm) => {
+				let allNodes = document.getElementsByTagName('*');
+				for (let segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) {
+					if (elm.hasAttribute('id')) {
+						let uniqueIdCount = 0
+						for (let n = 0; n < allNodes.length; n++) {
+							if (allNodes[n].hasAttribute('id') && allNodes[n].id == elm.id) uniqueIdCount++;
+							if (uniqueIdCount > 1) break
+						}
+						if (uniqueIdCount == 1) {
+							segs.unshift('id("' + elm.getAttribute('id') + '")');
+							return segs.join('/');
+						} else {
+							segs.unshift(elm.localName.toLowerCase() + '[@id="' + elm.getAttribute('id') + '"]');
+						}
+					} else if (elm.hasAttribute('class')) {
+						segs.unshift(elm.localName.toLowerCase() + '[@class="' + elm.getAttribute('class') + '"]');
+					} else {
+						for (i = 1, sib = elm.previousSibling; sib; sib = sib.previousSibling) {
+							if (sib.localName == elm.localName) i++
+						}
+						segs.unshift(elm.localName.toLowerCase() + '[' + i + ']')
+					}
+				}
+				return segs.length ? '/' + segs.join('/') : null
+			}
+			arguments[arguments.length - 1](createXPathFromElement(e))
+		}, el).then(d => res = d).catch(e => console.log(e))
 		return res
 	}
 
