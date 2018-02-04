@@ -19,39 +19,39 @@ export default class BruteForceTab extends BodyParent {
 
 	render = () => {
 		return (
-			<div>
-				<Form >
-					<Header as="h5">Login form XPath expression</Header>
-					<TextArea
-						onChange={(d, e) => this._componentOnChangeText(d, e)}
-						id={'loginFormXPathExpr'}
-						value={this.props.data.data.loginFormXPathExpr}
-						placeholder="Specify login form XPath expression"
-						disabled={this.props.data.data.useDefaulXPath}
-					/>
-				</Form>
+
+			<Form >
+				<Header as="h5">Login form XPath expression</Header>
+				<TextArea
+					onChange={(d, e) => this._componentOnChangeText(d, e)}
+					id={'loginFormXPathExpr'}
+					value={this.props.data.data.loginFormXPathExpr}
+					placeholder="Specify login form XPath expression"
+					disabled={this.props.data.data.useDefaulXPath}
+				/>
+
 				<Divider hidden />
-				<Form >
-					<Header as="h5">Input name XPath expression</Header>
-					<TextArea
-						onChange={(d, e) => this._componentOnChangeText(d, e)}
-						id={'loginNameXPathExpr'}
-						value={this.props.data.data.loginNameXPathExpr}
-						placeholder="Specify input name XPath expression"
-						disabled={this.props.data.data.useDefaulXPath}
-					/>
-				</Form>
+
+				<Header as="h5">Input name XPath expression</Header>
+				<TextArea
+					onChange={(d, e) => this._componentOnChangeText(d, e)}
+					id={'loginNameXPathExpr'}
+					value={this.props.data.data.loginNameXPathExpr}
+					placeholder="Specify input name XPath expression"
+					disabled={this.props.data.data.useDefaulXPath}
+				/>
+
 				<Divider hidden />
-				<Form >
-					<Header as="h5">Input password XPath expression</Header>
-					<TextArea
-						onChange={(d, e) => this._componentOnChangeText(d, e)}
-						id={'loginPswXPathExpr'}
-						value={this.props.data.data.loginPswXPathExpr}
-						placeholder="Specify input password XPath expression"
-						disabled={this.props.data.data.useDefaulXPath}
-					/>
-				</Form>
+
+				<Header as="h5">Input password XPath expression</Header>
+				<TextArea
+					onChange={(d, e) => this._componentOnChangeText(d, e)}
+					id={'loginPswXPathExpr'}
+					value={this.props.data.data.loginPswXPathExpr}
+					placeholder="Specify input password XPath expression"
+					disabled={this.props.data.data.useDefaulXPath}
+				/>
+
 				<Divider hidden />
 
 				<Grid >
@@ -69,28 +69,28 @@ export default class BruteForceTab extends BodyParent {
 				<Grid divided="vertically">
 					<Grid.Row columns={2}>
 						<Grid.Column>
-							<Form >
-								<Header as="h5">Login names</Header>
-								<TextArea
-									onChange={(d, e) => this._componentOnChangeText(d, e)}
-									id={'loginNames'}
-									value={this.props.data.data.loginNames}
-									placeholder="Login names"
-									disabled={this.props.data.data.useLoginNamesDefault}
-								/>
-							</Form>
+
+							<Header as="h5">Login names</Header>
+							<TextArea
+								onChange={(d, e) => this._componentOnChangeText(d, e)}
+								id={'loginNames'}
+								value={this.props.data.data.loginNames}
+								placeholder="Login names"
+								disabled={this.props.data.data.useLoginNamesDefault}
+							/>
+
 						</Grid.Column>
 						<Grid.Column>
-							<Form >
-								<Header as="h5">Passwords</Header>
-								<TextArea
-									onChange={(d, e) => this._componentOnChangeText(d, e)}
-									id={'loginPsws'}
-									value={this.props.data.data.loginPsws}
-									placeholder="Passwords"
-									disabled={this.props.data.data.useLoginNamesDefault}
-								/>
-							</Form>
+
+							<Header as="h5">Passwords</Header>
+							<TextArea
+								onChange={(d, e) => this._componentOnChangeText(d, e)}
+								id={'loginPsws'}
+								value={this.props.data.data.loginPsws}
+								placeholder="Passwords"
+								disabled={this.props.data.data.useLoginNamesDefault}
+							/>
+
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
@@ -102,32 +102,55 @@ export default class BruteForceTab extends BodyParent {
 								id={'useLoginNamesDefault'}
 								checked={this.props.data.data.useLoginNamesDefault}
 								label={{ children: 'Use database' }}
-								/>
+							/>
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-				<Form >
-					<Header as="h5">URL location</Header>
-					<Input
-						onChange={(d, e) => this._componentOnChangeText(d, e)}
-						id={'location'} value={this.props.data.data.location}
-						placeholder="Specify url where is form located"
-						fluid
-					/>
-				</Form>
+
+				<Header as="h5">URL location</Header>
+				<Grid >
+					<Grid.Row>
+						<Grid.Column>
+							<Input
+								onChange={(d, e) => this._componentOnChangeText(d, e)}
+								id={'location'} value={this.props.data.data.location}
+								placeholder="Specify url where is form located"
+								fluid
+								disabled={this.props.data.data.locationAuto}
+							/>
+						</Grid.Column>
+					</Grid.Row>
+					<Grid.Row>
+						<Grid.Column textAlign="right">
+							<Checkbox
+								onChange={(d, e) => this._componentOnChangeCheck(d, e)}
+								id={'locationAuto'}
+								checked={this.props.data.data.locationAuto}
+								label={{ children: 'Automatically find login form' }}
+							/>
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
+
+				<Header as="h5">Parallel nodes</Header>
+				<Input
+					onChange={(d, e) => this._componentOnChangeText(d, e)}
+					id={'nodes'}
+					value={this.props.data.data.nodes}
+					placeholder="Specify how many nodes do you want use"
+					fluid
+				/>
+				<Header as="h5">Page percentage difference</Header>
+				<Input
+					onChange={(d, e) => this._componentOnChangeText(d, e)}
+					id={'percentageDiff'}
+					value={this.props.data.data.percentageDiff}
+					placeholder="Specify percentage difference between wrong password page and logged in home page"
+					fluid
+				/>
+
 				<Divider hidden />
-				<Form >
-					<Header as="h5">Parallel nodes</Header>
-					<Input
-						onChange={(d, e) => this._componentOnChangeText(d, e)}
-						id={'nodes'}
-						value={this.props.data.data.nodes}
-						placeholder="Specify how many nodes do you want use"
-						fluid
-					/>
-				</Form>
-				<Divider hidden />
-			</div>
+			</Form>
 		)
 	}
 }

@@ -23,6 +23,7 @@ import OtherTab from './../common/createTaskSection/childs/OtherTab'
 const defaultXPathForm = '//form//input[@type=\'text\' or @type=\'email\']//ancestor::form//input[@type=\'password\']//ancestor::form'
 const defaultXPathFormInput = ['(', [defaultXPathForm, '//input'].join(''), ')[1]'].join('')
 const defaultXPathFormPsw = ['(', [defaultXPathForm, '//input'].join(''), ')[2]'].join('')
+const defaultLoginPath = '/'
 
 const DEFAULT_XSS = [
 	'\'\">><marquee><img src=x onerror=confirm(1)></marquee>\"></plaintext\></|\><script>prompt(1)</script>@gmail.com<isindex formaction=javascript:alert(/XSS/) type=submit>\'-->\"></script><script>alert(document.cookie)</script>\"><img/id=\"confirm&lpar;1)\"/alt=\"/\"src=\"/\"onerror=eval(id)>\'\"><img src=\"http://www.shellypalmer.com/wp-content/images/2015/07/hacked-compressor.jpg\">',
@@ -41,6 +42,9 @@ const BRUTE_FORCE_BOOL = {
 	useLoginNamesDefault: {
 		loginNames: '',
 		loginPsws: '',
+	},
+	locationAuto: {
+		location: defaultLoginPath,
 	}
 }
 
@@ -88,8 +92,10 @@ const createDefaultStore = () => {
 	obj.taskdata.bruteforcetab.data.useLoginNamesDefault = true
 	obj.taskdata.bruteforcetab.data.loginNames = ''
 	obj.taskdata.bruteforcetab.data.loginPsws = ''
-	obj.taskdata.bruteforcetab.data.location = '/'
+	obj.taskdata.bruteforcetab.data.location = defaultLoginPath
+	obj.taskdata.bruteforcetab.data.locationAuto = true
 	obj.taskdata.bruteforcetab.data.nodes = '2'
+	obj.taskdata.bruteforcetab.data.percentageDiff = 80
 
 	//xss
 	obj.taskdata.xsstab.data = {}
@@ -180,7 +186,7 @@ export default class CrreateTaskPage extends React.Component {
 		}
 
 		//do you need a crawler?
-		let crawlEnab = (tmp.bruteforcetab.data.enable || tmp.xsstab.data.enable)
+		let crawlEnab = (tmp.bruteforcetab.data.locationAuto || tmp.xsstab.data.enable)
 
 		this.setState({
 			taskdata: tmp,
