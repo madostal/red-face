@@ -1,20 +1,17 @@
 import React from 'react'
 import {
 	Table,
-	Grid,
-	List,
-	Segment,
 	Button,
 	Header,
-	Menu,
 	Form,
-	Icon,
 	Divider,
-	Statistic,
 	Input,
 } from 'semantic-ui-react'
+import HeaderUser from './../common/HeaderUser'
+import TodoPanel from './../panels/TodoPanel'
 import SaveMessage from './../common/SaveMessage'
 import ServerApi from 'utils/ServerApi'
+import CookieWorker from 'utils/CookieWorker'
 
 export default class ListPage extends React.Component {
 
@@ -49,7 +46,7 @@ export default class ListPage extends React.Component {
 	_handleSave = () => {
 		if (this.state.inputVal.length === 0) return
 
-		ServerApi.sendPut('api/store', { data: this.state.inputVal }, (error) => {
+		ServerApi.sendPut('api/store', { data: this.state.inputVal, user: (CookieWorker.getCookie('username') || 'guest') }, (error) => {
 			if (error) { console.log(error) }
 			this._updateList()
 			this.setState({
@@ -60,15 +57,14 @@ export default class ListPage extends React.Component {
 		})
 	}
 
-	_handleListClick = (e, { name }) => {
-		console.log('Clickend: ' + name)
+	handleRemoveClick = (id) => {
 		let tmp = this.state.data
 		let n = []
 
-		ServerApi.sendDelete('api/delete', { id: name }, (error) => {
+		ServerApi.sendDelete('api/delete', { id: id }, (error) => {
 			if (error) { console.log(error) }
 			for (let i = 0; i < tmp.length; i++) {
-				if (tmp[i].id !== name) {
+				if (tmp[i].id !== id) {
 					n.push(tmp[i])
 				}
 			}
@@ -88,22 +84,23 @@ export default class ListPage extends React.Component {
 		let list = []
 		data.forEach(e => {
 			list.push(
-				<List.Item
-					key={e.id}
-					name={e.id}
-					as='a'
-					onClick={this._handleListClick}
-				>
-					<Icon name='right triangle' />
-					<List.Content>
-						<List.Header>{e.content}</List.Header>
-					</List.Content>
-				</List.Item>
+				<Table.Row key={e.id}>
+					<Table.Cell>
+						<TodoPanel
+							id={e.id}
+							remove={this.handleRemoveClick}
+						/>
+					</Table.Cell>
+					<Table.Cell>
+						{e.content}
+					</Table.Cell>
+				</Table.Row>
 			)
 		})
 
 		return (
 			<div>
+				<HeaderUser />
 				<Header as='h1'>TODO list</Header>
 				<Divider hidden />
 				<Form>
@@ -126,9 +123,11 @@ export default class ListPage extends React.Component {
 				<div dangerouslySetInnerHTML={this._createDangerPart(inputVal)} />
 				<Divider />
 				<Header as='h5'>Todos</Header>
-				<List>
-					{list}
-				</List>
+				<Table basic='very' celled collapsing>
+					<Table.Body>
+						{list}
+					</Table.Body>
+				</Table >
 			</div>
 		)
 	}

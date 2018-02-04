@@ -34,7 +34,6 @@ export default class App extends React.Component {
 								<Grid.Row>
 									<Grid.Column>
 										{this.props.children}
-
 									</Grid.Column>
 								</Grid.Row>
 							</Grid>

@@ -5,9 +5,11 @@ import {
 	browserHistory,
 } from 'react-router'
 import App from './App'
+import Detail from './pages/Detail'
 import HomePage from './pages/HomePage'
 import ListPage from './pages/ListPage'
-import LoginRegisterPage from './pages/LoginRegisterPage'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 
 export default class DashboardRouter extends React.Component {
 
@@ -18,7 +20,9 @@ export default class DashboardRouter extends React.Component {
 					<Route path="/" component={HomePage} />
 					<Route path="/home" component={HomePage} />
 					<Route path="/list" component={ListPage} />
-					<Route path="/login" component={LoginRegisterPage} />
+					<Route path="/login" component={LoginPage} />
+					<Route path="/register" component={RegisterPage} />
+					<Route path="/detail" component={Detail} />
 				</Route>
 			</Router>
 		)
