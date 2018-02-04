@@ -26,7 +26,7 @@ class BruteForceSubTask {
 			let errorPage = await webDriver.getDocumentText()
 
 			for (let i = 0; i < data.length; i++) {
-				console.log(['Worker:', id, , '|', 'Testing', (data[i][0]), (data[i][1])].join(' '))
+				// console.log(['Worker:', id, , '|', 'Testing', (data[i][0]), (data[i][1])].join(' '))
 				await webDriver.goTo(serverHome)
 				await webDriver.doLogin(data[i][0], data[i][1], this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
 				let tmp = await webDriver.getDocumentText()

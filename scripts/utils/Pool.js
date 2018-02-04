@@ -1,5 +1,6 @@
 const library = require('./Library.js')
 const fs = require('fs')
+const moment = require('moment')
 const { spawn } = require('child_process')
 const taskHome = require('../task/taskHome.js')
 const logger = require('../Logger.js')
@@ -68,15 +69,18 @@ module.exports = class Pool {
 
 		this.processMap.set(id, process)
 
-		process.stdout.on('data', (data) => {
-			console.log(`stderr: ${data}`)
+		const procesOut = (data) => {
+			data = this._formatLogRow(data)
 			this._appendDataToFile(data, logFileName)
 			this.io.emit(['detail-', id].join(''), { 'data': data.toString('utf8') })
+		}
+
+		process.stdout.on('data', (data) => {
+			procesOut(data)
 		})
 
 		process.stderr.on('data', (data) => {
-			this._appendDataToFile('STD ERROR', logFileName)
-			this._appendDataToFile(data, logFileName)
+			procesOut(data)
 		})
 
 		process.on('close', (code) => {
@@ -115,6 +119,10 @@ module.exports = class Pool {
 		})
 	}
 
+	_formatLogRow(data) {
+		return [moment().format('DD.MM.YYYY HH:MM:SS'), ': ', data].join('')
+	}
+
 	_createConfigFile(taskname) {
 		return [
 			'writable',
@@ -145,7 +153,6 @@ module.exports = class Pool {
 			library.getRandomTextInRange(),
 			'.txt',
 		].join('')
-		this._appendDataToFile('Starting...\n', file)
 		return file
 	}
 

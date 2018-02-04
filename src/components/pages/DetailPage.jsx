@@ -5,9 +5,11 @@ import {
 	Grid,
 	List,
 	Icon,
+	Checkbox,
 	Divider,
 } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
+import SanitizedHTML from 'react-sanitized-html'
 import Api from 'utils/Api'
 import Library from 'utils/Library'
 
@@ -18,6 +20,7 @@ export default class DetailPage extends React.Component {
 		this.state = {
 			loading: true,
 			updateBinded: false,
+			autoScroll: true,
 		}
 	}
 
@@ -34,7 +37,7 @@ export default class DetailPage extends React.Component {
 					taskKey: data.taskKey,
 					taskState: data.state,
 					loading: false,
-					log: data.log,
+					log: this._regexLog(data.log),
 				})
 				if (!this.state.updateBinded) {
 					this.setState({
@@ -44,9 +47,13 @@ export default class DetailPage extends React.Component {
 					if (this.state.taskState === 1) {
 						//task running
 						Api.getSocket().on(['detail-', this.state.taskId].join(''), (data) => {
+
 							this.setState({
-								log: this.state.log + data.data
+								log: this.state.log + this._regexLog(data.data),
 							})
+							if (this.state.autoScroll) {
+								document.getElementById('log-area').scrollIntoView()
+							}
 						})
 					}
 				}
@@ -56,13 +63,26 @@ export default class DetailPage extends React.Component {
 		Api.socketRequest('give-me-task-detail', { key: this.props.params.key })
 	}
 
+	_regexLog = (log) => {
+		let tmp = log
+		tmp = tmp.replace(/\d{1,2}.\d{1,2}.\d{4} \d{1,2}:\d{1,2}:\d{1,2}:/g, '<b>$&</b>')
+		tmp = tmp.replace(/\n/g, '<br>')
+		return tmp
+	}
+
 	componentWillUnmount = () => {
 		Api.getSocket().removeListener(['detail-', this.state.taskId].join(''))
 		Api.getSocket().removeListener('there-is-task-detail')
 	}
 
+	_handleAutoscrollCheck = () => {
+		this.setState({
+			autoScroll: !this.state.autoScroll,
+		})
+	}
+
 	render = () => {
-		let { loading, taskId, taskAddTime, taskStartTime, taskEndTime, taskType, taskName, taskKey, taskState } = this.state
+		let { loading, taskId, taskAddTime, taskStartTime, taskEndTime, taskType, taskName, taskKey, taskState, autoScroll } = this.state
 
 		return (
 			<div className="home-section">
@@ -191,13 +211,31 @@ export default class DetailPage extends React.Component {
 
 						<Grid.Row columns={1} textAlign="left">
 							<Grid.Column>
-								<pre>
-									{this.state.log}
-								</pre>
+								{/* <pre> */}
+								{/* {this.state.log}
+									<div dangerouslySetInnerHTML={this._createDangerPart(this.state.log)} /> */}
+								<SanitizedHTML
+									// allowedAttributes={{ 'a': ['href'] }}
+									allowedTags={['b', 'br']}
+									html={this.state.log}
+								/>
+								{/* </pre> */}
+								<div id='log-area' />
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>
 				)}
+				<Grid>
+					<Grid.Row>
+						<Grid.Column textAlign="right">
+							<Checkbox
+								onChange={this._handleAutoscrollCheck}
+								checked={autoScroll}
+								label={{ children: 'Autoscroll' }}
+							/>
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
 			</div>
 		)
 	}

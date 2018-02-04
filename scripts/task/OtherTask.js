@@ -18,8 +18,6 @@ module.exports = class OtherTask extends taskParent {
 	}
 
 	start() {
-		console.log("CONFIG")
-		console.log(this.jsonconfig.taskdata.othertab.data)
 		let state = false
 		async.waterfall([
 			(callback) => {
@@ -41,7 +39,6 @@ module.exports = class OtherTask extends taskParent {
 					callback()
 				}
 			}, (callback) => {
-				console.log('STARTING PORT SC')
 				if (this.jsonconfig.taskdata.othertab.data.testPortScan) {
 					this._doPortScan({
 						from: this.jsonconfig.taskdata.othertab.data.testPortScanDataFrom,
@@ -59,7 +56,6 @@ module.exports = class OtherTask extends taskParent {
 			})
 
 		require('deasync').loopWhile(() => { return !state })
-		console.log("ALL DONE")
 	}
 
 	_doJavascriptImport(cb) {

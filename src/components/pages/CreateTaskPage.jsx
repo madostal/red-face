@@ -144,11 +144,26 @@ export default class CrreateTaskPage extends React.Component {
 	}
 
 	_createTask = () => {
-		console.log(this.state)
-		let home = this.state.serverHome.split(/\r?\n/)
+		let tmp = this.state.taskdata
+		let crawlEnab = false
+		if (tmp.bruteforcetab.data.enable && tmp.bruteforcetab.data.locationAuto) {
+			crawlEnab = true
+		}
+		if (tmp.xsstab.data.enable) {
+			crawlEnab = true
+		}
+
+		let lastState = this.state
+		lastState.crawlerisneed = crawlEnab
+
+		this.setState({
+			crawlerisneed: crawlEnab,
+		})
+
+		let home = lastState.serverHome.split(/\r?\n/)
 		if (home.length > 1) {
 			//more the one task
-			let stateTmp = this.state
+			let stateTmp = lastState
 			let iterator = 1
 			home.forEach(el => {
 				let toSend = stateTmp
@@ -158,7 +173,7 @@ export default class CrreateTaskPage extends React.Component {
 				Api.socketRequest('taskcreate', JSON.stringify(toSend))
 			})
 		} else {
-			Api.socketRequest('taskcreate', JSON.stringify(this.state))
+			Api.socketRequest('taskcreate', JSON.stringify(lastState))
 		}
 
 		browserHistory.push('/overview')
@@ -186,7 +201,13 @@ export default class CrreateTaskPage extends React.Component {
 		}
 
 		//do you need a crawler?
-		let crawlEnab = (tmp.bruteforcetab.data.locationAuto || tmp.xsstab.data.enable)
+		let crawlEnab = false
+		if (tmp.bruteforcetab.data.enable && tmp.bruteforcetab.data.locationAuto) {
+			crawlEnab = true
+		}
+		if (tmp.xsstab.data.enable) {
+			crawlEnab = true
+		}
 
 		this.setState({
 			taskdata: tmp,
