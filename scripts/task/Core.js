@@ -55,12 +55,40 @@ class Core {
 		this._setStream(this.taskData.logPath)
 		let crawlerOut
 		if (this.taskConfig.crawlerisneed) {
-			crawlerOut = new CrawlerTask(this.taskConfig.serverHome, this.taskConfig.crawlerdeep)
-				.getRes()
+			crawlerOut = new CrawlerTask(this.taskConfig.serverHome, this.taskConfig.crawlerdeep,
+				this.taskConfig.taskdata.bruteforcetab.data.loginFormXPathExpr,
+				this.taskConfig.taskdata.bruteforcetab.data.loginNameXPathExpr,
+				this.taskConfig.taskdata.bruteforcetab.data.loginPswXPathExpr
+			).getRes()
 		}
 
 		if (this.taskConfig.taskdata.bruteforcetab.data !== null && this.taskConfig.taskdata.bruteforcetab.data.enable) {
-			new BruteForceTask(this.taskConfig, this.taskData.configPath).start()
+			if (this.taskConfig.taskdata.bruteforcetab.data.locationAuto) {
+				//find login page in crawler res
+				let formPath = this._XPathToCrawleString(this.taskConfig.taskdata.bruteforcetab.data.loginFormXPathExpr)
+				let loginPath = this._XPathToCrawleString(this.taskConfig.taskdata.bruteforcetab.data.loginNameXPathExpr)
+				let pswPath = this._XPathToCrawleString(this.taskConfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
+				let res
+				for (let i = 0; i < crawlerOut.length; i++) {
+					//if crawler res has login form, inputs.. we found
+					if (crawlerOut[i][1].hasOwnProperty(formPath)
+						&& crawlerOut[i][1].hasOwnProperty(loginPath)
+						&& crawlerOut[i][1].hasOwnProperty(pswPath)
+						&& crawlerOut[i][1][formPath] === true) {
+						res = (crawlerOut[i][0])
+						break
+					}
+				}
+				if (!res) {
+					console.log('BRUTEFORCE TASK: login form was not found')
+				} else {
+					this.taskConfig.taskdata.bruteforcetab.data.location = res.replace(this.taskConfig.serverHome, '')
+					new BruteForceTask(this.taskConfig, this.taskData.configPath).start()
+				}
+			} else {
+				new BruteForceTask(this.taskConfig, this.taskData.configPath).start()
+			}
+
 		}
 		if (this.taskConfig.taskdata.othertab.data !== null && this.taskConfig.taskdata.othertab.data.enable) {
 			new OtherTask(this.taskConfig).start()
@@ -106,6 +134,10 @@ class Core {
 			}
 			wfCallback(null)
 		})
+	}
+
+	_XPathToCrawleString(xpath) {
+		return xpath.replace(/\W/g, '')
 	}
 }
 

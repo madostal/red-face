@@ -29,11 +29,23 @@ module.exports = class BruteForceTask extends taskParent {
 		}
 
 		let totalToTest = data.length
+
 		let countOfProc = this.jsonconfig.taskdata.bruteforcetab.data.nodes
+		if (!Number.isInteger(countOfProc) || countOfProc < 1) {
+			//if input is wrong number
+			countOfProc = 1
+		}
+
+		if (!this._isFloat(this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff)) {
+			this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff = 80
+		}
+
 		data = this._chunkArr(data, Math.ceil(data.length / countOfProc))
 
 		let startTime = new Date()
 		let rem = data.length
+
+		console.log(['Using diff ', this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff, '%'].join(''))
 
 		for (let i = 0; i < data.length; i++) {
 			let path = ['writable', '/', 'tmp', '/', 'red_face_config_', 'bruteforce', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
@@ -142,5 +154,9 @@ module.exports = class BruteForceTask extends taskParent {
 		}
 
 		return chunks
+	}
+
+	_isFloat(n) {
+		return Number(n) === n && n % 1 !== 0;
 	}
 }

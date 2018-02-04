@@ -3,16 +3,25 @@ const taskParent = require('./TaskParent.js')
 
 module.exports = class CrawlerTask extends taskParent {
 
-	constructor(serverHome, crawlerDeep) {
+	constructor(serverHome, crawlerDeep, loginFormXPathExpr, loginNameXPathExpr, loginPswXPathExpr) {
 		super()
 		this.homeUrl = serverHome
 		this.res
+		this.loginFormXPathExpr = loginFormXPathExpr
+		this.loginNameXPathExpr = loginNameXPathExpr
+		this.loginPswXPathExpr = loginPswXPathExpr
 		this._crawle(crawlerDeep)
 	}
 
 	_crawle(deep) {
 		console.log(['Starting local web crawler with deep ', deep].join(''))
-		const lookFor = ['//input' ]
+
+		const lookFor = [
+			'//input',
+			this.loginFormXPathExpr,
+			this.loginNameXPathExpr,
+			this.loginPswXPathExpr,
+		]
 
 		const crwlIns = new Crawler(this.homeUrl, parseInt(deep), lookFor)
 

@@ -31,7 +31,8 @@ class BruteForceSubTask {
 				await webDriver.doLogin(data[i][0], data[i][1], this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
 				let tmp = await webDriver.getDocumentText()
 				let similarity = stringSimilarity.compareTwoStrings(errorPage, tmp)
-				if ((similarity * 100) < 1) {
+				console.log(similarity * 100)
+				if ((similarity * 100) < this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff) {
 					console.log('!!!!! Probably found credentials')
 					console.log([data[i][0], data[i][1]].join(' '))
 				}
