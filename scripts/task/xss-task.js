@@ -1,8 +1,8 @@
 const url = require('url')
 const queryString = require('query-string')
 
-const taskParent = require('./TaskParent.js')
-const WebDriver = require('../utils/WebDriver')
+const taskParent = require('./task-parent.js')
+const WebDriver = require('../utils/web-driver')
 
 module.exports = class XSSTask extends taskParent {
 

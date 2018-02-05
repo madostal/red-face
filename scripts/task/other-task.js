@@ -1,11 +1,11 @@
 const jetpack = require('fs-jetpack')
+const request = require('sync-request')
 const async = require('async')
 const scan = require('net-scan')
 const portNumbers = require('port-numbers')
 const puppeteer = require('puppeteer')
-const taskParent = require('./TaskParent.js')
-const logger = require('../Logger')
-const request = require('sync-request')
+const taskParent = require('./task-parent.js')
+const logger = require('../logger')
 
 
 const PATH_GIT_CONFIG = '/task_settings/configuration/git_config'
@@ -111,7 +111,6 @@ module.exports = class OtherTask extends taskParent {
 			console.log(['Invalids ports from: ', field.from, ', to: ', field.to].join(''))
 			cb()
 		} else {
-
 			scan.port({
 				host: tmpHost,
 				start: field.from,

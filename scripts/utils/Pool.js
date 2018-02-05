@@ -1,10 +1,10 @@
-const library = require('./Library.js')
 const fs = require('fs')
 const moment = require('moment')
 const { spawn } = require('child_process')
-const taskHome = require('../task/taskHome.js')
-const logger = require('../Logger.js')
-const database = require('./Database.js')
+const taskHome = require('../task/task-home.js')
+const logger = require('../logger.js')
+const library = require('./library.js')
+const database = require('./database.js')
 const TMP_FOLDER_PATH = './tmp_folder'
 
 const DEFAULT_POOL_SIZE = 2
@@ -63,7 +63,7 @@ module.exports = class Pool {
 
 		this.io.emit('taskstart', 'TASK ' + id + ' STARTED :-)')
 
-		const process = spawn('node', ['task/Core.js', id], {
+		const process = spawn('node', ['task/core.js', id], {
 			stdio: ['ipc', 'pipe', 'pipe'],
 		})
 
@@ -143,7 +143,7 @@ module.exports = class Pool {
 		let file = [
 			'writable',
 			'/',
-			this.logFolderPath,
+			'log_folder',
 			'/',
 			'red_face_log_',
 			taskname,
@@ -188,7 +188,7 @@ module.exports = class Pool {
 	}
 
 	repeatTask(id) {
-		database.connection.query('SELECT * FROM TASK WHERE ID = ?', [id], (err, result) => {
+		database.connection.query('SELECT * FROM task WHERE ID = ?', [id], (err, result) => {
 			if (err) {
 				logger.log('error', err)
 				throw err

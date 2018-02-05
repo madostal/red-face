@@ -1,18 +1,18 @@
-const LOG_FOLDER = './log_folder'
+const LOG_FOLDER = 'log_folder'
 const SERVER_PORT = 4200
 
-const jetpack = require('fs-jetpack');
+const jetpack = require('fs-jetpack')
 const fs = require('fs')
 const server = require('http')
 	.createServer(require('express')())
 const io = require('socket.io')(server)
 const cpuStat = require('cpu-stat')
-const database = require('./utils/Database.js')
+const database = require('./utils/database.js')
 const poolInstance = new (require('./utils/pool.js'))(io, LOG_FOLDER)
 
-const taskHome = require('./task/TaskHome.js')
-const library = require('./utils/Library.js')
-const logger = require('./Logger.js')
+const taskHome = require('./task/task-home.js')
+const library = require('./utils/library.js')
+const logger = require('./logger.js')
 
 server.listen(SERVER_PORT)
 
@@ -109,7 +109,7 @@ io.on('connection', (socket) => {
 		}
 		else {
 			let params = [splitKey[0], splitKey[1]]
-			database.connection.query('SELECT * FROM TASK WHERE ID = ? AND TASKKEY = ?', params, (err, fields) => {
+			database.connection.query('SELECT * FROM task WHERE ID = ? AND TASKKEY = ?', params, (err, fields) => {
 				if (err) {
 					logger.log('error', err)
 					throw err

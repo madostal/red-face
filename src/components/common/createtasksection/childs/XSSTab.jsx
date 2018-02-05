@@ -68,6 +68,7 @@ export default class XSSTab extends BodyParent {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
+
 			</div>
 		)
 	}

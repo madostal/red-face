@@ -1,7 +1,7 @@
 const jetpack = require('fs-jetpack')
-const taskParent = require('./TaskParent.js')
-const library = require('../utils/Library')
 const { spawn } = require('child_process')
+const taskParent = require('./task-parent.js')
+const library = require('../utils/library')
 
 module.exports = class BruteForceTask extends taskParent {
 
@@ -51,7 +51,7 @@ module.exports = class BruteForceTask extends taskParent {
 			let path = ['writable', '/', 'tmp', '/', 'red_face_config_', 'bruteforce', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
 			jetpack.write(path, data[i])
 
-			const process = spawn('node', ['./task/BruteForceSubTask.js', path, this.configPath, serverHome, i], {
+			const process = spawn('node', ['./task/brute-force-sub-task.js', path, this.configPath, serverHome, i], {
 				stdio: ['ipc', 'pipe', 'pipe'],
 			})
 			this.listOfChilds.push(process)

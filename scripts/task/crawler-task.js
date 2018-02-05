@@ -1,5 +1,5 @@
 const Crawler = require('local-web-crawler')
-const taskParent = require('./TaskParent.js')
+const taskParent = require('./task-parent.js')
 
 module.exports = class CrawlerTask extends taskParent {
 

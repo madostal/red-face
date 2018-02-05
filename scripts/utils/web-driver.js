@@ -4,13 +4,13 @@ const { Builder, By, Key, until } = require('selenium-webdriver');
 const webdriver = require('selenium-webdriver')
 
 const CHROME_OPTIONS = {
-	"args": ["--test-type", "--start-maximized"]
-	// 'args': [
-	// 	'--test-type', 'disable-web-security', '--log-level=3', '--silent', '--start-maximized', '--headless',
-	// ],
-	// 'prefs': {
-	// 	'profile.managed_default_content_settings.images': 2,
-	// },
+	// "args": ["--test-type", "--start-maximized"]
+	'args': [
+		'--headless', '--test-type', 'disable-web-security', '--log-level=3', '--silent', '--no-sandbox', '--disable-gpu', '--log-path=NUL',
+	],
+	'prefs': {
+		'profile.managed_default_content_settings.images': 2,
+	},
 }
 
 const DEFAULT_CREDITS = 20 //2S

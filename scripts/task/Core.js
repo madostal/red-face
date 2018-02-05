@@ -1,13 +1,13 @@
 
-const taskHome = require('./TaskHome')
-const database = require('../utils/Database')
-const library = require('../utils/Library')
-const CrawlerTask = require('./CrawlerTask')
-const BruteForceTask = require('./BruteForceTask')
-const OtherTask = require('./OtherTask')
-const XSSTask = require('./XSSTask')
-const logger = require('../Logger')
 const jetpack = require('fs-jetpack')
+const taskHome = require('./task-home')
+const database = require('../utils/database')
+const library = require('../utils/library')
+const CrawlerTask = require('./crawler-task')
+const BruteForceTask = require('./brute-force-task')
+const OtherTask = require('./other-task')
+const XSSTask = require('./xss-task')
+const logger = require('../logger')
 
 class Core {
 
