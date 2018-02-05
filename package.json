@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "SECURITY TESTING OF WEB APPLICATIONS - Diploma thesis - Faculty of Applied Sciences of the University of West Bohemia in Pilsen",
 	"scripts": {
-		"build": "rm -rf ./dist && webpack --progress",
+		"build": "webpack --progress",
 		"start": "webpack-dev-server --hot --inline --history-api-fallback --port 3000 --progress"
 	},
 	"repository": {
@@ -28,12 +28,13 @@
 		"fs-jetpack": "^1.2.0",
 		"html-webpack-plugin": "^2.30.1",
 		"jquery": "^3.3.0",
-		"local-web-crawler": "^1.0.6",
+		"local-web-crawler": "^1.0.8",
 		"moment": "^2.20.1",
 		"mysql": "^2.15.0",
 		"net-scan": "^0.1.1",
 		"port-numbers": "^2.0.19",
 		"puppeteer": "^0.10.2",
+		"query-string": "^5.1.0",
 		"react": "^15.6.2",
 		"react-dom": "^15.6.2",
 		"react-router": "^2.8.1",
@@ -41,7 +42,7 @@
 		"react-sanitized-html": "^2.0.0",
 		"react-scroll-up": "^1.3.3",
 		"react-toastify": "^3.3.0",
-		"recharts": "^1.0.0-beta.9",
+		"recharts": "^1.0.0-beta.10",
 		"sanitize-html": "^1.17.0",
 		"selenium-webdriver": "^3.6.0",
 		"semantic-ui-css": "^2.2.14",
@@ -51,10 +52,9 @@
 		"style-loader": "^0.18.2",
 		"superagent": "^3.8.2",
 		"sync-request": "^4.1.0",
+		"url": "^0.11.0",
 		"url-loader": "^0.5.9",
 		"webpack": "^3.10.0",
-		"query-string": "^5.1.0",
-		"url": "^0.11.0",
 		"winston": "^2.4.0"
 	},
 	"devDependencies": {
