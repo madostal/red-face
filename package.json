@@ -53,6 +53,8 @@
 		"sync-request": "^4.1.0",
 		"url-loader": "^0.5.9",
 		"webpack": "^3.10.0",
+		"query-string": "^5.1.0",
+		"url": "^0.11.0",
 		"winston": "^2.4.0"
 	},
 	"devDependencies": {

@@ -94,7 +94,6 @@ class Core {
 			new OtherTask(this.taskConfig).start()
 		}
 		if (this.taskConfig.taskdata.xsstab.data !== null && this.taskConfig.taskdata.xsstab.data.enable) {
-			// console.log('xsstab TAB ENABLE')
 			new XSSTask(this.taskConfig, null, crawlerOut).start()
 		}
 		// if (this.taskConfig.taskdata.sqltab.data !== null

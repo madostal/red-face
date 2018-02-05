@@ -1,3 +1,6 @@
+const url = require('url')
+const queryString = require('query-string')
+
 const taskParent = require('./TaskParent.js')
 const WebDriver = require('../utils/WebDriver')
 
@@ -13,6 +16,21 @@ module.exports = class XSSTask extends taskParent {
 	}
 
 	start() {
+
+		this._testInputs()
+		this._testParams()
+
+		let state = false;
+		(async () => {
+			await this.webDriver.closeDriver()
+			state = true
+		})()
+
+		require('deasync').loopWhile(() => { return !state })
+		console.log('XSS task finished')
+	}
+
+	_testInputs() {
 		let xssTabData = this.jsonconfig.taskdata.xsstab.data
 		console.log('Starting XSS task')
 		let state = false;
@@ -89,13 +107,71 @@ module.exports = class XSSTask extends taskParent {
 						}
 					}
 				}
-				await this.webDriver.closeDriver()
 			}
 			state = true
 		})()
 
 		require('deasync').loopWhile(() => { return !state })
-		console.log('XSS task finished')
+		console.log('XSS input finished')
+	}
+	_testParams() {
+		console.log('CALLING TEST PARAMS')
+		let xssTabData = this.jsonconfig.taskdata.xsstab.data
+
+		let toTest = []
+
+		//first, check crawler res and get url with params
+		this.crawlerRes.forEach(e => {
+			let tmpUrl = e[0]
+
+			let parsedUrl = url.parse(tmpUrl)
+
+			//has url query?
+			if (parsedUrl.query) {
+				let parsedQuery = queryString.parse(parsedUrl.query)
+				Object.keys(parsedQuery).forEach((key, ) => {
+					xssTabData.userSettings.forEach(xssItem => {
+						let tmp = parsedUrl.query.replace(
+							[key, '=', parsedQuery[key]].join(''),
+							[key, '=', xssItem].join(''),
+						)
+						toTest.push(
+							tmpUrl.replace(parsedUrl.query,
+								tmp
+							)
+						)
+					})
+				})
+			}
+		})
+		console.log(toTest)
+
+		let state = false;
+
+		(async () => {
+			if (this.crawlerRes) {
+				for (let i = 0; i < toTest.length; i++) {
+					await this._testUrl(toTest[i])
+				}
+				state = true
+			}
+		})()
+		require('deasync').loopWhile(() => { return !state })
+		console.log('XSS url params finished')
 	}
 
+	async _testUrl(url) {
+		await this.webDriver.goTo(url)
+		require('deasync').sleep(1000)
+
+		//check xss if alert appears
+		let wasFound = false
+		while (await this.webDriver.testAlertPresentAndClose()) {
+			//report once
+			if (!wasFound) {
+				wasFound = true
+				console.log(['Possible xss on', url].join(' '))
+			}
+		}
+	}
 }
