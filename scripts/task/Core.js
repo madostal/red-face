@@ -52,7 +52,6 @@ class Core {
 	 * Take each sub task in loop and synchrony do a task job
 	 */
 	_startJob() {
-		this._setStream(this.taskData.logPath)
 		let crawlerOut
 		if (this.taskConfig.crawlerisneed) {
 			crawlerOut = new CrawlerTask(this.taskConfig.serverHome, this.taskConfig.crawlerdeep,

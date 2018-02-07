@@ -1,4 +1,5 @@
 const fs = require('fs')
+const async = require('async')
 const moment = require('moment')
 const { spawn } = require('child_process')
 const taskHome = require('../task/task-home.js')
@@ -50,72 +51,82 @@ module.exports = class Pool {
 	}
 
 	_startProcess(id) {
-		let logFileName = 'tmp.txt'
+		let logFileName
 		this.activeProcess++
 
-		let params = [taskHome.TaskState.running, library.getMySQLTime(), id]
-		database.connection.query('UPDATE task SET state = ?, startTime = ?  WHERE id = ?', params, (err) => {
-			if (err) {
-				logger.log('error', err)
-				throw err
+		async.waterfall([
+			(callback) => {
+				let params = [taskHome.TaskState.running, library.getMySQLTime(), id]
+				database.connection.query('UPDATE task SET state = ?, startTime = ?  WHERE id = ?', params, (err) => {
+					if (err) {
+						logger.log('error', err)
+						throw err
+					}
+					callback()
+				})
+			},
+			(callback) => {
+				database.connection.query('SELECT * FROM task WHERE id = ?', [id], (err, fields) => {
+					if (err) {
+						throw err
+					}
+					logFileName = fields[0].logPath
+					callback()
+				})
+			},
+		], () => {
+			this.io.emit('taskstart', 'TASK ' + id + ' STARTED :-)')
+
+			const process = spawn('node', ['task/core.js', id], {
+				stdio: ['ipc', 'pipe', 'pipe'],
+			})
+
+			this.processMap.set(id, process)
+
+			const procesOut = (data) => {
+				data = this._formatLogRow(data)
+				this._appendDataToFile(data, logFileName)
+				this.io.emit(['detail-', id].join(''), { 'data': data.toString('utf8') })
 			}
-		})
 
-		this.io.emit('taskstart', 'TASK ' + id + ' STARTED :-)')
-
-		const process = spawn('node', ['task/core.js', id], {
-			stdio: ['ipc', 'pipe', 'pipe'],
-		})
-
-		this.processMap.set(id, process)
-
-		const procesOut = (data) => {
-			data = this._formatLogRow(data)
-			this._appendDataToFile(data, logFileName)
-			this.io.emit(['detail-', id].join(''), { 'data': data.toString('utf8') })
-		}
-
-		process.stdout.on('data', (data) => {
-			procesOut(data)
-		})
-
-		process.stderr.on('data', (data) => {
-			procesOut(data)
-		})
-
-		process.on('close', (code) => {
-			let taskFinishedState = (code === 0) ? taskHome.TaskState.done : taskHome.TaskState.failed
-
-			let endTime = library.getMySQLTime()
-
-			let params = [taskFinishedState, endTime, id]
-			database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE  id= ? ', params, (err) => {
-				if (err) {
-					logger.log('error', err)
-					throw err
-				}
+			process.stdout.on('data', (data) => {
+				procesOut(data)
 			})
 
-			this.activeProcess--
-			this.processMap.delete(id)
-
-			this.io.emit('taskdone', {
-				running: this.activeProcess,
-				pending: this.poolQueue.length,
-				taskdone: id,
-				endTime: endTime,
+			process.stderr.on('data', (data) => {
+				procesOut(data)
 			})
-			this.io.emit('update-overview', {
-				running: this.activeProcess,
-				pending: this.poolQueue.length,
-				taskdone: id,
-				endTime: endTime,
-			})
-			this._forceStart()
-		})
 
-		process.on('message', (data) => {
-			logFileName = data.file
+			process.on('close', (code) => {
+				let taskFinishedState = (code === 0) ? taskHome.TaskState.done : taskHome.TaskState.failed
+
+				let endTime = library.getMySQLTime()
+
+				let params = [taskFinishedState, endTime, id]
+				database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE  id= ? ', params, (err) => {
+					if (err) {
+						logger.log('error', err)
+						throw err
+					}
+				})
+
+				this.activeProcess--
+				this.processMap.delete(id)
+
+				this.io.emit('taskdone', {
+					running: this.activeProcess,
+					pending: this.poolQueue.length,
+					taskdone: id,
+					endTime: endTime,
+				})
+				this.io.emit('update-overview', {
+					running: this.activeProcess,
+					pending: this.poolQueue.length,
+					taskdone: id,
+					endTime: endTime,
+				})
+				this._forceStart()
+			})
 		})
 	}
 
