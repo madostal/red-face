@@ -32,6 +32,7 @@ export default class OverviewTable extends React.Component {
 		super(props)
 
 		this.state = {
+			isLoading: true,
 			originalData: [],
 			result: [],
 			redirect: false,
@@ -79,6 +80,7 @@ export default class OverviewTable extends React.Component {
 
 			this.setState({
 				originalData: rowData,
+				isLoading: false,
 			})
 			this._paggingAction(PAGGING_OPTIONS[0].value)
 			this._switchPage(0)
@@ -234,7 +236,7 @@ export default class OverviewTable extends React.Component {
 	}
 
 	render = () => {
-		let { result } = this.state
+		let { result, isLoading } = this.state
 
 		let pagging = []
 		let activePage = this.state.tableActivePage
@@ -251,7 +253,7 @@ export default class OverviewTable extends React.Component {
 		}
 
 		return (
-			<div>
+			<Segment vertical loading={isLoading}>
 				<Table celled padded selectable>
 					<Table.Header>
 						<Table.Row>
@@ -443,7 +445,7 @@ export default class OverviewTable extends React.Component {
 					<TableNotes />
 				</Segment>
 				<Divider hidden />
-			</div>
+			</Segment>
 		)
 	}
 }
