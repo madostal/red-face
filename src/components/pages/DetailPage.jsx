@@ -64,6 +64,7 @@ export default class DetailPage extends React.Component {
 	}
 
 	_regexLog = (log) => {
+		if (!log) return log
 		let tmp = log
 		tmp = tmp.replace(/\d{1,2}.\d{1,2}.\d{4} \d{1,2}:\d{1,2}:\d{1,2}:/g, '<b>$&</b>')
 		tmp = tmp.replace(/\n/g, '<br>')
