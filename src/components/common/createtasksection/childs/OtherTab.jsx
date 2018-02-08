@@ -36,6 +36,13 @@ export default class OtherTab extends BodyParent {
 					id={'testGitConfig'}
 					label={<label>Test GIT config</label>}
 				/>
+				<Input
+					onChange={(d, e) => this._componentOnChangeText(d, e)}
+					value={this.props.data.data.testGitConfigPpst}
+					id={'testGitConfigPpst'}
+					placeholder="Page percentage difference"
+					disabled={!this.props.data.data.testGitConfig}
+				/>
 				<Divider hidden />
 				<Checkbox
 					onChange={(d, e) => this._componentOnChangeCheck(d, e)}

@@ -1,12 +1,12 @@
 require('chromedriver')
-let fs = require('fs')
+const request = require('request')
 const { Builder, By, Key, until } = require('selenium-webdriver');
 const webdriver = require('selenium-webdriver')
 
 const CHROME_OPTIONS = {
-	// "args": ["--test-type", "--start-maximized"]
 	'args': [
-		'--headless', '--test-type', 'disable-web-security', '--log-level=3', '--silent', '--no-sandbox', '--disable-gpu', '--log-path=NUL',
+		// '--headless', '--test-type', 'disable-web-security', '--log-level=3', '--silent', '--no-sandbox', '--disable-gpu', '--log-path=NUL',
+		"--test-type", "--start-maximized"
 	],
 	'prefs': {
 		'profile.managed_default_content_settings.images': 2,
@@ -15,6 +15,8 @@ const CHROME_OPTIONS = {
 
 const DEFAULT_CREDITS = 20 //2S
 const DEFAULT_SLEEP_CREDIT_TIME = 1
+
+const DEFAULT_FAIL_CREDITS = 10
 
 class FailCreator {
 
@@ -32,7 +34,6 @@ class FailCreator {
 	}
 }
 
-const GUARD_LOCK_TIME_MS = 1000
 
 module.exports = class WebDriver {
 
@@ -56,6 +57,60 @@ module.exports = class WebDriver {
 
 	async goTo(url) {
 		await this.driver.get(url)
+	}
+
+	async goToSafe(url) {
+		let r = {
+			wasHtml: false,
+			statusCode: -1,
+		}
+		if (this.failCredits === 0) {
+			console.error(['Selelnium driver fail on', url].join(' '))
+			return r
+		}
+
+		this.failCredits--
+		try {
+			const fire = () => {
+				return new Promise(resolve => {
+					request({
+						url: url,
+						method: 'HEAD',
+					}, (error, response) => {
+						let isHtml = false
+						if (error) resolve()
+						r.statusCode = response.statusCode
+						if (response.headers['content-type']
+							&& response.headers['content-type'].includes('text/html')) {
+							isHtml = true
+						}
+
+						if (isHtml) {
+							r.wasHtml = true
+							let state = false;
+							(async () => {
+								try {
+									await this.driver.get(url)
+								} catch (error) {
+									this._restartDriver()
+									this.goTo(url)
+								}
+								state = true
+							})()
+
+							require('deasync').loopWhile(() => { return !state })
+						}
+						resolve()
+					})
+				})
+			}
+			await fire()
+
+		} catch (err) {
+			this._restartDriver()
+		}
+		this._restartCredits()
+		return r
 	}
 
 	async doLogin(login, psw, xpForm, xpLogin, xpPsw, failCreator = new FailCreator()) {
@@ -388,4 +443,20 @@ module.exports = class WebDriver {
 	// 	}
 	// 	return returnData
 	// }
+
+	/**
+	 * Set default credits after succ goToSafe
+	 */
+	_restartCredits() {
+		this.failCredits = DEFAULT_FAIL_CREDITS
+	}
+
+	/**
+	 * Close actual driver - if fail
+	 * And start new
+	 */
+	_restartDriver() {
+		this.closeDriver()
+		this._init()
+	}
 }

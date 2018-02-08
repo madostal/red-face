@@ -1,14 +1,15 @@
 const jetpack = require('fs-jetpack')
-const request = require('sync-request')
+const stringSimilarity = require('string-similarity')
 const async = require('async')
 const scan = require('net-scan')
 const portNumbers = require('port-numbers')
 const puppeteer = require('puppeteer')
+const WebDriver = require('../utils/web-driver')
 const taskParent = require('./task-parent.js')
 const logger = require('../logger')
 
-
 const PATH_GIT_CONFIG = '/task_settings/configuration/git_config'
+const DEFAULT_GIT_PPST = 75
 
 module.exports = class OtherTask extends taskParent {
 
@@ -86,19 +87,51 @@ module.exports = class OtherTask extends taskParent {
 		logger.log('debug', 'Starting gitconfig test')
 
 		let homeUrl = this.serverHome
-		async.waterfall([
-			function (callback) {
 				let data = jetpack.read([process.cwd(), PATH_GIT_CONFIG].join('')).match(/[^\r\n]+/g)
-				data.forEach((value) => {
-					let url = [homeUrl, value].join('')
-					let res = request('GET', url)
-					console.log([url, ': ', res.statusCode].join(''))
+				let webDriver = new WebDriver()
+
+				let baseUrl = [homeUrl, '.a/cxydaseqw', Math.random().toString(36).substring(7)].join('')
+				let resV = []
+				let state = false;
+
+				(async () => {
+					//get some error page
+					await webDriver.goTo(baseUrl)
+					let firstDoc = await webDriver.getDocumentText()
+
+					for(let i = 0; i < data.length; i++) {
+						let url = [homeUrl, data[i]].join('')
+						let wdRes = await webDriver.goToSafe(url)
+						console.log(['GitChecker: checking ', url].join(''))
+						let res = -1
+						//if was error, or url is file, or 404, 403....
+						if(!wdRes.wasHtml || wdRes.statusCode !== 200){
+							//if url was not html ...
+							res=100
+						} else {
+							let actDoc = await webDriver.getDocumentText()
+							res = stringSimilarity.compareTwoStrings(firstDoc, actDoc) *100
+						}
+						resV.push({
+							url:url,
+							ppst:res,
+						})
+					}
+					await webDriver.closeDriver()
+					state = true
+				})()
+				require('deasync').loopWhile(() => { return !state })
+
+				//firt check
+				let ppst = this.jsonconfig.taskdata.othertab.data.testGitConfigPpst
+				if(!ppst) { ppst = DEFAULT_GIT_PPST }
+				ppst = parseInt(ppst)
+				Object.keys(resV).forEach( (key) =>{
+					if(resV[key].ppst < ppst) {
+						console.log(['GitChecker: found git config file on ', resV[key].url].join(''))
+					}
 				})
-				callback(null)
-			},
-		], (err) => {
-			cb(null)
-		})
+			cb()
 	}
 
 	_doPortScan(field, serverHome, cb) {
