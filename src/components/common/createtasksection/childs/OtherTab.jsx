@@ -20,7 +20,7 @@ export default class OtherTab extends BodyParent {
 					onChange={(d, e) => this._componentOnChangeCheck(d, e)}
 					checked={this.props.data.data.testJavascriptImport}
 					id={'testJavascriptImport'}
-					label={<label>Test javascript import</label>}
+					label={<label>Test inline JS</label>}
 				/>
 				<Divider hidden />
 				<Checkbox

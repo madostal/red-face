@@ -12,7 +12,6 @@ module.exports = class XSSTask extends taskParent {
 		this.crawlerRes = crawlerRes
 
 		this.webDriver = new WebDriver()
-		console.log(this.crawlerRes.length)
 	}
 
 	start() {

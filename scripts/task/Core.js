@@ -90,7 +90,7 @@ class Core {
 
 		}
 		if (this.taskConfig.taskdata.othertab.data !== null && this.taskConfig.taskdata.othertab.data.enable) {
-			new OtherTask(this.taskConfig).start()
+			new OtherTask(this.taskConfig, crawlerOut).start()
 		}
 		if (this.taskConfig.taskdata.xsstab.data !== null && this.taskConfig.taskdata.xsstab.data.enable) {
 			new XSSTask(this.taskConfig, null, crawlerOut).start()

@@ -147,10 +147,14 @@ export default class CrreateTaskPage extends React.Component {
 	_createTask = () => {
 		let tmp = this.state.taskdata
 		let crawlEnab = false
+
 		if (tmp.bruteforcetab.data.enable && tmp.bruteforcetab.data.locationAuto) {
 			crawlEnab = true
 		}
 		if (tmp.xsstab.data.enable) {
+			crawlEnab = true
+		}
+		if (tmp.othertab.data.testJavascriptImport) {
 			crawlEnab = true
 		}
 
@@ -203,10 +207,15 @@ export default class CrreateTaskPage extends React.Component {
 
 		//do you need a crawler?
 		let crawlEnab = false
+
 		if (tmp.bruteforcetab.data.enable && tmp.bruteforcetab.data.locationAuto) {
 			crawlEnab = true
 		}
 		if (tmp.xsstab.data.enable) {
+			crawlEnab = true
+		}
+
+		if (tmp.othertab.data.testJavascriptImport) {
 			crawlEnab = true
 		}
 

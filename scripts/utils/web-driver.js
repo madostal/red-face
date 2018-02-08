@@ -152,10 +152,39 @@ module.exports = class WebDriver {
 		return res
 	}
 
+	async hasInlineScript() {
+		let res
+		await this.driver.executeAsyncScript(() => {
+			let data = []
+			try {
+				for (let i = 0; i < window.frames.length; i++) {
+					let tmp = window.frames[i].document.scripts
+					for (let j = 0; j < tmp.length; j++) {
+						data.push(tmp[j])
+					}
+				}
+			} catch (e) { /* CORS */ }
+			let tmp = document.scripts
+			for (let i = 0; i < tmp.length; i++) {
+				data.push(tmp[i])
+			}
+			let hasInline = false
+			for (let i = 0; i < tmp.length; i++) {
+				if (!tmp[i].src || tmp[i].src.ength === 0) {
+					console.log(tmp[i])
+					console.log(tmp[i].src)
+					hasInline = true
+					break
+				}
+			}
+			arguments[arguments.length - 1](hasInline)
+		}).then(d => res = d)
+		return res
+	}
+
 	async closeDriver() {
 		await this.driver.quit()
 	}
-
 
 	/**
 	 * Return WebElement
