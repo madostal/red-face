@@ -66,6 +66,8 @@ export default class DetailPage extends React.Component {
 	_regexLog = (log) => {
 		if (!log) return log
 		let tmp = log
+
+		tmp = tmp.replace(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/g, '<a href=\'$&\'>$&</a>')
 		tmp = tmp.replace(/\d{1,2}.\d{1,2}.\d{4} \d{1,2}:\d{1,2}:\d{1,2}:/g, '<b>$&</b>')
 		tmp = tmp.replace(/\n/g, '<br>')
 		return tmp
@@ -216,8 +218,8 @@ export default class DetailPage extends React.Component {
 								{/* {this.state.log}
 									<div dangerouslySetInnerHTML={this._createDangerPart(this.state.log)} /> */}
 								<SanitizedHTML
-									// allowedAttributes={{ 'a': ['href'] }}
-									allowedTags={['b', 'br']}
+									allowedAttributes={{ 'a': ['href'] }}
+									allowedTags={['b', 'br', 'a']}
 									html={this.state.log}
 								/>
 								{/* </pre> */}
