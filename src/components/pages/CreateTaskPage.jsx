@@ -18,6 +18,7 @@ import Parent from './../common/createTaskSection/Parent'
 
 import BruteForceTab from './../common/createTaskSection/childs/BruteForceTab'
 import XSSTab from './../common/createTaskSection/childs/XSSTab'
+import SQLTab from './../common/createtasksection/childs/SQLTab'
 import OtherTab from './../common/createTaskSection/childs/OtherTab'
 
 const defaultXPathForm = '//form//input[@type=\'text\' or @type=\'email\']//ancestor::form//input[@type=\'password\']//ancestor::form'
@@ -103,6 +104,12 @@ const createDefaultStore = () => {
 	obj.taskdata.xsstab.data.userSettings = DEFAULT_XSS
 	obj.taskdata.xsstab.data.useDefault = true
 
+	//sql
+	obj.taskdata.sqltab.data = {}
+	obj.taskdata.sqltab.data.enable = false
+	obj.taskdata.sqltab.data.testParams = true
+	obj.taskdata.sqltab.data.testForms = true
+
 	//other
 	obj.taskdata.othertab.data = {}
 	obj.taskdata.othertab.data.enable = false
@@ -144,19 +151,26 @@ export default class CrreateTaskPage extends React.Component {
 		localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(tmp))
 	}
 
+	_isCrawlerEnable = (taskData) => {
+		let crawlEnab = false
+		if (taskData.bruteforcetab.data.enable && taskData.bruteforcetab.data.locationAuto) {
+			crawlEnab = true
+		}
+		if (taskData.xsstab.data.enable) {
+			crawlEnab = true
+		}
+		if (taskData.othertab.data.testJavascriptImport) {
+			crawlEnab = true
+		}
+		if (taskData.sqltab.data.enable) {
+			crawlEnab = true
+		}
+		return crawlEnab
+	}
+
 	_createTask = () => {
 		let tmp = this.state.taskdata
-		let crawlEnab = false
-
-		if (tmp.bruteforcetab.data.enable && tmp.bruteforcetab.data.locationAuto) {
-			crawlEnab = true
-		}
-		if (tmp.xsstab.data.enable) {
-			crawlEnab = true
-		}
-		if (tmp.othertab.data.testJavascriptImport) {
-			crawlEnab = true
-		}
+		let crawlEnab = this._isCrawlerEnable(tmp)
 
 		let lastState = this.state
 		lastState.crawlerisneed = crawlEnab
@@ -206,18 +220,7 @@ export default class CrreateTaskPage extends React.Component {
 		}
 
 		//do you need a crawler?
-		let crawlEnab = false
-
-		if (tmp.bruteforcetab.data.enable && tmp.bruteforcetab.data.locationAuto) {
-			crawlEnab = true
-		}
-		if (tmp.xsstab.data.enable) {
-			crawlEnab = true
-		}
-
-		if (tmp.othertab.data.testJavascriptImport) {
-			crawlEnab = true
-		}
+		let crawlEnab = this._isCrawlerEnable(tmp)
 
 		this.setState({
 			taskdata: tmp,
@@ -285,6 +288,23 @@ export default class CrreateTaskPage extends React.Component {
 						}
 					/>
 				</Tab.Pane>,
+			},
+			{
+				menuItem: 'SQL', render: () => <Tab.Pane>
+					<Parent
+						header='SQL'
+						storeFn={this._print}
+						isEnable={this.state.taskdata.sqltab.data.enable}
+						name='SQLTab'
+						child={
+							<SQLTab
+								storeFn={this._print}
+								data={this.state.taskdata.sqltab}
+								name='SQLTab'
+							/>
+						}
+					/>
+				</Tab.Pane>
 			},
 		]
 

@@ -7,6 +7,7 @@ const CrawlerTask = require('./crawler-task')
 const BruteForceTask = require('./brute-force-task')
 const OtherTask = require('./other-task')
 const XSSTask = require('./xss-task')
+const SQLTask = require('./sql-inj-task')
 const logger = require('../logger')
 
 class Core {
@@ -95,10 +96,9 @@ class Core {
 		if (this.taskConfig.taskdata.xsstab.data !== null && this.taskConfig.taskdata.xsstab.data.enable) {
 			new XSSTask(this.taskConfig, null, crawlerOut).start()
 		}
-		// if (this.taskConfig.taskdata.sqltab.data !== null
-		// 	&& this.taskConfig.taskdata.sqltab.data.enable) {
-		// 	console.log('sqltab TAB ENABLE')
-		// }
+		if (this.taskConfig.taskdata.sqltab.data !== null && this.taskConfig.taskdata.sqltab.data.enable) {
+			new SQLTask(this.taskConfig, null, crawlerOut).start()
+		}
 		this._shutDown()
 	}
 
