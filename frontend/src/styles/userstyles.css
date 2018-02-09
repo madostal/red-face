@@ -1,0 +1,16 @@
+
+.app .top.fixed.menu .item {
+  min-height: 50px;
+}
+
+.app .app-view-container {
+  padding-top: 7em;
+}
+
+textarea:disabled {
+	 color: #D3D3D3 !important;
+}
+
+body {
+	background: #f3f3f5 !important;
+}

@@ -1,0 +1,64 @@
+{
+	"name": "red-face-frontend",
+	"version": "1.0.0",
+	"description": "SECURITY TESTING OF WEB APPLICATIONS - Diploma thesis - Faculty of Applied Sciences of the University of West Bohemia in Pilsen",
+	"scripts": {
+		"build": "webpack --progress",
+		"start": "webpack-dev-server --hot --inline --history-api-fallback --port 3000 --progress"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/JaLe29/red-face"
+	},
+	"dependencies": {
+		"babel-core": "^6.26.0",
+		"babel-loader": "^7.1.2",
+		"babel-plugin-add-module-exports": "^0.2.1",
+		"babel-preset-es2015": "^6.24.1",
+		"babel-preset-react": "^6.24.1",
+		"body-parser": "^1.18.2",
+		"css-loader": "^0.28.9",
+		"file-loader": "^0.11.2",
+		"fs-jetpack": "^1.2.0",
+		"html-webpack-plugin": "^2.30.1",
+		"jquery": "^3.3.0",
+		"moment": "^2.20.1",
+		"react": "^15.6.2",
+		"react-dom": "^15.6.2",
+		"react-router": "^2.8.1",
+		"react-router-dom": "^4.2.2",
+		"react-sanitized-html": "^2.0.0",
+		"react-scroll-up": "^1.3.3",
+		"react-toastify": "^3.3.0",
+		"recharts": "^1.0.0-beta.10",
+		"sanitize-html": "^1.17.0",
+		"semantic-ui-css": "^2.2.14",
+		"semantic-ui-react": "^0.71.5",
+		"socket.io": "^2.0.4",
+		"style-loader": "^0.18.2",
+		"superagent": "^3.8.2",
+		"url-loader": "^0.5.9",
+		"webpack": "^3.10.0"
+	},
+	"devDependencies": {
+		"babel-eslint": "^8.2.1",
+		"babel-plugin-transform-class-properties": "^6.24.1",
+		"eslint-plugin-class-property": "^1.1.0",
+		"eslint-plugin-prefer-arrow": "^1.1.1",
+		"eslint-plugin-react": "^7.6.1",
+		"standard": "^10.0.2",
+		"webpack-dev-server": "^2.11.0"
+	},
+	"standard": {
+		"ignore": [
+			"public/**",
+			"scripts/*"
+		]
+	},
+	"keywords": [
+		"security",
+		"web"
+	],
+	"author": "Jakub Löffelmann",
+	"license": "ISC"
+}
