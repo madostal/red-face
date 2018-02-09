@@ -1,30 +1,22 @@
-const LOG_FOLDER = 'log_folder'
+/**
+ * Websocket port
+ */
 const SERVER_PORT = 4200
 
 const jetpack = require('fs-jetpack')
-const fs = require('fs')
 const server = require('http')
 	.createServer(require('express')())
 const io = require('socket.io')(server)
 const cpuStat = require('cpu-stat')
-const database = require('./utils/database.js')
-const poolInstance = new (require('./utils/pool.js'))(io, LOG_FOLDER)
 
-const taskHome = require('./task/task-home.js')
-const library = require('./utils/library.js')
-const logger = require('./logger.js')
+const database = require('./utils/database')
+const taskHome = require('./task/task-home')
+const library = require('./utils/library')
+const logger = require('./logger')
+
+const poolInstance = new (require('./utils/pool'))(io)
 
 server.listen(SERVER_PORT)
-
-
-/**
- * Create directory for storings logs
- */
-const serverSetUp = () => {
-	if (!fs.existsSync(LOG_FOLDER)) {
-		fs.mkdirSync(LOG_FOLDER)
-	}
-}
 
 /**
  * After reset server (if was some fail :-( ) its need check task which were in progress when server fails
@@ -41,6 +33,9 @@ const checkDeadTasks = () => {
 	})
 }
 
+/**
+ * System wrapper around websocked connections, contains all methods for WS
+ */
 io.on('connection', (socket) => {
 
 	/**
@@ -140,5 +135,4 @@ io.on('connection', (socket) => {
 	})
 })
 
-serverSetUp()
 checkDeadTasks()

@@ -7,7 +7,7 @@ const moment = require('moment')
  * @return {String} actual mysql TIMESTAMP
  */
 exports.getMySQLTime = () => {
-	return (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ')
+	return moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 }
 
 /**

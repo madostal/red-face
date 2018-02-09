@@ -1,6 +1,7 @@
 const fs = require('fs')
 const jetpack = require('fs-jetpack')
 const stringSimilarity = require('string-similarity')
+
 const WebDriver = require('../utils/web-driver')
 
 class BruteForceSubTask {

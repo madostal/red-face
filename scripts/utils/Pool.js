@@ -6,20 +6,30 @@ const taskHome = require('../task/task-home.js')
 const logger = require('../logger.js')
 const library = require('./library.js')
 const database = require('./database.js')
+
 const TMP_FOLDER_PATH = './tmp_folder'
 
+/**
+ * Default size of pool -  How many task can run paraller?
+ */
 const DEFAULT_POOL_SIZE = 2
 
 module.exports = class Pool {
 
-	constructor(io, logFolderPath) {
+	constructor(io) {
+		//on server start, set ALWAYS default size
 		this.allowProcess = DEFAULT_POOL_SIZE
+
+		//count of actual running process
 		this.activeProcess = 0
 
+		//standard queue - task waiting for free workers
 		this.poolQueue = []
 
-		this.logFolderPath = logFolderPath
 		this.io = io
+
+		//running process are stored in map
+		//sometimes is called stop task from user
 		this.processMap = new Map()
 	}
 
