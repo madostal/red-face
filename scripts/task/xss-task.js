@@ -10,14 +10,22 @@ module.exports = class XSSTask extends taskParent {
 		super(jsonconfig)
 		this.url = url
 		this.crawlerRes = crawlerRes
-
 		this.webDriver = new WebDriver()
+
 	}
 
 	start() {
 
-		this._testInputs()
-		this._testParams()
+		console.log('XSS: Starting')
+		console.log(this.jsonconfig.taskdata.xsstab.data)
+		if (this.jsonconfig.taskdata.xsstab.data.testForms) {
+			this._testInputs()
+		}
+
+		if (this.jsonconfig.taskdata.xsstab.data.testParams) {
+			this._testParams()
+		}
+
 
 		let state = false;
 		(async () => {
@@ -26,7 +34,7 @@ module.exports = class XSSTask extends taskParent {
 		})()
 
 		require('deasync').loopWhile(() => { return !state })
-		console.log('XSS task finished')
+		console.log('XSS: Finished')
 	}
 
 	_testInputs() {
@@ -70,7 +78,7 @@ module.exports = class XSSTask extends taskParent {
 							let lastXpath = await this.webDriver.findXPathOfElement(elements[i])
 							await this.webDriver.sendKeysToElement(elements[i], actualQ)
 
-							require('deasync').sleep(1000)
+							require('deasync').sleep(2000)
 							let wasNowFound = false
 
 							while (await this.webDriver.testAlertPresentAndClose()) {
@@ -113,6 +121,7 @@ module.exports = class XSSTask extends taskParent {
 		require('deasync').loopWhile(() => { return !state })
 		console.log('XSS input finished')
 	}
+
 	_testParams() {
 		console.log('CALLING TEST PARAMS')
 		let xssTabData = this.jsonconfig.taskdata.xsstab.data

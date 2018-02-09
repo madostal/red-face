@@ -24,24 +24,35 @@ module.exports = class SqlInjTask extends taskParent {
 			this._testParams()
 		}
 
-		// let state = false;
-		// (async () => {
-		// 	await this.webDriver.closeDriver()
-		// 	state = true
-		// })()
 
-		// require('deasync').loopWhile(() => { return !state })
 		console.log('SQLinj: Finished')
 	}
 
 	_testInputs() {
 		console.log('SQLinj: Starting scanning inputs')
+		let webDriver = new WebDriver()
 
+		let state = false;
+		(async () => {
+			await this.webDriver.closeDriver()
+			state = true
+		})()
+
+		require('deasync').loopWhile(() => { return !state })
 		console.log('SQLinj: Scanning inputs finished')
 	}
 
 	_testParams() {
 		console.log('SQLinj: Starting scanning url params')
+		let webDriver = new WebDriver()
+
+		let state = false;
+		(async () => {
+			await this.webDriver.closeDriver()
+			state = true
+		})()
+
+		require('deasync').loopWhile(() => { return !state })
 		console.log('SQLinj: Scanning url params finished')
 	}
 }

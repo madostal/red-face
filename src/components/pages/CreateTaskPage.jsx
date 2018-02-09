@@ -103,6 +103,8 @@ const createDefaultStore = () => {
 	obj.taskdata.xsstab.data.enable = false
 	obj.taskdata.xsstab.data.userSettings = DEFAULT_XSS
 	obj.taskdata.xsstab.data.useDefault = true
+	obj.taskdata.xsstab.data.testParams = true
+	obj.taskdata.xsstab.data.testForms = true
 
 	//sql
 	obj.taskdata.sqltab.data = {}

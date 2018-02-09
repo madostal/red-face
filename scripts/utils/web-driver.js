@@ -43,16 +43,24 @@ module.exports = class WebDriver {
 	}
 
 	_init() {
-		let chromeCapabilities = webdriver.Capabilities.chrome()
-		chromeCapabilities.set('chromeOptions', CHROME_OPTIONS)
+		let state = false;
 
-		this.driver = new webdriver.Builder()
-			.forBrowser('chrome')
-			.withCapabilities(chromeCapabilities)
-			.build()
+		(async () => {
+			let chromeCapabilities = webdriver.Capabilities.chrome()
+			chromeCapabilities.set('chromeOptions', CHROME_OPTIONS)
 
-		this.driver.manage().timeouts().implicitlyWait(5)
-		this.driver.manage().timeouts().pageLoadTimeout(5000)
+			this.driver = new webdriver.Builder()
+				.forBrowser('chrome')
+				.withCapabilities(chromeCapabilities)
+				.build()
+
+			await this.driver.manage().timeouts().implicitlyWait(5)
+			await this.driver.manage().timeouts().pageLoadTimeout(5000)
+
+			state = true
+		})()
+
+		require('deasync').loopWhile(() => { return !state })
 	}
 
 	async goTo(url) {
@@ -222,7 +230,14 @@ module.exports = class WebDriver {
 	 * @param {string} keys
 	 */
 	async sendKeysToElement(element, keys) {
-		await element.sendKeys(Key.chord(Key.CONTROL, 'a'), keys).catch((e) => { console.log('Canno\' write to'); console.log(e) })
+		let err = false
+		await element.sendKeys(Key.chord(Key.CONTROL, 'a'), keys).catch((e) => {
+			err = true
+		})
+		if (err) {
+			let xp = await this.findXPathOfElement(element).catch((e) => { })
+			console.log('CANNOT WRITE TO: ' + xp)
+		}
 	}
 
 	/**
