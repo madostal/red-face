@@ -7,3 +7,7 @@ semantic.json
 
 /notes
 /package-lock.json
+/backend/scripts/config/
+/backend/scripts/log_folder/
+/backend/scripts/tmp/
+/backend/scripts/writable/
