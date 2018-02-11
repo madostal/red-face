@@ -53,6 +53,8 @@ class Core {
 	 * Take each sub task in loop and synchrony do a task job
 	 */
 	_startJob() {
+		let results = []
+
 		let crawlerOut
 		if (this.taskConfig.crawlerisneed) {
 			crawlerOut = new CrawlerTask(this.taskConfig.serverHome, this.taskConfig.crawlerdeep,
@@ -83,23 +85,44 @@ class Core {
 					console.log('BRUTEFORCE TASK: login form was not found')
 				} else {
 					this.taskConfig.taskdata.bruteforcetab.data.location = res.replace(this.taskConfig.serverHome, '')
-					new BruteForceTask(this.taskConfig, this.taskData.configPath).start()
 				}
-			} else {
-				new BruteForceTask(this.taskConfig, this.taskData.configPath).start()
 			}
-
+			results.push(new BruteForceTask(this.taskConfig, this.taskData.configPath)
+				.start())
 		}
 		if (this.taskConfig.taskdata.othertab.data !== null && this.taskConfig.taskdata.othertab.data.enable) {
-			new OtherTask(this.taskConfig, crawlerOut).start()
+			results.push(
+				new OtherTask(this.taskConfig, crawlerOut)
+					.start())
 		}
 		if (this.taskConfig.taskdata.xsstab.data !== null && this.taskConfig.taskdata.xsstab.data.enable) {
-			new XSSTask(this.taskConfig, null, crawlerOut).start()
+			results.push(
+				new XSSTask(this.taskConfig, null, crawlerOut)
+					.start())
 		}
 		if (this.taskConfig.taskdata.sqltab.data !== null && this.taskConfig.taskdata.sqltab.data.enable) {
-			new SQLTask(this.taskConfig, null, crawlerOut).start()
+			results.push(
+				new SQLTask(this.taskConfig, null, crawlerOut)
+					.start())
 		}
+		this._printTestRes(results)
 		this._shutDown()
+	}
+
+	/**
+	 * Print results of testing into console (stream over process)
+	 *
+	 * @param {array} res
+	 */
+	_printTestRes(res) {
+		console.log('TEST RESULTS')
+		console.log('')
+		res.forEach(e => {
+			console.log(e.header)
+			e.data.forEach(i => {
+				console.log(i)
+			})
+		})
 	}
 
 	/**
@@ -108,30 +131,6 @@ class Core {
 	_shutDown() {
 		logger.log('debug', ['Shut down task id: ', this.taskId].join(''))
 		process.exit(0)
-	}
-
-	/**
-	 * Switch file handler, where are stored logs by sendimg mesasge to parent process
-	 *
-	 * @param {string} log file
-	 */
-	_setStream(stream) {
-		process.send({ file: stream })
-	}
-
-	/**
-	 * Mark subtask as done in database
-	 *
-	 */
-	_markSubTaskDone(tasktodo, wfCallback) {
-		let params = [taskHome.TaskState.done, library.getMySQLTime(), this.taskId]
-		database.connection.query('UPDATE subTask SET state = ?, endTime = ? WHERE task_id = ? ', params, (err) => {
-			if (err) {
-				console.error(err)
-				throw err
-			}
-			wfCallback(null)
-		})
 	}
 
 	_XPathToCrawleString(xpath) {

@@ -8,13 +8,14 @@ const WebDriver = require('../utils/web-driver')
 const taskParent = require('./task-parent.js')
 const logger = require('../logger')
 
+const TASK_GLOBAL_NAME = 'Other task'
 const PATH_GIT_CONFIG = '/task_settings/configuration/git_config'
 const DEFAULT_GIT_PPST = 75
 
 module.exports = class OtherTask extends taskParent {
 
 	constructor(jsonconfig, crawlerOut) {
-		super(jsonconfig)
+		super(jsonconfig, TASK_GLOBAL_NAME)
 		this.serverHome = jsonconfig.serverHome
 		this.crawlerOut = crawlerOut
 	}
@@ -58,9 +59,14 @@ module.exports = class OtherTask extends taskParent {
 			})
 
 		require('deasync').loopWhile(() => { return !state })
+		return this.taskRes
 	}
 
 	_doJavascriptImport(cb) {
+		let logData = {
+			text: 'InlineJS',
+			data: [],
+		}
 		logger.log('debug', 'Starting javascript import test')
 		let state = false;
 		(async () => {
@@ -69,13 +75,21 @@ module.exports = class OtherTask extends taskParent {
 			for (let i = 0; i < this.crawlerOut.length; i++) {
 				let url = this.crawlerOut[i][0]
 				await webDriver.goToSafe(url)
-				console.log(await webDriver.hasInlineScript() + ' | ' + url)
+				let hasInjs = await webDriver.hasInlineScript()
+				console.log(hasInjs + ' | ' + url)
+				if (hasInjs) {
+					logData.data.push({
+						text: ['InlineJS on: ', hasInjs].join(''),
+						vulnerability: 0,
+					})
+				}
 			}
 			await webDriver.closeDriver()
 			state = true
 		})()
 
 		require('deasync').loopWhile(() => { return !state })
+		this.taskRes.data.push(logData)
 		cb()
 	}
 
