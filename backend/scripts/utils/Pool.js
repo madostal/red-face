@@ -40,7 +40,7 @@ module.exports = class Pool {
 		this._appendDataToFile(JSON.stringify(data), configFile)
 
 		this.insertNewTaskToDb({
-			taskName: data.taskName,
+			taskName: data.taskname,
 			serverHome: data.serverHome,
 			state: taskHome.TaskState.created,
 			taskKey: library.getRandomTextInRange(10),

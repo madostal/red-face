@@ -68,6 +68,7 @@ export default class OverviewTable extends React.Component {
 			let rowData = []
 			data.reverse().forEach((loop) => {
 				let tmp = {
+					taskname: loop.taskName,
 					id: loop.id,
 					addTime: (loop.addTime),
 					startTime: (loop.startTime),
@@ -257,23 +258,24 @@ export default class OverviewTable extends React.Component {
 				<Table celled padded selectable>
 					<Table.Header>
 						<Table.Row>
-							<Table.HeaderCell singleLine>ID</Table.HeaderCell>
-							<Table.HeaderCell>Addtime</Table.HeaderCell>
-							<Table.HeaderCell>StartTime</Table.HeaderCell>
-							<Table.HeaderCell>EndTime</Table.HeaderCell>
+							<Table.HeaderCell singleLine>Name</Table.HeaderCell>
+							<Table.HeaderCell>Added</Table.HeaderCell>
+							<Table.HeaderCell>Started</Table.HeaderCell>
+							<Table.HeaderCell>Closed</Table.HeaderCell>
 							<Table.HeaderCell>State</Table.HeaderCell>
-							<Table.HeaderCell>Open</Table.HeaderCell>
+							<Table.HeaderCell>Action</Table.HeaderCell>
 						</Table.Row>
 					</Table.Header>
 
 					{result && result.length > 0 && (
 						<Table.Body>
 							{result.map((item) => {
+								console.log(item)
 								return (
 
 									<Table.Row key={item.id}>
 										<Table.Cell>
-											{item.id}
+											{item.taskname}
 										</Table.Cell>
 										<Table.Cell singleLine>
 											{Library.timeToHumanReadable(new Date(item.addTime))}
