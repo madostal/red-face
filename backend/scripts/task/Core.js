@@ -27,7 +27,6 @@ class Core {
 				throw err
 			}
 			self.taskData = fields[0]
-			console.log(self.taskData)
 			self._loadInfo()
 		})
 	}
@@ -45,6 +44,7 @@ class Core {
 			}
 			else {
 				console.log(['\'', this.taskData.serverHome, '\' doesn\'t exist, ending testing...'].join(''))
+				this._shutDown()
 			}
 		})
 	}
