@@ -8,7 +8,7 @@ import {
 	Divider,
 	Grid,
 } from 'semantic-ui-react'
-import BodyParent from './BodyParet'
+import BodyParent from './BodyParent'
 
 export default class SQLTab extends BodyParent {
 

@@ -9,7 +9,7 @@ import {
 	Grid,
 	Input,
 } from 'semantic-ui-react'
-import BodyParent from './BodyParet'
+import BodyParent from './BodyParent'
 
 export default class BruteForceTab extends BodyParent {
 

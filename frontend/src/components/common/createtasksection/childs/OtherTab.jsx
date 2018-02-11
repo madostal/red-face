@@ -5,7 +5,7 @@ import {
 	Input,
 	Divider,
 } from 'semantic-ui-react'
-import BodyParent from './BodyParet'
+import BodyParent from './BodyParent'
 
 export default class OtherTab extends BodyParent {
 
