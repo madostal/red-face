@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "SECURITY TESTING OF WEB APPLICATIONS - Diploma thesis - Faculty of Applied Sciences of the University of West Bohemia in Pilsen",
 	"scripts": {
-		"build": "webpack --progress",
+		"build": "webpack -p --progress",
 		"start": "webpack-dev-server --hot --inline --history-api-fallback --port 3000 --progress"
 	},
 	"repository": {
