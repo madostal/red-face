@@ -135,4 +135,11 @@ io.on('connection', (socket) => {
 	})
 })
 
+const beforeStartUp = () => {
+	jetpack.dir('writable')
+	jetpack.dir('writable/config')
+	jetpack.dir('writable/log_folder')
+}
+
+beforeStartUp()
 checkDeadTasks()
