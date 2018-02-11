@@ -89,7 +89,6 @@ export default class OverviewTable extends React.Component {
 	}
 
 	_repeat = (item) => {
-		console.log('Calling repeat task id: ' + item.id)
 		Api.socketRequest('repeat-task', { id: item.id })
 		//TODO UPDATE VIEW
 	}
@@ -108,7 +107,6 @@ export default class OverviewTable extends React.Component {
 	}
 
 	_stop = (item) => {
-		console.log('Calling stop task id: ' + item.id)
 		Api.socketRequest('stop-task', { id: item.id })
 	}
 
@@ -146,7 +144,6 @@ export default class OverviewTable extends React.Component {
 
 		for (let i = down; i < top; i++) {
 			if (this.state.originalData[i]) {
-				// console.log(this.state.filter)
 				if (this.state.filter[this.state.originalData[i].state])
 					resData.push(this.state.originalData[i])
 			}
@@ -270,7 +267,6 @@ export default class OverviewTable extends React.Component {
 					{result && result.length > 0 && (
 						<Table.Body>
 							{result.map((item) => {
-								console.log(item)
 								return (
 
 									<Table.Row key={item.id}>

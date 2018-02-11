@@ -136,8 +136,6 @@ export default class CrreateTaskPage extends React.Component {
 		if (!conf) {
 			conf = createDefaultStore()
 		}
-		console.log('Constructor')
-		console.log(conf)
 		this.state = conf
 	}
 
@@ -149,7 +147,6 @@ export default class CrreateTaskPage extends React.Component {
 		this.setState({
 			[e.id]: e.value,
 		})
-		console.log(this.state)
 		localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(tmp))
 	}
 
