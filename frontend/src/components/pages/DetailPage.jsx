@@ -4,11 +4,12 @@ import {
 	Loader,
 	Grid,
 	List,
-	Icon,
+	Header,
 	Checkbox,
 	Divider,
 } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
+import State from './../common/State'
 import SanitizedHTML from 'react-sanitized-html'
 import Api from 'utils/Api'
 import Library from 'utils/Library'
@@ -114,15 +115,8 @@ export default class DetailPage extends React.Component {
 					<Grid celled>
 						<Grid.Row>
 							<Grid.Column width={13} textAlign="left">
+								<Header as='h2'>{taskName}</Header>
 								<List>
-									<List.Item>
-										<List.Header>
-											ID
-									</List.Header>
-										<List.Description>
-											{taskId}
-										</List.Description>
-									</List.Item>
 									<List.Item>
 										<List.Header>
 											Addtime
@@ -156,58 +150,10 @@ export default class DetailPage extends React.Component {
 											}
 										</List.Description>
 									</List.Item>
-									<List.Item>
-										<List.Header>
-											Type
-									</List.Header>
-										<List.Description>
-											{taskType}
-										</List.Description>
-									</List.Item>
-									<List.Item>
-										<List.Header>
-											Taskname
-									</List.Header>
-										<List.Description>
-											{taskName}
-										</List.Description>
-									</List.Item>
-									<List.Item>
-										<List.Header>
-											Taskkey
-									</List.Header>
-										<List.Description>
-											{taskKey}
-										</List.Description>
-									</List.Item>
-									<List.Item>
-										<List.Header>
-											State
-									</List.Header>
-										<List.Description>
-											{taskState}
-										</List.Description>
-									</List.Item>
 								</List>
 							</Grid.Column>
 							<Grid.Column width={3} textAlign="center" verticalAlign="middle">
-
-								{
-									((() => {
-										switch (taskState) {
-											case 0:
-												return <Icon name="wait" size="huge" />
-											case 1:
-												return <Loader active inline size="massive" />
-											case 2:
-												return <Icon name="checkmark" size="huge" />
-											case 3:
-												return <Icon name="exclamation triangle" size="huge" />
-											default:
-												return null
-										}
-									})())
-								}
+								<State state={taskState} />
 							</Grid.Column>
 							<Divider />
 						</Grid.Row>
