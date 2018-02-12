@@ -82,6 +82,7 @@ module.exports = class OtherTask extends taskParent {
 						text: ['InlineJS on: ', url].join(''),
 						vulnerability: 0,
 					})
+					hasInjs = true
 				}
 			}
 			await webDriver.closeDriver()
@@ -89,6 +90,14 @@ module.exports = class OtherTask extends taskParent {
 		})()
 
 		require('deasync').loopWhile(() => { return !state })
+
+		if (logData.data.length === 0) {
+			//not found
+			logData.data.push({
+				text: 'InlineJS was not found',
+				vulnerability: 1,
+			})
+		}
 		this.taskRes.data.push(logData)
 		cb()
 	}
@@ -177,6 +186,7 @@ module.exports = class OtherTask extends taskParent {
 
 
 		//firt check
+
 		let ppst = this.jsonconfig.taskdata.othertab.data.testGitConfigPpst
 		if (!ppst) { ppst = DEFAULT_GIT_PPST }
 		ppst = parseInt(ppst)
@@ -190,6 +200,13 @@ module.exports = class OtherTask extends taskParent {
 				})
 			}
 		})
+		if (logData.data.length === 0) {
+			//not found
+			logData.data.push({
+				text: 'Git config was not found',
+				vulnerability: 1,
+			})
+		}
 		this.taskRes.data.push(logData)
 		cb()
 	}

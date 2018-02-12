@@ -4,10 +4,13 @@ const queryString = require('query-string')
 const taskParent = require('./task-parent.js')
 const WebDriver = require('../utils/web-driver')
 
+
+const TASK_GLOBAL_NAME = 'XSS task'
+
 module.exports = class XSSTask extends taskParent {
 
 	constructor(jsonconfig, url, crawlerRes) {
-		super(jsonconfig)
+		super(jsonconfig, TASK_GLOBAL_NAME)
 		this.url = url
 		this.crawlerRes = crawlerRes
 		this.webDriver = new WebDriver()
@@ -35,9 +38,15 @@ module.exports = class XSSTask extends taskParent {
 
 		require('deasync').loopWhile(() => { return !state })
 		console.log('XSS: Finished')
+		return this.taskRes
 	}
 
 	_testInputs() {
+		let logData = {
+			text: 'XSS task inputs',
+			data: [],
+		}
+
 		let xssTabData = this.jsonconfig.taskdata.xsstab.data
 		console.log('Starting XSS task')
 		let state = false;
@@ -86,6 +95,11 @@ module.exports = class XSSTask extends taskParent {
 									console.log(['Possible xss on', url].join(' '))
 									console.log(lastXpath)
 
+									logData.data.push({
+										text: ['Possible XSS on: ', url, '(', lastXpath, ')'].join(''),
+										vulnerability: 0,
+									})
+
 									reportedPages.add(url + lastXpath)
 								}
 								wasNowFound = true
@@ -100,6 +114,11 @@ module.exports = class XSSTask extends taskParent {
 									if (!reportedPages.has(url + lastXpath)) {
 										console.log(['Possible xss on', url].join(' '))
 										console.log(lastXpath)
+
+										logData.data.push({
+											text: ['Possible XSS on: ', url, '(', lastXpath, ')'].join(''),
+											vulnerability: 0,
+										})
 
 										reportedPages.add(url + lastXpath)
 									}
@@ -119,10 +138,24 @@ module.exports = class XSSTask extends taskParent {
 		})()
 
 		require('deasync').loopWhile(() => { return !state })
+
+		if (logData.data.length === 0) {
+			//not found
+			logData.data.push({
+				text: 'XSS on url forms was not found',
+				vulnerability: 1,
+			})
+		}
+		this.taskRes.data.push(logData)
 		console.log('XSS input finished')
 	}
 
 	_testParams() {
+		let logData = {
+			text: 'XSS task params',
+			data: [],
+		}
+
 		console.log('CALLING TEST PARAMS')
 		let xssTabData = this.jsonconfig.taskdata.xsstab.data
 
@@ -155,16 +188,33 @@ module.exports = class XSSTask extends taskParent {
 		console.log(toTest)
 
 		let state = false;
-
+		//list of founded url with xss
+		let founded = [];
 		(async () => {
 			if (this.crawlerRes) {
 				for (let i = 0; i < toTest.length; i++) {
-					await this._testUrl(toTest[i])
+					if (!founded.includes(toTest[i])) {
+						if (await this._testUrl(toTest[i])) {
+							logData.data.push({
+								text: ['Possible XSS on url params: ', toTest[i]].join(''),
+								vulnerability: 0,
+							})
+							founded.push(toTest[i])
+						}
+					}
 				}
 				state = true
 			}
 		})()
 		require('deasync').loopWhile(() => { return !state })
+		if (logData.data.length === 0) {
+			//not found
+			logData.data.push({
+				text: 'XSS on url params was not found',
+				vulnerability: 1,
+			})
+		}
+		this.taskRes.data.push(logData)
 		console.log('XSS url params finished')
 	}
 
@@ -181,5 +231,6 @@ module.exports = class XSSTask extends taskParent {
 				console.log(['Possible xss on', url].join(' '))
 			}
 		}
+		return wasFound
 	}
 }
