@@ -28,7 +28,9 @@ export default class DetailPage extends React.Component {
 	componentDidMount = () => {
 		Api.getSocket().on('there-is-task-detail', (data) => {
 			if (Object.keys(data).length > 0) {
+				console.log(data)
 				this.setState({
+					serverHome: data.serverHome,
 					taskId: data.id,
 					taskAddTime: data.addTime,
 					taskStartTime: data.startTime,
@@ -99,7 +101,7 @@ export default class DetailPage extends React.Component {
 	}
 
 	render = () => {
-		let { loading, taskId, taskAddTime, taskStartTime, taskEndTime, taskType, taskName, taskKey, taskState, autoScroll } = this.state
+		let { loading, taskId, taskAddTime, taskStartTime, taskEndTime, taskType, taskName, taskKey, taskState, autoScroll, serverHome } = this.state
 
 		return (
 			<div className="home-section">
@@ -128,7 +130,7 @@ export default class DetailPage extends React.Component {
 					<Grid celled>
 						<Grid.Row>
 							<Grid.Column width={13} textAlign="left">
-								<Header as='h2'>{taskName}</Header>
+								<Header as='h2'>{taskName} - <a href={serverHome}>{serverHome}</a></Header>
 								<List>
 									<List.Item>
 										<List.Header>

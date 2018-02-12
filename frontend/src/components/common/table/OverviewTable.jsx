@@ -68,6 +68,7 @@ export default class OverviewTable extends React.Component {
 			let rowData = []
 			data.reverse().forEach((loop) => {
 				let tmp = {
+					serverHome: loop.serverHome,
 					taskname: loop.taskName,
 					id: loop.id,
 					addTime: (loop.addTime),
@@ -255,7 +256,8 @@ export default class OverviewTable extends React.Component {
 				<Table celled padded selectable>
 					<Table.Header>
 						<Table.Row>
-							<Table.HeaderCell singleLine>Name</Table.HeaderCell>
+							<Table.HeaderCell>Name</Table.HeaderCell>
+							<Table.HeaderCell>Host</Table.HeaderCell>
 							<Table.HeaderCell>Added</Table.HeaderCell>
 							<Table.HeaderCell>Started</Table.HeaderCell>
 							<Table.HeaderCell>Closed</Table.HeaderCell>
@@ -268,10 +270,12 @@ export default class OverviewTable extends React.Component {
 						<Table.Body>
 							{result.map((item) => {
 								return (
-
 									<Table.Row key={item.id}>
 										<Table.Cell>
 											{item.taskname}
+										</Table.Cell>
+										<Table.Cell>
+											<a href={item.serverHome}>{item.serverHome}</a>
 										</Table.Cell>
 										<Table.Cell singleLine>
 											{Library.timeToHumanReadable(new Date(item.addTime))}
