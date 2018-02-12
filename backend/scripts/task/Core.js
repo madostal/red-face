@@ -105,8 +105,7 @@ class Core {
 				new SQLTask(this.taskConfig, null, crawlerOut)
 					.start())
 		}
-		this._printTestRes(results)
-		this._shutDown()
+		this._shutDown(results)
 	}
 
 	/**
@@ -115,21 +114,25 @@ class Core {
 	 * @param {array} res
 	 */
 	_printTestRes(res) {
-		console.log('TEST RESULTS')
-		console.log('')
+		console.log('>TEST RESULTS:')
 		res.forEach(e => {
 			console.log(e.header)
+			console.log('\n')
 			e.data.forEach(i => {
-				console.log(i)
+				i.data.forEach(j => {
+					console.log(j.text + " : vulnerability level: " + j.vulnerability)
+				})
 			})
+			console.log('\n\n')
 		})
 	}
 
 	/**
 	 * Shut downl taks process with successfully exit code
 	 */
-	_shutDown() {
+	_shutDown(results) {
 		logger.log('debug', ['Shut down task id: ', this.taskId].join(''))
+		this._printTestRes(results)
 		process.exit(0)
 	}
 

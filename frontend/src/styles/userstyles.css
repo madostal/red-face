@@ -14,3 +14,37 @@ textarea:disabled {
 body {
 	background: #f3f3f5 !important;
 }
+
+.test-res {
+	padding: 5px;
+	color: white;
+	font-weight: bold;
+}
+.vulnerability {
+	background-color: #ff0000;
+}
+
+.vulnerability a {
+	background-color: #ff0000;
+	color: white;
+}
+
+.no-vulnerability {
+	background-color: green;
+}
+
+.no-vulnerability a {
+	background-color: green;
+	color: white;
+}
+
+.default-vulnerability {
+	background-color: gray;
+}
+
+.default-vulnerability a {
+	background-color: gray;
+	color: white;
+}
+
+

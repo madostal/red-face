@@ -54,8 +54,8 @@ module.exports = class WebDriver {
 				.withCapabilities(chromeCapabilities)
 				.build()
 
-			await this.driver.manage().timeouts().implicitlyWait(5)
-			await this.driver.manage().timeouts().pageLoadTimeout(5000)
+			await this.driver.manage().timeouts().implicitlyWait(100)
+			await this.driver.manage().timeouts().pageLoadTimeout(30000)
 
 			state = true
 		})()

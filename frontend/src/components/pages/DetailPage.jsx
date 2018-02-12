@@ -68,10 +68,23 @@ export default class DetailPage extends React.Component {
 		if (!log) return log
 		let tmp = log
 
+		tmp = tmp.replace(/.*(: vulnerability level: 0).*/g, '<div class="vulnerability test-res">$&</div>')
+		tmp = tmp.replace(/(: vulnerability level: 0)/g, '')
+
+		tmp = tmp.replace(/.*(: vulnerability level: 1).*/g, '<div class="no-vulnerability test-res">$&</div>')
+		tmp = tmp.replace(/(: vulnerability level: 1)/g, '')
+
+		tmp = tmp.replace(/.*(: vulnerability level: 2).*/g, '<div class="default-vulnerability test-res">$&</div>')
+		tmp = tmp.replace(/(: vulnerability level: 2)/g, '')
+
+
 		tmp = tmp.replace(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/g, '<a href=\'$&\'>$&</a>')
 		tmp = tmp.replace(/\d{1,2}.\d{1,2}.\d{4} \d{1,2}:\d{1,2}:\d{1,2}:/g, '<b>$&</b>')
+
 		tmp = tmp.replace(/\n/g, '<br>')
-		return tmp
+
+		let resPart = tmp.split('>TEST RESULTS:')
+		return resPart.length === 1 ? resPart[0] : [resPart[1], resPart[0]].join('<br>')
 	}
 
 	componentWillUnmount = () => {
@@ -160,15 +173,11 @@ export default class DetailPage extends React.Component {
 
 						<Grid.Row columns={1} textAlign="left">
 							<Grid.Column>
-								{/* <pre> */}
-								{/* {this.state.log}
-									<div dangerouslySetInnerHTML={this._createDangerPart(this.state.log)} /> */}
 								<SanitizedHTML
-									allowedAttributes={{ 'a': ['href'] }}
-									allowedTags={['b', 'br', 'a']}
+									allowedAttributes={{ 'a': ['href'], 'div': ['class'] }}
+									allowedTags={['b', 'br', 'a', 'div']}
 									html={this.state.log}
 								/>
-								{/* </pre> */}
 								<div id='log-area' />
 							</Grid.Column>
 						</Grid.Row>

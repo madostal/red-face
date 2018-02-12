@@ -79,7 +79,7 @@ module.exports = class OtherTask extends taskParent {
 				console.log(hasInjs + ' | ' + url)
 				if (hasInjs) {
 					logData.data.push({
-						text: ['InlineJS on: ', hasInjs].join(''),
+						text: ['InlineJS on: ', url].join(''),
 						vulnerability: 0,
 					})
 				}
@@ -94,6 +94,11 @@ module.exports = class OtherTask extends taskParent {
 	}
 
 	_doHttpHttps(cb) {
+		let logData = {
+			text: 'HTTPS checker',
+			data: [],
+		}
+
 		logger.log('debug', 'Starting http/https test')
 		console.log(['Checking ', this.serverHome, ' server protocol'].join(''))
 		let url = this.serverHome;
@@ -105,14 +110,32 @@ module.exports = class OtherTask extends taskParent {
 			let protocol = await page.evaluate(() => {
 				return location.protocol
 			})
+			protocol = protocol.replace(':', '')
+			console.log(['Server ', this.serverHome, ' using ', protocol, ' protocol'].join(''))
 
-			console.log(['Server ', this.serverHome, ' using ', protocol.replace(':', ''), ' protocol'].join(''))
+			if (protocol.toLowerCase() !== 'https') {
+				logData.data.push({
+					text: 'Server not using https',
+					vulnerability: 0,
+				})
+			} else {
+				logData.data.push({
+					text: 'Server using https',
+					vulnerability: 1,
+				})
+			}
+			this.taskRes.data.push(logData)
 			browser.close()
 			cb()
 		})()
 	}
 
 	_doGitConfig(cb) {
+		let logData = {
+			text: 'Git config checker',
+			data: [],
+		}
+
 		logger.log('debug', 'Starting gitconfig test')
 
 		let homeUrl = this.serverHome
@@ -141,6 +164,7 @@ module.exports = class OtherTask extends taskParent {
 					let actDoc = await webDriver.getDocumentText()
 					res = stringSimilarity.compareTwoStrings(firstDoc, actDoc) * 100
 				}
+				console.log(res)
 				resV.push({
 					url: url,
 					ppst: res,
@@ -151,6 +175,7 @@ module.exports = class OtherTask extends taskParent {
 		})()
 		require('deasync').loopWhile(() => { return !state })
 
+
 		//firt check
 		let ppst = this.jsonconfig.taskdata.othertab.data.testGitConfigPpst
 		if (!ppst) { ppst = DEFAULT_GIT_PPST }
@@ -158,12 +183,23 @@ module.exports = class OtherTask extends taskParent {
 		Object.keys(resV).forEach((key) => {
 			if (resV[key].ppst < ppst) {
 				console.log(['GitChecker: found git config file on ', resV[key].url].join(''))
+
+				logData.data.push({
+					text: ['Find part of git config on ', resV[key].url].join(''),
+					vulnerability: 0,
+				})
 			}
 		})
+		this.taskRes.data.push(logData)
 		cb()
 	}
 
 	_doPortScan(field, serverHome, cb) {
+		let logData = {
+			text: 'PortScan',
+			data: [],
+		}
+
 		let tmpHost = serverHome.replace(/(^\w+:|^)\/\//, '').replace('www.', '').replace('/', '')
 		logger.log('debug', 'Starting portscan test')
 
@@ -183,14 +219,25 @@ module.exports = class OtherTask extends taskParent {
 				.on('open', (port) => {
 					let portString = portNumbers.getService(port)
 					if (portString === null) {
-						console.log(port)
+						console.log(['Open port ', port].join(''))
+
+						logData.data.push({
+							text: ['Open port ', port].join(''),
+							vulnerability: 2,
+						})
 					}
 					else {
-						console.log([portString.name, ' on ', port, ' - (', portString.description, ')'].join(''))
+						console.log(['Open port ', portString.name, ' on ', port, ' - (', portString.description, ')'].join(''))
+
+						logData.data.push({
+							text: ['Open port ', portString.name, ' on ', port, ' - (', portString.description, ')'].join(''),
+							vulnerability: 2,
+						})
 					}
 				})
 				.on('end', () => {
-					cb(null)
+					this.taskRes.data.push(logData)
+					cb()
 				})
 		}
 	}
