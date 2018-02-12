@@ -6,7 +6,7 @@ const webdriver = require('selenium-webdriver')
 const CHROME_OPTIONS = {
 	'args': [
 		// '--headless', '--test-type', 'disable-web-security', '--log-level=3', '--silent', '--no-sandbox', '--disable-gpu', '--log-path=NUL',
-		"--test-type", "--start-maximized"
+		"--test-type", "--start-maximized", "--profile-directory='red-face'"
 	],
 	'prefs': {
 		'profile.managed_default_content_settings.images': 2,
@@ -84,9 +84,13 @@ module.exports = class WebDriver {
 					request({
 						url: url,
 						method: 'HEAD',
+						timeout: 10000,
 					}, (error, response) => {
 						let isHtml = false
-						if (error) resolve()
+						if (error) {
+							resolve()
+							return
+						}
 						r.statusCode = response.statusCode
 						if (response.headers['content-type']
 							&& response.headers['content-type'].includes('text/html')) {
