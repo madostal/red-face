@@ -74,15 +74,18 @@ module.exports = class OtherTask extends taskParent {
 			console.log(this.crawlerOut.length)
 			for (let i = 0; i < this.crawlerOut.length; i++) {
 				let url = this.crawlerOut[i][0]
-				await webDriver.goToSafe(url)
-				let hasInjs = await webDriver.hasInlineScript()
-				console.log(hasInjs + ' | ' + url)
-				if (hasInjs) {
-					logData.data.push({
-						text: ['InlineJS on: ', url].join(''),
-						vulnerability: 0,
-					})
-					hasInjs = true
+				if (await webDriver.isHtml(url)) {
+					//skip if url is not html content
+					await webDriver.goToSafe(url)
+					let hasInjs = await webDriver.hasInlineScript()
+					console.log(hasInjs + ' | ' + url)
+					if (hasInjs) {
+						logData.data.push({
+							text: ['InlineJS on: ', url].join(''),
+							vulnerability: 0,
+						})
+						hasInjs = true
+					}
 				}
 			}
 			await webDriver.closeDriver()

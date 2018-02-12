@@ -67,6 +67,38 @@ module.exports = class WebDriver {
 		await this.driver.get(url)
 	}
 
+	/**
+	 * Test if url is html content by scanning http resp header if include text/html
+	 *
+	 * @param {bool} is html content
+	 */
+	async isHtml(url) {
+		let isHtmlR = false
+		const fire = () => {
+			return new Promise(resolve => {
+				request({
+					url: url,
+					method: 'HEAD',
+					timeout: 10000,
+				}, (error, response) => {
+					if (error) {
+						resolve()
+						return
+					}
+
+					if (response.statusCode === 200
+						&& response.headers['content-type']
+						&& response.headers['content-type'].includes('text/html')) {
+						isHtmlR = true
+					}
+					resolve()
+				})
+			})
+		}
+		await fire()
+		return isHtmlR
+	}
+
 	async goToSafe(url) {
 		let r = {
 			wasHtml: false,
