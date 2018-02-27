@@ -226,6 +226,31 @@ module.exports = class WebDriver {
 		return res
 	}
 
+	async hasCrossOriginAllowed(reqUrl) {
+		let res
+		await this.driver.executeAsyncScript((url) => {
+			const oReq = new XMLHttpRequest()
+			try {
+				oReq.addEventListener("load", reqListener = () => {
+					console.log(true)
+					arguments[arguments.length - 1](false)
+				})
+
+				oReq.addEventListener("error", errListener = () => {
+					console.log(false)
+					arguments[arguments.length - 1](true)
+				})
+
+				oReq.open("GET", url);
+				oReq.send()
+			} catch (e) {
+				arguments[arguments.length - 1](true)
+			}
+		}, reqUrl).then((d) => { res = d; })
+		console.log('RETURNING ' + res)
+		return res
+	}
+
 	async closeDriver() {
 		await this.driver.quit()
 	}

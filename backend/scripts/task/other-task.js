@@ -42,6 +42,12 @@ module.exports = class OtherTask extends taskParent {
 					callback()
 				}
 			}, (callback) => {
+				if (this.jsonconfig.taskdata.othertab.data.testCrossOriginReq) {
+					this._doCrossOriginReq(callback)
+				} else {
+					callback()
+				}
+			}, (callback) => {
 				if (this.jsonconfig.taskdata.othertab.data.testPortScan) {
 					this._doPortScan({
 						from: this.jsonconfig.taskdata.othertab.data.testPortScanDataFrom,
@@ -140,6 +146,43 @@ module.exports = class OtherTask extends taskParent {
 			browser.close()
 			cb()
 		})()
+	}
+
+	_doCrossOriginReq(cb) {
+		let logData = {
+			text: 'Cross-origin resource sharing',
+			data: [],
+		}
+
+		let webDriver = new WebDriver()
+		let res
+		let state = false;
+
+		(async () => {
+			console.log(['Testing cross on', this.serverHome].join(' '))
+			//get some error page
+			await webDriver.goTo('https://google.com')
+
+			res = await webDriver.hasCrossOriginAllowed(this.serverHome)
+			console.log(res)
+			await webDriver.closeDriver()
+			state = true
+		})()
+		require('deasync').loopWhile(() => { return !state })
+
+		if (!res) {
+			logData.data.push({
+				text: 'Server not allows cross origin requests',
+				vulnerability: 1, //no
+			})
+		} else {
+			logData.data.push({
+				text: 'Server allows cross origin requests',
+				vulnerability: 2, //def
+			})
+		}
+		this.taskRes.data.push(logData)
+		cb()
 	}
 
 	_doGitConfig(cb) {

@@ -118,6 +118,7 @@ const createDefaultStore = () => {
 	obj.taskdata.othertab.data.testJavascriptImport = true
 	obj.taskdata.othertab.data.testHttpHttps = true
 	obj.taskdata.othertab.data.testGitConfig = true
+	obj.taskdata.othertab.data.testCrossOriginReq = true
 	obj.taskdata.othertab.data.testGitConfigPpst = 75
 	obj.taskdata.othertab.data.testPortScan = true
 	obj.taskdata.othertab.data.testPortScanDataFrom = 1

@@ -32,6 +32,13 @@ export default class OtherTab extends BodyParent {
 				<Divider hidden />
 				<Checkbox
 					onChange={(d, e) => this._componentOnChangeCheck(d, e)}
+					checked={this.props.data.data.testCrossOriginReq}
+					id={'testCrossOriginReq'}
+					label={<label>Cross-Origin request</label>}
+				/>
+				<Divider hidden />
+				<Checkbox
+					onChange={(d, e) => this._componentOnChangeCheck(d, e)}
 					checked={this.props.data.data.testGitConfig}
 					id={'testGitConfig'}
 					label={<label>Test GIT config</label>}
