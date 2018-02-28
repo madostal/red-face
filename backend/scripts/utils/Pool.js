@@ -254,7 +254,6 @@ module.exports = class Pool {
 					fs.unlink(result[0].configPath, (err) => {
 						if (err) {
 							logger.log('error', err)
-							throw err
 						}
 					})
 				}
@@ -262,7 +261,6 @@ module.exports = class Pool {
 				fs.unlink(result[0].logPath, (err) => {
 					if (err) {
 						logger.log('error', err)
-						throw err
 					}
 				})
 			})
