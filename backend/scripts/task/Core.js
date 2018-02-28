@@ -116,14 +116,16 @@ class Core {
 	_printTestRes(res) {
 		console.log('>TEST RESULTS:')
 		res.forEach(e => {
-			console.log(e.header)
-			console.log('\n')
-			e.data.forEach(i => {
-				i.data.forEach(j => {
-					console.log(j.text + " : vulnerability level: " + j.vulnerability)
+			if (e && e.data) {
+				e.data.forEach(i => {
+					if (i && i.data) {
+						i.data.forEach(j => {
+							console.log(j.text + " : vulnerability level: " + j.vulnerability)
+						})
+					}
 				})
-			})
-			console.log('\n\n')
+				console.log('\n\n')
+			}
 		})
 	}
 

@@ -31,6 +31,11 @@ const DEFAULT_XSS = [
 	'second',
 ]
 
+const DEFAULT_SQL = [
+	' OR 1=1',
+	'second'
+]
+
 const DEFAULT_CRAWLER_DEEP = 10
 
 const BRUTE_FORCE_BOOL = {
@@ -55,9 +60,16 @@ const XSS_BOOL = {
 	},
 }
 
+const SQL_BOOL = {
+	useDefault: {
+		userSettings: DEFAULT_SQL,
+	},
+}
+
 const GLOBAL_DATA = {
 	bruteforcetab: BRUTE_FORCE_BOOL,
 	xsstab: XSS_BOOL,
+	sqltab: SQL_BOOL,
 }
 
 const restarter = (flagName, type) => {
@@ -109,8 +121,11 @@ const createDefaultStore = () => {
 	//sql
 	obj.taskdata.sqltab.data = {}
 	obj.taskdata.sqltab.data.enable = false
+	obj.taskdata.sqltab.data.userSettings = DEFAULT_SQL
+	obj.taskdata.sqltab.data.useDefault = true
 	obj.taskdata.sqltab.data.testParams = true
 	obj.taskdata.sqltab.data.testForms = true
+	obj.taskdata.sqltab.data.testSqlInjPpst = 75
 
 	//other
 	obj.taskdata.othertab.data = {}
