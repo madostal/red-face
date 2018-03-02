@@ -156,7 +156,7 @@ module.exports = class XSSTask extends taskParent {
 			data: [],
 		}
 
-		console.log('CALLING TEST PARAMS')
+ 
 		let xssTabData = this.jsonconfig.taskdata.xsstab.data
 
 		let toTest = []

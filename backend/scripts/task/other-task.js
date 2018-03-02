@@ -1,4 +1,6 @@
 const jetpack = require('fs-jetpack')
+const url = require('url')
+const queryString = require('query-string')
 const stringSimilarity = require('string-similarity')
 const async = require('async')
 const scan = require('net-scan')
@@ -11,6 +13,8 @@ const logger = require('../logger')
 const TASK_GLOBAL_NAME = 'Other task'
 const PATH_GIT_CONFIG = '/task_settings/configuration/git_config'
 const DEFAULT_GIT_PPST = 75
+
+const FORM_ACTION_HIJACING_KEY = 'RedFaceFormActionHijacking'
 
 module.exports = class OtherTask extends taskParent {
 
@@ -26,6 +30,12 @@ module.exports = class OtherTask extends taskParent {
 			(callback) => {
 				if (this.jsonconfig.taskdata.othertab.data.testJavascriptImport) {
 					this._doJavascriptImport(callback)
+				} else {
+					callback()
+				}
+			}, (callback) => {
+				if (this.jsonconfig.taskdata.othertab.data.testFormActionHijacking) {
+					this._doTestFormActionHijacking(callback)
 				} else {
 					callback()
 				}
@@ -73,6 +83,7 @@ module.exports = class OtherTask extends taskParent {
 			text: 'InlineJS',
 			data: [],
 		}
+
 		logger.log('debug', 'Starting javascript import test')
 		let state = false;
 		(async () => {
@@ -109,6 +120,81 @@ module.exports = class OtherTask extends taskParent {
 		}
 		this.taskRes.data.push(logData)
 		cb()
+	}
+
+	_doTestFormActionHijacking(cb) {
+		let logData = {
+			text: 'Form action hijacking',
+			data: [],
+		}
+
+		logger.log('debug', 'Starting form action hijacking')
+
+		let lookFor = '//form'
+		lookFor = lookFor.replace(/\W/g, '')
+
+		let toTest = []
+
+		this.crawlerOut.forEach(e => {
+			if (e[1].hasOwnProperty(lookFor)
+				&& e[1][lookFor]) {
+				let tmpUrl = e[0]
+
+				let parsedUrl = url.parse(tmpUrl)
+				//has url query?
+				if (parsedUrl.query) {
+					let parsedQuery = queryString.parse(parsedUrl.query)
+
+					Object.keys(parsedQuery).forEach((key, ) => {
+
+						let tmp = parsedUrl.query.replace(
+							[key, '=', parsedQuery[key]].join(''),
+							[key, '=', FORM_ACTION_HIJACING_KEY].join(''),
+						)
+						toTest.push(
+							[
+								tmpUrl,
+								tmpUrl.replace(parsedUrl.query,
+									tmp
+								)
+							]
+						)
+					})
+				}
+			}
+		});
+
+		(async () => {
+			let webDriver = new WebDriver()
+
+			for (let i = 0; i < toTest.length; i++) {
+				console.log(['Testing ', toTest[i][1]].join(''))
+				webDriver.goTo(toTest[i][1])
+				require('deasync').sleep(1000)
+				let r = await webDriver.getActionFromForm()
+				for (let i = 0; i < r.length; i++) {
+					if (r[i] === FORM_ACTION_HIJACING_KEY) {
+						logData.data.push({
+							text: ['Possible Form Action Hijacking on: ', toTest[i][1], ' original url: ' + toTest[i][0]].join(''),
+							vulnerability: 0,
+						})
+						break
+					}
+				}
+			}
+
+			await webDriver.closeDriver()
+
+			if (logData.data.length === 0) {
+				//not found
+				logData.data.push({
+					text: 'Form Action Hijacking was not found',
+					vulnerability: 1,
+				})
+			}
+			this.taskRes.data.push(logData)
+			cb()
+		})()
 	}
 
 	_doHttpHttps(cb) {

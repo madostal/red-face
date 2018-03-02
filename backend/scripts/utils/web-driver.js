@@ -374,6 +374,18 @@ module.exports = class WebDriver {
 		return res
 	}
 
+	async getActionFromForm() {
+		let res
+		await this.driver.executeAsyncScript(() => {
+			let res = []
+			let forms = document.getElementsByTagName('form')
+			for (let i = 0; i < forms.length; i++) {
+				res.push(forms[i].getAttribute('action'));
+			}
+			arguments[arguments.length - 1](res)
+		}).then(d => res = d).catch(() => { })
+		return res
+	}
 	// extractAllLinks() {
 	// 	return this._simplePromiseGuard(() =>
 	// 		this.driver.executeAsyncScript(function () {

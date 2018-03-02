@@ -138,6 +138,7 @@ const createDefaultStore = () => {
 	obj.taskdata.othertab.data.testPortScan = true
 	obj.taskdata.othertab.data.testPortScanDataFrom = 1
 	obj.taskdata.othertab.data.testPortScanDataTo = 1000
+	obj.taskdata.othertab.data.testFormActionHijacking = true
 	return obj
 }
 
@@ -175,6 +176,9 @@ export default class CrreateTaskPage extends React.Component {
 			crawlEnab = true
 		}
 		if (taskData.othertab.data.testJavascriptImport) {
+			crawlEnab = true
+		}
+		if (taskData.othertab.data.testFormActionHijacking) {
 			crawlEnab = true
 		}
 		if (taskData.sqltab.data.enable) {

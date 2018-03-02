@@ -18,6 +18,7 @@ module.exports = class CrawlerTask extends taskParent {
 
 		const lookFor = [
 			'//input',
+			'//form', //form action hijacking
 			this.loginFormXPathExpr,
 			this.loginNameXPathExpr,
 			this.loginPswXPathExpr,
@@ -27,7 +28,7 @@ module.exports = class CrawlerTask extends taskParent {
 
 		crwlIns.crawle()
 		this.res = crwlIns.getUrls()
-		console.log(this.res)
+		// console.log(this.res)
 		console.log(['Crawling finished with', this.res.length, 'results'].join(' '))
 	}
 
