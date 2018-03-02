@@ -20,6 +20,7 @@ import BruteForceTab from './../common/createTaskSection/childs/BruteForceTab'
 import XSSTab from './../common/createTaskSection/childs/XSSTab'
 import SQLTab from './../common/createtasksection/childs/SQLTab'
 import OtherTab from './../common/createTaskSection/childs/OtherTab'
+import PtaTab from './../common/createtasksection/childs/PtaTab'
 
 const defaultXPathForm = '//form//input[@type=\'text\' or @type=\'email\']//ancestor::form//input[@type=\'password\']//ancestor::form'
 const defaultXPathFormInput = ['(', [defaultXPathForm, '//input'].join(''), ')[1]'].join('')
@@ -34,6 +35,11 @@ const DEFAULT_XSS = [
 const DEFAULT_SQL = [
 	' OR 1=1',
 	'second'
+]
+
+const DEFAULT_TPA = [
+	'C:\\Windows\\System32\\drivers\\etc\\hosts',
+	'# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.',
 ]
 
 const DEFAULT_CRAWLER_DEEP = 10
@@ -92,6 +98,7 @@ const createDefaultStore = () => {
 			othertab: {},
 			xsstab: {},
 			sqltab: {},
+			ptatab: {},
 		},
 	}
 
@@ -139,6 +146,13 @@ const createDefaultStore = () => {
 	obj.taskdata.othertab.data.testPortScanDataFrom = 1
 	obj.taskdata.othertab.data.testPortScanDataTo = 1000
 	obj.taskdata.othertab.data.testFormActionHijacking = true
+
+	//pta
+	obj.taskdata.ptatab.data = {}
+	obj.taskdata.ptatab.data.enable = false
+	obj.taskdata.ptatab.data.userData = DEFAULT_TPA
+
+
 	return obj
 }
 
@@ -179,6 +193,9 @@ export default class CrreateTaskPage extends React.Component {
 			crawlEnab = true
 		}
 		if (taskData.othertab.data.testFormActionHijacking) {
+			crawlEnab = true
+		}
+		if (taskData.ptatab.data.enable) {
 			crawlEnab = true
 		}
 		if (taskData.sqltab.data.enable) {
@@ -324,6 +341,23 @@ export default class CrreateTaskPage extends React.Component {
 						}
 					/>
 				</Tab.Pane>
+			},
+			{
+				menuItem: 'PTA', render: () => <Tab.Pane>
+				<Parent
+					header='Path Traversal Attack'
+					storeFn={this._print}
+					isEnable={this.state.taskdata.ptatab.data.enable}
+					name='PTATab'
+					child={
+						<PtaTab
+							storeFn={this._print}
+							data={this.state.taskdata.ptatab}
+							name='PTATab'
+						/>
+					}
+				/>
+			</Tab.Pane>
 			},
 		]
 

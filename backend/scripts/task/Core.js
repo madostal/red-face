@@ -5,6 +5,7 @@ const database = require('../utils/database')
 const library = require('../utils/library')
 const CrawlerTask = require('./crawler-task')
 const BruteForceTask = require('./brute-force-task')
+const TraversalPathAttack = require('./traversal-path-attack-task')
 const OtherTask = require('./other-task')
 const XSSTask = require('./xss-task')
 const SQLTask = require('./sql-inj-task')
@@ -103,6 +104,11 @@ class Core {
 		if (this.taskConfig.taskdata.sqltab.data !== null && this.taskConfig.taskdata.sqltab.data.enable) {
 			results.push(
 				new SQLTask(this.taskConfig, null, crawlerOut)
+					.start())
+		}
+		if (this.taskConfig.taskdata.ptatab.data !== null && this.taskConfig.taskdata.ptatab.data.enable) {
+			results.push(
+				new TraversalPathAttack(this.taskConfig, crawlerOut)
 					.start())
 		}
 		this._shutDown(results)
