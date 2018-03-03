@@ -20,12 +20,22 @@ body {
 	color: white;
 	font-weight: bold;
 }
+
 .vulnerability {
 	background-color: #ff0000;
 }
 
 .vulnerability a {
 	background-color: #ff0000;
+	color: white;
+}
+
+.not-started-vulnerability {
+	background-color: blue;
+}
+
+.not-started-vulnerability a {
+	background-color: blue;
 	color: white;
 }
 
@@ -46,5 +56,4 @@ body {
 	background-color: gray;
 	color: white;
 }
-
 

@@ -23,6 +23,9 @@ const REG_VUL_LINE_1 = /(: vulnerability level: 1)/g
 const REG_VUL_2 = /.*(: vulnerability level: 2).*/g
 const REG_VUL_LINE_2 = /(: vulnerability level: 2)/g
 
+const REG_VUL_3 = /.*(: vulnerability level: 3).*/g
+const REG_VUL_LINE_3 = /(: vulnerability level: 3)/g
+
 const REG_URL = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/g
 const REG_TIME = /\d{1,2}.\d{1,2}.\d{4} \d{1,2}:\d{1,2}:\d{1,2}:/g
 const REG_NEW_LINE = /\n/g
@@ -90,6 +93,9 @@ export default class DetailPage extends React.Component {
 
 		tmp = tmp.replace(REG_VUL_2, '<div class="default-vulnerability test-res">$&</div>')
 		tmp = tmp.replace(REG_VUL_LINE_2, '')
+
+		tmp = tmp.replace(REG_VUL_3, '<div class="not-started-vulnerability test-res">$&</div>')
+		tmp = tmp.replace(REG_VUL_LINE_3, '')
 
 
 		tmp = tmp.replace(REG_URL, '<a href=\'$&\'>$&</a>')
@@ -189,7 +195,11 @@ export default class DetailPage extends React.Component {
 
 						<Grid.Row columns={1} textAlign="left">
 							<Grid.Column>
+
 								<SanitizedHTML
+									style={({
+										'word-wrap': 'break-word'
+									})}
 									allowedAttributes={{ 'a': ['href'], 'div': ['class'] }}
 									allowedTags={['b', 'br', 'a', 'div']}
 									html={this.state.log}

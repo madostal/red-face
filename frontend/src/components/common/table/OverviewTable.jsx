@@ -89,6 +89,20 @@ export default class OverviewTable extends React.Component {
 		})
 	}
 
+	componentDidMount = () => {
+		this.interval = setInterval(() => {
+			let r = this.state.result
+			r.forEach(e => {
+				if (e.state === 1) {
+					e.startTime = (new Date(e.startTime))
+				}
+			})
+			this.setState({
+				result: r,
+			})
+		}, 1000)
+	}
+
 	_repeat = (item) => {
 		Api.socketRequest('repeat-task', { id: item.id })
 		//TODO UPDATE VIEW

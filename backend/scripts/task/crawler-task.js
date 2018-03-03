@@ -28,8 +28,13 @@ module.exports = class CrawlerTask extends taskParent {
 
 		crwlIns.crawle()
 		this.res = crwlIns.getUrls()
-		// console.log(this.res)
 		console.log(['Crawling finished with', this.res.length, 'results'].join(' '))
+		console.log('Crawler results:')
+		this.res.forEach(e => {
+			console.log(['Url: ', e[0]].join(''))
+			console.dir(e[1])
+		})
+		console.log()
 	}
 
 	getRes() {

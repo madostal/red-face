@@ -121,6 +121,7 @@ class Core {
 	 */
 	_printTestRes(res) {
 		console.log('>TEST RESULTS:')
+		if (!res) return
 		res.forEach(e => {
 			if (e && e.data) {
 				e.data.forEach(i => {

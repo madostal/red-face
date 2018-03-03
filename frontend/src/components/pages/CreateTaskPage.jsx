@@ -4,6 +4,7 @@ import {
 	Segment,
 	Grid,
 	Button,
+	Message,
 	Header,
 	Input,
 	Divider,
@@ -40,6 +41,8 @@ const DEFAULT_SQL = [
 const DEFAULT_TPA = [
 	'C:\\Windows\\System32\\drivers\\etc\\hosts',
 	'# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.',
+	'/etc/passwd',
+	'root:x:0:0:root:/root:/bin/bash',
 ]
 
 const DEFAULT_CRAWLER_DEEP = 10
@@ -160,7 +163,6 @@ const createDefaultStore = () => {
 	obj.taskdata.ptatab.data.userSettings = DEFAULT_TPA
 	obj.taskdata.ptatab.data.useDefault = true
 
-
 	return obj
 }
 
@@ -176,6 +178,7 @@ export default class CrreateTaskPage extends React.Component {
 			conf = createDefaultStore()
 		}
 		this.state = conf
+		this.error = ''
 	}
 
 	_componentOnChangeText = (d, e) => {
@@ -191,16 +194,17 @@ export default class CrreateTaskPage extends React.Component {
 
 	_isCrawlerEnable = (taskData) => {
 		let crawlEnab = false
+
 		if (taskData.bruteforcetab.data.enable && taskData.bruteforcetab.data.locationAuto) {
 			crawlEnab = true
 		}
 		if (taskData.xsstab.data.enable) {
 			crawlEnab = true
 		}
-		if (taskData.othertab.data.testJavascriptImport) {
+		if (taskData.othertab.data.enable && taskData.othertab.data.testJavascriptImport) {
 			crawlEnab = true
 		}
-		if (taskData.othertab.data.testFormActionHijacking) {
+		if (taskData.othertab.data.enable && taskData.othertab.data.testFormActionHijacking) {
 			crawlEnab = true
 		}
 		if (taskData.ptatab.data.enable) {
@@ -213,6 +217,8 @@ export default class CrreateTaskPage extends React.Component {
 	}
 
 	_createTask = () => {
+		this.error = ''
+
 		let tmp = this.state.taskdata
 		let crawlEnab = this._isCrawlerEnable(tmp)
 
@@ -223,6 +229,18 @@ export default class CrreateTaskPage extends React.Component {
 			crawlerisneed: crawlEnab,
 		})
 
+		if (lastState.serverHome.length === 0) {
+			this.error = 'Server home is empty!'
+			this.forceUpdate()
+			return
+		}
+
+		if (lastState.taskname.length === 0) {
+			this.error = 'Task name is empty!'
+			this.forceUpdate()
+			return
+		}
+
 		let home = lastState.serverHome.split(/\r?\n/)
 		if (home.length > 1) {
 			//more the one task
@@ -231,7 +249,6 @@ export default class CrreateTaskPage extends React.Component {
 			home.forEach(el => {
 				let toSend = stateTmp
 				toSend.serverHome = el
-				toSend.taskname = [toSend.taskname, ' ', iterator, '/', el.length].join('')
 				iterator++
 				Api.socketRequest('taskcreate', JSON.stringify(toSend))
 			})
@@ -243,6 +260,7 @@ export default class CrreateTaskPage extends React.Component {
 	}
 
 	_removeAllTasks = () => {
+		this.error = ''
 		localStorage.removeItem(LOCAL_STORAGE_NAME)
 		this.state = createDefaultStore()
 		this.forceUpdate()
@@ -422,10 +440,20 @@ export default class CrreateTaskPage extends React.Component {
 								/>
 							</Grid.Column>
 							<Grid.Column>
+
 								<Button onClick={() => this._createTask()} color="green">Start task</Button>
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>
+					{this.error.length !== 0
+						? <Message
+							color='red'
+							icon='dont'
+							header='Error'
+							content={this.error}
+						/>
+						: ''
+					}
 					<Divider inverted />
 					<Button onClick={() => this._removeAllTasks()} inverted color="red" size="tiny">Remove last config</Button>
 				</Segment>
