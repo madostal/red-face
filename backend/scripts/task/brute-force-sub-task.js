@@ -27,22 +27,22 @@ class BruteForceSubTask {
 			let errorPage = await webDriver.getDocumentText()
 
 			for (let i = 0; i < data.length; i++) {
-				// console.log(['Worker:', id, , '|', 'Testing', (data[i][0]), (data[i][1])].join(' '))
 				await webDriver.goTo(serverHome)
 				await webDriver.doLogin(data[i][0], data[i][1], this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr, this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
 				let tmp = await webDriver.getDocumentText()
 				let similarity = stringSimilarity.compareTwoStrings(errorPage, tmp)
-				console.log(similarity * 100)
+				console.log([data[i][0], ':', data[i][1], ' - ', similarity * 100, '%'].join(''))
 				if ((similarity * 100) < this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff) {
-					console.log('!!!!! Probably found credentials')
-					console.log([data[i][0], data[i][1]].join(' '))
+					console.log(['Bruteforce probably found credentials: ', data[i][0], ': ', data[i][1], ' on urn ', serverHome].join(''))
+					console.log(['!!--|0|', 'Bruteforce probably found credentials: ', data[i][0], ': ', data[i][1], ' on urn ', serverHome].join(''))
 				}
 				if (forceExit) {
 					break
 				}
 			}
 		} else {
-			console.log(['Worker:', id, , '|', 'ERROR: Some xpaths wasn\'t found.Please, check your xpaths or repeat action.'].join(' '))
+			console.log(['BruteforceWorker:', id, , '|', 'ERROR: Some xpaths wasn\'t found.Please, check your xpaths or repeat action', '- on urn', serverHome].join(' '))
+			console.log(['!!--|3|', ['Bruteforce Worker:', id, , ':', 'ERROR: Some xpaths wasn\'t found.Please, check your xpaths or repeat action', ' on urn ', serverHome].join(' ')].join(''))
 		}
 
 		await webDriver.closeDriver()

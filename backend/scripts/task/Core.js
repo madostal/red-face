@@ -66,29 +66,33 @@ class Core {
 		}
 
 		if (this.taskConfig.taskdata.bruteforcetab.data !== null && this.taskConfig.taskdata.bruteforcetab.data.enable) {
+			let bruteforceAutoRes = false
 			if (this.taskConfig.taskdata.bruteforcetab.data.locationAuto) {
 				//find login page in crawler res
 				let formPath = this._XPathToCrawleString(this.taskConfig.taskdata.bruteforcetab.data.loginFormXPathExpr)
 				let loginPath = this._XPathToCrawleString(this.taskConfig.taskdata.bruteforcetab.data.loginNameXPathExpr)
 				let pswPath = this._XPathToCrawleString(this.taskConfig.taskdata.bruteforcetab.data.loginPswXPathExpr)
-				let res
+
 				for (let i = 0; i < crawlerOut.length; i++) {
 					//if crawler res has login form, inputs.. we found
 					if (crawlerOut[i][1].hasOwnProperty(formPath)
 						&& crawlerOut[i][1].hasOwnProperty(loginPath)
 						&& crawlerOut[i][1].hasOwnProperty(pswPath)
 						&& crawlerOut[i][1][formPath] === true) {
-						res = (crawlerOut[i][0])
+						bruteforceAutoRes = (crawlerOut[i][0])
 						break
 					}
 				}
-				if (!res) {
-					console.log('BRUTEFORCE TASK: login form was not found')
-				} else {
-					this.taskConfig.taskdata.bruteforcetab.data.location = res.replace(this.taskConfig.serverHome, '')
+				if (bruteforceAutoRes) {
+					this.taskConfig.taskdata.bruteforcetab.data.location = bruteforceAutoRes.replace(this.taskConfig.serverHome, '')
 				}
 			}
-			results.push(new BruteForceTask(this.taskConfig, this.taskData.configPath)
+			results.push(new BruteForceTask(
+				this.taskConfig,
+				this.taskData.configPath,
+				this.taskConfig.taskdata.bruteforcetab.data.locationAuto,
+				bruteforceAutoRes
+			)
 				.start())
 		}
 		if (this.taskConfig.taskdata.othertab.data !== null && this.taskConfig.taskdata.othertab.data.enable) {

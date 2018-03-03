@@ -5,89 +5,124 @@ const library = require('../utils/library')
 
 module.exports = class BruteForceTask extends taskParent {
 
-	constructor(jsonconfig, configPath) {
+	constructor(jsonconfig, configPath, isAuto, autoRes) {
 		super(jsonconfig)
 		this.configPath = configPath
 		this.listOfChilds = []
+		this.isAuto = isAuto
+		this.autoRes = autoRes
 	}
 
 	start() {
-		let serverHome = this._createUri(this.jsonconfig.serverHome, this.jsonconfig.taskdata.bruteforcetab.data.location)
-
-		console.log(this.jsonconfig.taskdata.bruteforcetab.data)
-		console.log('Starting BruteForceTask')
-		console.log(['Location of login form is: ', this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr].join(''))
-		console.log(['Location of login name input is: ', this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr].join(''))
-		console.log(['Location of login password input is: ', this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr].join(''))
-
-		let data = null
-		if (this.jsonconfig.taskdata.bruteforcetab.data.useLoginNamesDefault) {
-			let fileData = this._parseInputData(jetpack.read('./task_settings/defaulbruteforce').split(/\r?\n/))
-			data = this._createCombos(fileData[0], fileData[1])
+		let logData = {
+			text: 'Bruteforce attack',
+			data: [],
+		}
+		if (this.isAuto && !this.autoRes) {
+			logData.data.push({
+				text: 'Bruteforce wasn\t found a login form',
+				vulnerability: 3,
+			})
 		} else {
-			data = this._createCombos(this.jsonconfig.taskdata.bruteforcetab.data.loginNames.split(/\r?\n/), this.jsonconfig.taskdata.bruteforcetab.data.loginPsws.split(/\r?\n/))
-		}
 
-		let totalToTest = data.length
+			let serverHome = this._createUri(this.jsonconfig.serverHome, this.jsonconfig.taskdata.bruteforcetab.data.location)
 
-		let countOfProc = this.jsonconfig.taskdata.bruteforcetab.data.nodes
-		if (!Number.isInteger(countOfProc) || countOfProc < 1) {
-			//if input is wrong number
-			countOfProc = 1
-		}
+			console.log('Starting BruteForceTask')
+			console.log(['Location of login form is: ', this.jsonconfig.taskdata.bruteforcetab.data.loginFormXPathExpr].join(''))
+			console.log(['Location of login name input is: ', this.jsonconfig.taskdata.bruteforcetab.data.loginNameXPathExpr].join(''))
+			console.log(['Location of login password input is: ', this.jsonconfig.taskdata.bruteforcetab.data.loginPswXPathExpr].join(''))
 
-		if (!this._isFloat(this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff)) {
-			this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff = 80
-		}
-
-		data = this._chunkArr(data, Math.ceil(data.length / countOfProc))
-
-		let startTime = new Date()
-		let rem = data.length
-
-		console.log(['Using diff ', this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff, '%'].join(''))
-
-		for (let i = 0; i < data.length; i++) {
-			let path = ['writable', '/', 'tmp', '/', 'red_face_config_', 'bruteforce', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
-			jetpack.write(path, data[i])
-
-			const process = spawn('node', ['./task/brute-force-sub-task.js', path, this.configPath, serverHome, i], {
-				stdio: ['ipc', 'pipe', 'pipe'],
-			})
-			this.listOfChilds.push(process)
-
-			process.stdout.on('data', (data) => {
-				console.log(data.toString('utf8'))
-			})
-
-			process.stderr.on('data', (data) => {
-				console.log(data.toString('utf8'))
-			})
-
-			process.on('close', (code) => {
-				rem--
-				console.log('Closing code: ' + code)
-				console.log("REM: " + rem)
-			})
-
-		}
-
-		process.on('message', () => {
-			for (let i = 0; i < this.listOfChilds.length; i++) {
-				this.listOfChilds[i].send({ message: 'kill' })
+			let data = null
+			if (this.jsonconfig.taskdata.bruteforcetab.data.useLoginNamesDefault) {
+				let fileData = this._parseInputData(jetpack.read('./task_settings/defaulbruteforce').split(/\r?\n/))
+				data = this._createCombos(fileData[0], fileData[1])
+			} else {
+				data = this._createCombos(this.jsonconfig.taskdata.bruteforcetab.data.loginNames.split(/\r?\n/), this.jsonconfig.taskdata.bruteforcetab.data.loginPsws.split(/\r?\n/))
 			}
-		})
 
-		while (rem > 0) {
-			require('deasync').sleep(1000)
+			let totalToTest = data.length
+
+			let countOfProc = parseInt(this.jsonconfig.taskdata.bruteforcetab.data.nodes)
+			if (!Number.isInteger(countOfProc) || countOfProc < 1) {
+				//if input is wrong number
+				console.log('Restarting cout of proc')
+				countOfProc = 1
+			}
+
+			if (!this._isFloat(this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff)) {
+				this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff = 80
+			}
+
+			data = this._chunkArr(data, Math.ceil(data.length / countOfProc))
+
+			let startTime = new Date()
+			let rem = data.length
+
+			console.log(['Using diff ', this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff, '%'].join(''))
+
+			for (let i = 0; i < data.length; i++) {
+				let path = ['writable', '/', 'tmp', '/', 'red_face_config_', 'bruteforce', '_', Date.now(), '_', library.getRandomTextInRange(), '.txt'].join('')
+				jetpack.write(path, data[i])
+
+				const process = spawn('node', ['./task/brute-force-sub-task.js', path, this.configPath, serverHome, i], {
+					stdio: ['ipc', 'pipe', 'pipe'],
+				})
+				this.listOfChilds.push(process)
+
+				let printMsg = (msg) => {
+					msg = msg.slice(0, -1)
+					let tmp = msg.split('|')
+					console.log(tmp)
+					if (tmp.length === 3) {
+						logData.data.push({
+							text: tmp[2],
+							vulnerability: tmp[1],
+						})
+					} else {
+						console.log(msg)
+					}
+				}
+
+				process.stdout.on('data', (data) => {
+					printMsg(data.toString('utf8'))
+				})
+
+				process.stderr.on('data', (data) => {
+					printMsg(data.toString('utf8'))
+				})
+
+				process.on('close', (code) => {
+					rem--
+				})
+
+			}
+
+			process.on('message', () => {
+				for (let i = 0; i < this.listOfChilds.length; i++) {
+					this.listOfChilds[i].send({ message: 'kill' })
+				}
+			})
+
+			while (rem > 0) {
+				require('deasync').sleep(1000)
+			}
+
+			console.log(['Avarage:', ((new Date() - startTime) / totalToTest), 'ms peer one test'].join(' '))
+			console.log(['It took', library.timeDiffNow(startTime), totalToTest, 'accout-password tested'].join(' '))
+			console.log()
+
+			if (logData.data.length === 0) {
+				//not found
+				logData.data.push({
+					text: 'Bruteforce wasn\t found password',
+					vulnerability: 1,
+				})
+			}
 		}
-
-		console.log('TIME')
-		console.log(startTime)
-		console.log(new Date())
-		console.log(['Avarage:', ((new Date() - startTime) / totalToTest), 'ms peer one test'].join(' '))
-		console.log(['It took', library.timeDiffNow(startTime), totalToTest, 'accout-password tested'].join(' '))
-
+		this.taskRes.data.push(logData)
+		console.log('Bruteforce task finished')
+		console.log('')
+		return this.taskRes
 	}
 
 	/**
@@ -97,7 +132,6 @@ module.exports = class BruteForceTask extends taskParent {
 	 * @param {String} uri
 	 */
 	_createUri(serverHomeInput, uri) {
-		console.log(serverHomeInput + ' VS ' + uri)
 		if (serverHomeInput.endsWith('/') && uri.startsWith('/')) {
 			return [serverHomeInput, uri.substr(1)].join('')
 		}
@@ -146,13 +180,10 @@ module.exports = class BruteForceTask extends taskParent {
 	}
 
 	_chunkArr(arr, len) {
-		console.log("CHUNK ARR TO : " + len)
 		let chunks = [], i = 0
-
 		while (i < arr.length) {
 			chunks.push(arr.slice(i, i += len))
 		}
-
 		return chunks
 	}
 
