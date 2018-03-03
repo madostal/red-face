@@ -15,6 +15,15 @@ export default class BodyParent extends React.Component {
 		this.props.storeFn(id, val, parentName, true)
 	}
 
+	_componentOnChangeTextArr = (d, e) => {
+		let val = e.value.split('\n')
+
+		this.setState({
+			[e.id]: val,
+		})
+		this._sendToGrandParent(e.id, val, this._getParentName())
+	}
+
 	_componentOnChangeText = (d, e) => {
 		this.setState({
 			[e.id]: e.value,

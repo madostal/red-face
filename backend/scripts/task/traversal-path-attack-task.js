@@ -21,6 +21,8 @@ module.exports = class TraversalPathAttack extends taskParent {
 			data: [],
 		}
 
+		console.log('Starting traversal path attack')
+
 		let tpaTabData = this.jsonconfig.taskdata.ptatab.data
 
 		let toTest = []
@@ -52,25 +54,61 @@ module.exports = class TraversalPathAttack extends taskParent {
 				})
 			}
 		})
-		console.log(toTest)
+
+		let filtered = []
+
+		for (let i = 0; i < toTest.length; i++) {
+			let wasFound = false
+
+			for (let j = 0; j < filtered.length; j++) {
+				if (filtered[j][0] === toTest[i][0]) {
+					if (!filtered[j][1].includes(toTest[i][1])) {
+						filtered[j][1].push(toTest[i][1])
+					}
+					wasFound = true
+					break
+				}
+			}
+
+			if (!wasFound) {
+				filtered.push(
+					[
+						toTest[i][0],
+						[toTest[i][1]]
+					]
+				)
+			}
+		}
+
+		toTest = filtered
+
 		let state = false;
 		(async () => {
 			let webDriver = new WebDriver()
 			// toTest.forEach(e=> {
 			for (let i = 0; i < toTest.length; i++) {
 				let url = toTest[i][0]
-				let contains = toTest[i][1].toLowerCase()
+				let contains = toTest[i][1]
 
 				webDriver.goTo(url)
+				console.log(['Testing', url].join(' '))
 				require('deasync').sleep(1000)
 
 				let text = (await webDriver.getDocumentText())
 
 				text = text.toLowerCase()
-				if (text.includes(contains)) {
-					console.log(url)
+				for (let j = 0; j < contains.length; j++) {
+					let cnt = contains[j].toLowerCase()
+					if (text.includes(cnt)) {
+						logData.data.push({
+							text: ['Possible TPA on: ', url].join(''),
+							vulnerability: 0,
+						})
+						console.log(['The', url, 'contain', cnt].join(' '))
+					} else {
+						console.log(['The', url, 'does not contain', cnt].join(' '))
+					}
 				}
-				// })
 			}
 			await webDriver.closeDriver()
 			state = true
@@ -78,7 +116,15 @@ module.exports = class TraversalPathAttack extends taskParent {
 
 		require('deasync').loopWhile(() => { return !state })
 
-		logger.log('debug', 'Starting traversal path test')
+		if (logData.data.length === 0) {
+			//not found
+			logData.data.push({
+				text: 'TPA on url forms was not found',
+				vulnerability: 1,
+			})
+		}
 		this.taskRes.data.push(logData)
+		console.log('TPA task finished')
+		return this.taskRes
 	}
 }

@@ -15,7 +15,7 @@ export default class PtaTab extends BodyParent {
 				<Form>
 					<Header as="h5">Configuration</Header>
 					<TextArea
-						onChange={(d, e) => this._componentOnChangeText(d, e)}
+						onChange={(d, e) => this._componentOnChangeTextArr(d, e)}
 						id={'userData'}
 						value={Array.isArray(this.props.data.data.userData) ? this.props.data.data.userData.join('\n') : this.props.data.data.userData}
 						placeholder="xxx"
