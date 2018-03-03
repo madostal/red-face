@@ -72,10 +72,17 @@ const SQL_BOOL = {
 	},
 }
 
+const PTA_BOOL = {
+	useDefault: {
+		userSettings: DEFAULT_TPA,
+	},
+}
+
 const GLOBAL_DATA = {
 	bruteforcetab: BRUTE_FORCE_BOOL,
 	xsstab: XSS_BOOL,
 	sqltab: SQL_BOOL,
+	ptatab: PTA_BOOL,
 }
 
 const restarter = (flagName, type) => {
@@ -150,7 +157,8 @@ const createDefaultStore = () => {
 	//pta
 	obj.taskdata.ptatab.data = {}
 	obj.taskdata.ptatab.data.enable = false
-	obj.taskdata.ptatab.data.userData = DEFAULT_TPA
+	obj.taskdata.ptatab.data.userSettings = DEFAULT_TPA
+	obj.taskdata.ptatab.data.useDefault = true
 
 
 	return obj
@@ -344,20 +352,20 @@ export default class CrreateTaskPage extends React.Component {
 			},
 			{
 				menuItem: 'PTA', render: () => <Tab.Pane>
-				<Parent
-					header='Path Traversal Attack'
-					storeFn={this._print}
-					isEnable={this.state.taskdata.ptatab.data.enable}
-					name='PTATab'
-					child={
-						<PtaTab
-							storeFn={this._print}
-							data={this.state.taskdata.ptatab}
-							name='PTATab'
-						/>
-					}
-				/>
-			</Tab.Pane>
+					<Parent
+						header='Path Traversal Attack'
+						storeFn={this._print}
+						isEnable={this.state.taskdata.ptatab.data.enable}
+						name='PTATab'
+						child={
+							<PtaTab
+								storeFn={this._print}
+								data={this.state.taskdata.ptatab}
+								name='PTATab'
+							/>
+						}
+					/>
+				</Tab.Pane>
 			},
 		]
 
