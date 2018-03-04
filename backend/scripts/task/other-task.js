@@ -305,7 +305,7 @@ module.exports = class OtherTask extends taskParent {
 					let actDoc = await webDriver.getDocumentText()
 					res = stringSimilarity.compareTwoStrings(firstDoc, actDoc) * 100
 				}
-				console.log(res)
+				console.log([url, res, "%"].join(' '))
 				resV.push({
 					url: url,
 					ppst: res,
@@ -338,6 +338,11 @@ module.exports = class OtherTask extends taskParent {
 				text: 'Git config was not found',
 				vulnerability: 1,
 			})
+		} else {
+			logData.data.push({
+				text: 'Git config was found',
+				vulnerability: 2,
+			})
 		}
 		this.taskRes.data.push(logData)
 		cb()
@@ -353,6 +358,9 @@ module.exports = class OtherTask extends taskParent {
 		logger.log('debug', 'Starting portscan test')
 
 		console.log(['Starting port scan on range: ', field.from, ' - ', field.to, ' on ', tmpHost].join(''))
+
+		field.from = parseInt(field.from)
+		field.to = parseInt(field.to)
 
 		if (!Number.isInteger(field.from) || !Number.isInteger(field.to)) {
 			console.log(['Invalids ports from: ', field.from, ', to: ', field.to].join(''))

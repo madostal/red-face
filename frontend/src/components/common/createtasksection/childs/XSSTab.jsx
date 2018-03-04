@@ -48,14 +48,14 @@ export default class XSSTab extends BodyParent {
 					onChange={(d, e) => this._componentOnChangeCheck(d, e)}
 					checked={this.props.data.data.testParams}
 					id={'testParams'}
-					label={<label>testParams</label>}
+					label={<label>Test url params</label>}
 				/>
 				<Divider hidden />
 				<Checkbox
 					onChange={(d, e) => this._componentOnChangeCheck(d, e)}
 					checked={this.props.data.data.testForms}
 					id={'testForms'}
-					label={<label>testForms</label>}
+					label={<label>Test page forms</label>}
 				/>
 
 			</div>

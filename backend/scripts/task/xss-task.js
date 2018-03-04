@@ -18,17 +18,33 @@ module.exports = class XSSTask extends taskParent {
 	}
 
 	start() {
+		console.log('Starting XSS attack')
 
-		console.log('XSS: Starting')
-		console.log(this.jsonconfig.taskdata.xsstab.data)
-		if (this.jsonconfig.taskdata.xsstab.data.testForms) {
-			this._testInputs()
+		let wasStarted = false
+		if (this.jsonconfig.taskdata.xsstab.data.userSettings) {
+			if (this.jsonconfig.taskdata.xsstab.data.testForms) {
+				this._testInputs()
+				wasStarted = true
+			}
+
+			if (this.jsonconfig.taskdata.xsstab.data.testParams) {
+				this._testParams()
+				wasStarted = true
+			}
 		}
 
-		if (this.jsonconfig.taskdata.xsstab.data.testParams) {
-			this._testParams()
+		if (!wasStarted) {
+			let logData = {
+				text: 'XSS task inputs',
+				data: [],
+			}
+			console.log('Input settings is empty')
+			logData.data.push({
+				text: 'XSS wasn\'t started',
+				vulnerability: 3,
+			})
+			this.taskRes.data.push(logData)
 		}
-
 
 		let state = false;
 		(async () => {
@@ -37,7 +53,8 @@ module.exports = class XSSTask extends taskParent {
 		})()
 
 		require('deasync').loopWhile(() => { return !state })
-		console.log('XSS: Finished')
+
+		console.log('XSS task finished')
 		return this.taskRes
 	}
 
@@ -69,7 +86,9 @@ module.exports = class XSSTask extends taskParent {
 						//0 writable elements
 						continue
 					}
+
 					console.log(['Scanning', this.crawlerRes[i][0]].join(' '))
+
 					let url = this.crawlerRes[i][0]
 					await this.webDriver.goTo(url)
 
@@ -156,7 +175,7 @@ module.exports = class XSSTask extends taskParent {
 			data: [],
 		}
 
- 
+
 		let xssTabData = this.jsonconfig.taskdata.xsstab.data
 
 		let toTest = []
@@ -185,7 +204,6 @@ module.exports = class XSSTask extends taskParent {
 				})
 			}
 		})
-		console.log(toTest)
 
 		let state = false;
 		//list of founded url with xss
