@@ -10,7 +10,7 @@ const TASK_GLOBAL_NAME = 'Traversal Path attack task'
 module.exports = class TraversalPathAttack extends taskParent {
 
 	constructor(jsonconfig, crawlerOut) {
-		super(jsonconfig, TASK_GLOBAL_NAME)
+		super(jsonconfig, TASK_GLOBAL_NAME, true)
 		this.serverHome = jsonconfig.serverHome
 		this.crawlerOut = crawlerOut
 	}
@@ -85,17 +85,17 @@ module.exports = class TraversalPathAttack extends taskParent {
 
 			let state = false;
 			(async () => {
-				let webDriver = new WebDriver()
+
 				// toTest.forEach(e=> {
 				for (let i = 0; i < toTest.length; i++) {
 					let url = toTest[i][0]
 					let contains = toTest[i][1]
 
-					webDriver.goTo(url)
+					await this.webDriver.goTo(url)
 					console.log(['Testing', this._parseUrl(url)].join(' '))
 					require('deasync').sleep(1000)
 
-					let text = (await webDriver.getDocumentText())
+					let text = (await this.webDriver.getDocumentText())
 
 					text = text.toLowerCase()
 					for (let j = 0; j < contains.length; j++) {
@@ -111,7 +111,7 @@ module.exports = class TraversalPathAttack extends taskParent {
 						}
 					}
 				}
-				await webDriver.closeDriver()
+				await this.webDriver.closeDriver()
 				state = true
 			})()
 

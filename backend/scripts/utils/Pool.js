@@ -205,7 +205,7 @@ module.exports = class Pool {
 		proc.send({ message: "kill" })
 		setTimeout(() => {
 			proc.kill('SIGINT');
-		}, 1000)
+		}, 5000)
 	}
 
 	repeatTask(id) {

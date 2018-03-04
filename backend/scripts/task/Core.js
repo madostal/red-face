@@ -21,9 +21,18 @@ class Core extends taskParent {
 		this.taskId = taskId
 		this.taskData = null
 		this.taskConfig = null
+
+		this.taskInstances = []
+
+		process.on('message', () => {
+			this.taskInstances.forEach(e => {
+				e.killDriver()
+			})
+		})
 	}
 
 	start() {
+
 		let self = this
 		database.connection.query('SELECT * FROM task WHERE id = ?', [this.taskId], (err, fields) => {
 			if (err) {
@@ -98,24 +107,24 @@ class Core extends taskParent {
 				.start())
 		}
 		if (this.taskConfig.taskdata.othertab.data !== null && this.taskConfig.taskdata.othertab.data.enable) {
-			results.push(
-				new OtherTask(this.taskConfig, crawlerOut)
-					.start())
+			let tmp = new OtherTask(this.taskConfig, crawlerOut)
+			this.taskInstances.push(tmp)
+			results.push(tmp.start())
 		}
 		if (this.taskConfig.taskdata.xsstab.data !== null && this.taskConfig.taskdata.xsstab.data.enable) {
-			results.push(
-				new XSSTask(this.taskConfig, null, crawlerOut)
-					.start())
+			let tmp = new XSSTask(this.taskConfig, null, crawlerOut)
+			this.taskInstances.push(tmp)
+			results.push(tmp.start())
 		}
 		if (this.taskConfig.taskdata.sqltab.data !== null && this.taskConfig.taskdata.sqltab.data.enable) {
-			results.push(
-				new SQLTask(this.taskConfig, null, crawlerOut)
-					.start())
+			let tmp = new SQLTask(this.taskConfig, null, crawlerOut)
+			this.taskInstances.push(tmp)
+			results.push(tmp.start())
 		}
 		if (this.taskConfig.taskdata.ptatab.data !== null && this.taskConfig.taskdata.ptatab.data.enable) {
-			results.push(
-				new TraversalPathAttack(this.taskConfig, crawlerOut)
-					.start())
+			let tmp = new TraversalPathAttack(this.taskConfig, crawlerOut)
+			this.taskInstances.push(tmp)
+			results.push(tmp.start())
 		}
 		this._shutDown(results)
 	}
@@ -146,6 +155,10 @@ class Core extends taskParent {
 	 * Shut downl taks process with successfully exit code
 	 */
 	_shutDown(results) {
+		this.taskInstances.forEach(e => {
+			e.killDriver()
+		})
+		require('deasync').sleep(5000)
 		logger.log('debug', ['Shut down task id: ', this.taskId].join(''))
 		this._printTestRes(results)
 		process.exit(0)

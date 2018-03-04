@@ -7,6 +7,10 @@ const WebDriver = require('../utils/web-driver')
 
 class BruteForceSubTask extends taskParent {
 
+	constructor() {
+		super(null, null, false)
+	}
+
 	async start(path, configPath, serverHome, id) {
 
 		let webDriver = new WebDriver()

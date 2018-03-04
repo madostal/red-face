@@ -19,7 +19,7 @@ const FORM_ACTION_HIJACING_KEY = 'RedFaceFormActionHijacking'
 module.exports = class OtherTask extends taskParent {
 
 	constructor(jsonconfig, crawlerOut) {
-		super(jsonconfig, TASK_GLOBAL_NAME)
+		super(jsonconfig, TASK_GLOBAL_NAME, true)
 		this.serverHome = jsonconfig.serverHome
 		this.crawlerOut = crawlerOut
 	}
@@ -87,14 +87,13 @@ module.exports = class OtherTask extends taskParent {
 		logger.log('debug', 'Starting javascript import test')
 		let state = false;
 		(async () => {
-			let webDriver = new WebDriver()
 
 			for (let i = 0; i < this.crawlerOut.length; i++) {
 				let url = this.crawlerOut[i][0]
-				if (await webDriver.isHtml(url)) {
+				if (await this.webDriver.isHtml(url)) {
 					//skip if url is not html content
-					await webDriver.goToSafe(url)
-					let hasInjs = await webDriver.hasInlineScript()
+					await this.webDriver.goToSafe(url)
+					let hasInjs = await this.webDriver.hasInlineScript()
 					console.log(hasInjs + ' | ' + this._parseUrl(url))
 					if (hasInjs) {
 						logData.data.push({
@@ -105,7 +104,6 @@ module.exports = class OtherTask extends taskParent {
 					}
 				}
 			}
-			await webDriver.closeDriver()
 			state = true
 		})()
 
@@ -165,13 +163,12 @@ module.exports = class OtherTask extends taskParent {
 		});
 
 		(async () => {
-			let webDriver = new WebDriver()
 
 			for (let i = 0; i < toTest.length; i++) {
 				console.log(['Testing ', this._parseUrl(toTest[i][1])].join(''))
-				webDriver.goTo(toTest[i][1])
+				await this.webDriver.goTo(toTest[i][1])
 				require('deasync').sleep(1000)
-				let r = await webDriver.getActionFromForm()
+				let r = await this.webDriver.getActionFromForm()
 				for (let i = 0; i < r.length; i++) {
 					if (r[i] === FORM_ACTION_HIJACING_KEY) {
 						logData.data.push({
@@ -183,7 +180,7 @@ module.exports = class OtherTask extends taskParent {
 				}
 			}
 
-			await webDriver.closeDriver()
+			await this.webDriver.closeDriver()
 
 			if (logData.data.length === 0) {
 				//not found
@@ -240,18 +237,16 @@ module.exports = class OtherTask extends taskParent {
 			data: [],
 		}
 
-		let webDriver = new WebDriver()
 		let res
 		let state = false;
 
 		(async () => {
 			console.log(['Testing cross on', this.serverHome].join(' '))
 			//get some error page
-			await webDriver.goTo('https://google.com')
+			await this.webDriver.goTo('https://google.com')
 
-			res = await webDriver.hasCrossOriginAllowed(this.serverHome)
+			res = await this.webDriver.hasCrossOriginAllowed(this.serverHome)
 			console.log(res)
-			await webDriver.closeDriver()
 			state = true
 		})()
 		require('deasync').loopWhile(() => { return !state })
@@ -281,7 +276,6 @@ module.exports = class OtherTask extends taskParent {
 
 		let homeUrl = this.serverHome
 		let data = jetpack.read([process.cwd(), PATH_GIT_CONFIG].join('')).match(/[^\r\n]+/g)
-		let webDriver = new WebDriver()
 
 		let baseUrl = [homeUrl, '.a/cxydaseqw', Math.random().toString(36).substring(7)].join('')
 		let resV = []
@@ -289,12 +283,12 @@ module.exports = class OtherTask extends taskParent {
 
 		(async () => {
 			//get some error page
-			await webDriver.goTo(baseUrl)
-			let firstDoc = await webDriver.getDocumentText()
+			await this.webDriver.goTo(baseUrl)
+			let firstDoc = await this.webDriver.getDocumentText()
 
 			for (let i = 0; i < data.length; i++) {
 				let url = [homeUrl, data[i]].join('')
-				let wdRes = await webDriver.goToSafe(url)
+				let wdRes = await this.webDriver.goToSafe(url)
 				console.log(['GitChecker: checking ', this._parseUrl(url)].join(''))
 				let res = -1
 				//if was error, or url is file, or 404, 403....
@@ -302,7 +296,7 @@ module.exports = class OtherTask extends taskParent {
 					//if url was not html ...
 					res = 100
 				} else {
-					let actDoc = await webDriver.getDocumentText()
+					let actDoc = await this.webDriver.getDocumentText()
 					res = stringSimilarity.compareTwoStrings(firstDoc, actDoc) * 100
 				}
 				console.log([this._parseUrl(url), res, "%"].join(' '))
@@ -311,7 +305,6 @@ module.exports = class OtherTask extends taskParent {
 					ppst: res,
 				})
 			}
-			await webDriver.closeDriver()
 			state = true
 		})()
 		require('deasync').loopWhile(() => { return !state })

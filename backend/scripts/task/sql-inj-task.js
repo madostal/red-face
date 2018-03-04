@@ -8,11 +8,9 @@ const WebDriver = require('../utils/web-driver')
 module.exports = class SqlInjTask extends taskParent {
 
 	constructor(jsonconfig, url, crawlerRes) {
-		super(jsonconfig)
+		super(jsonconfig, null, true)
 		this.url = url
 		this.crawlerRes = crawlerRes
-
-		this.webDriver = new WebDriver()
 	}
 
 	start() {

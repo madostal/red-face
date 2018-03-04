@@ -247,7 +247,6 @@ module.exports = class WebDriver {
 				arguments[arguments.length - 1](true)
 			}
 		}, reqUrl).then((d) => { res = d; })
-		console.log('RETURNING ' + res)
 		return res
 	}
 
@@ -345,7 +344,8 @@ module.exports = class WebDriver {
 		await this.driver.executeAsyncScript((e) => {
 			const createXPathFromElement = (elm) => {
 				let allNodes = document.getElementsByTagName('*');
-				for (let segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) {
+				let segs = [];
+				for (segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) {
 					if (elm.hasAttribute('id')) {
 						let uniqueIdCount = 0
 						for (let n = 0; n < allNodes.length; n++) {

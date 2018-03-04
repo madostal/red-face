@@ -10,11 +10,9 @@ const TASK_GLOBAL_NAME = 'XSS task'
 module.exports = class XSSTask extends taskParent {
 
 	constructor(jsonconfig, url, crawlerRes) {
-		super(jsonconfig, TASK_GLOBAL_NAME)
+		super(jsonconfig, TASK_GLOBAL_NAME, true)
 		this.url = url
 		this.crawlerRes = crawlerRes
-		this.webDriver = new WebDriver()
-
 	}
 
 	start() {
@@ -45,14 +43,6 @@ module.exports = class XSSTask extends taskParent {
 			})
 			this.taskRes.data.push(logData)
 		}
-
-		let state = false;
-		(async () => {
-			await this.webDriver.closeDriver()
-			state = true
-		})()
-
-		require('deasync').loopWhile(() => { return !state })
 
 		console.log('XSS task finished')
 		return this.taskRes

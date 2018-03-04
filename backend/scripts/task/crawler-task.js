@@ -4,7 +4,7 @@ const taskParent = require('./task-parent.js')
 module.exports = class CrawlerTask extends taskParent {
 
 	constructor(serverHome, crawlerDeep, loginFormXPathExpr, loginNameXPathExpr, loginPswXPathExpr) {
-		super()
+		super(null,null,false)
 		this.homeUrl = serverHome
 		this.res
 		this.loginFormXPathExpr = loginFormXPathExpr
