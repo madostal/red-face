@@ -22,6 +22,13 @@ module.exports = class SqlInjTask extends taskParent {
 			this._testParams()
 		}
 
+		let state = false;
+		(async () => {
+			await this.webDriver.closeDriver()
+			state = true
+		})()
+		require('deasync').loopWhile(() => { return !state })
+
 		console.log('SQLinj: Finished')
 		return this.taskRes
 	}

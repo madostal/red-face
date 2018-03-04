@@ -1,5 +1,6 @@
 
 const jetpack = require('fs-jetpack')
+const taskParent = require('./task-parent.js')
 const taskHome = require('./task-home')
 const database = require('../utils/database')
 const library = require('../utils/library')
@@ -11,9 +12,10 @@ const XSSTask = require('./xss-task')
 const SQLTask = require('./sql-inj-task')
 const logger = require('../logger')
 
-class Core {
+class Core extends taskParent {
 
 	constructor(taskId) {
+		super()
 		logger.log('debug', ['Starting task id: ', taskId].join(''))
 
 		this.taskId = taskId
@@ -40,11 +42,11 @@ class Core {
 
 		library.urlExists(this.taskData.serverHome, (err, exists) => {
 			if (exists) {
-				console.log(['\'', this.taskData.serverHome, '\' exist, starting testing...'].join(''))
+				console.log(['\'', this._parseUrl(this.taskData.serverHome), '\' exist, starting testing...'].join(''))
 				this._startJob()
 			}
 			else {
-				console.log(['\'', this.taskData.serverHome, '\' doesn\'t exist, ending testing...'].join(''))
+				console.log(['\'', this._parseUrl(this.taskData.serverHome), '\' doesn\'t exist, ending testing...'].join(''))
 				this._shutDown()
 			}
 		})

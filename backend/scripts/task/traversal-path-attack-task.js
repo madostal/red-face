@@ -92,7 +92,7 @@ module.exports = class TraversalPathAttack extends taskParent {
 					let contains = toTest[i][1]
 
 					webDriver.goTo(url)
-					console.log(['Testing', url].join(' '))
+					console.log(['Testing', this._parseUrl(url)].join(' '))
 					require('deasync').sleep(1000)
 
 					let text = (await webDriver.getDocumentText())
@@ -102,12 +102,12 @@ module.exports = class TraversalPathAttack extends taskParent {
 						let cnt = contains[j].toLowerCase()
 						if (text.includes(cnt)) {
 							logData.data.push({
-								text: ['Possible TPA on: ', url].join(''),
+								text: ['Possible TPA on: ', this._parseUrl(url)].join(''),
 								vulnerability: 0,
 							})
-							console.log(['The', url, 'contain', cnt].join(' '))
+							console.log(['The', this._parseUrl(url), 'contain', cnt].join(' '))
 						} else {
-							console.log(['The', url, 'does not contain', cnt].join(' '))
+							console.log(['The', this._parseUrl(url), 'does not contain', cnt].join(' '))
 						}
 					}
 				}

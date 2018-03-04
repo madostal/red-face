@@ -295,16 +295,27 @@ export default class OverviewTable extends React.Component {
 											{Library.timeToHumanReadable(new Date(item.addTime))}
 										</Table.Cell>
 										<Table.Cell>
-											{Library.timeToHumanReadable(new Date(item.startTime))}
+											{item.startTime
+												? Library.timeToHumanReadable(new Date(item.startTime))
+												: 'queued'
+											}
 										</Table.Cell>
 										<Table.Cell>
 											{
 												((function () {
 													switch (item.state) {
 														case 1:
-															return Library.timeDiffNow(new Date(item.startTime))
+															if (item.startTime) {
+																return Library.timeDiffNow(new Date(item.startTime))
+															} else {
+																return 'queued'
+															}
 														default:
-															return Library.timeToHumanReadable(new Date(item.endTime))
+															if (item.endTime) {
+																return Library.timeToHumanReadable(new Date(item.endTime))
+															} else {
+																return 'queued'
+															}
 													}
 												})())
 											}

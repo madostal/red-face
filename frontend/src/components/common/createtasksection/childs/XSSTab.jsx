@@ -22,7 +22,7 @@ export default class XSSTab extends BodyParent {
 				<Form >
 					<Header as="h5">Input XSS attack (is checked by alert)</Header>
 					<TextArea
-						onChange={(d, e) => this._componentOnChangeText(d, e)}
+						onChange={(d, e) => this._componentOnChangeTextArr(d, e)}
 						id={'userSettings'}
 						value={Array.isArray(this.props.data.data.userSettings) ? this.props.data.data.userSettings.join('\n') : this.props.data.data.userSettings}
 						placeholder="Specify input password XPath expression"

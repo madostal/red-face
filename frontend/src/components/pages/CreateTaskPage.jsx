@@ -35,7 +35,6 @@ const DEFAULT_XSS = [
 
 const DEFAULT_SQL = [
 	' OR 1=1',
-	'second'
 ]
 
 const DEFAULT_TPA = [

@@ -87,7 +87,7 @@ module.exports = class XSSTask extends taskParent {
 						continue
 					}
 
-					console.log(['Scanning', this.crawlerRes[i][0]].join(' '))
+					console.log(['Scanning', this._parseUrl(this.crawlerRes[i][0])].join(' '))
 
 					let url = this.crawlerRes[i][0]
 					await this.webDriver.goTo(url)
@@ -111,11 +111,11 @@ module.exports = class XSSTask extends taskParent {
 
 							while (await this.webDriver.testAlertPresentAndClose()) {
 								if (!reportedPages.has(url + lastXpath)) {
-									console.log(['Possible xss on', url].join(' '))
+									console.log(['Possible xss on', this._parseUrl(url)].join(' '))
 									console.log(lastXpath)
 
 									logData.data.push({
-										text: ['Possible XSS on: ', url, '(', lastXpath, ')'].join(''),
+										text: ['Possible XSS on: ', this._parseUrl(url), '(', lastXpath, ')'].join(''),
 										vulnerability: 0,
 									})
 
@@ -131,7 +131,7 @@ module.exports = class XSSTask extends taskParent {
 
 								while (await this.webDriver.testAlertPresentAndClose()) {
 									if (!reportedPages.has(url + lastXpath)) {
-										console.log(['Possible xss on', url].join(' '))
+										console.log(['Possible xss on', this._parseUrl(url)].join(' '))
 										console.log(lastXpath)
 
 										logData.data.push({
@@ -214,7 +214,7 @@ module.exports = class XSSTask extends taskParent {
 					if (!founded.includes(toTest[i])) {
 						if (await this._testUrl(toTest[i])) {
 							logData.data.push({
-								text: ['Possible XSS on url params: ', toTest[i]].join(''),
+								text: ['Possible XSS on url params: ', this._parseUrl(toTest[i])].join(''),
 								vulnerability: 0,
 							})
 							founded.push(toTest[i])
@@ -246,7 +246,7 @@ module.exports = class XSSTask extends taskParent {
 			//report once
 			if (!wasFound) {
 				wasFound = true
-				console.log(['Possible xss on', url].join(' '))
+				console.log(['Possible xss on', this._parseUrl(url)].join(' '))
 			}
 		}
 		return wasFound

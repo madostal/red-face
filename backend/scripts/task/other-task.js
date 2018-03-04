@@ -88,14 +88,14 @@ module.exports = class OtherTask extends taskParent {
 		let state = false;
 		(async () => {
 			let webDriver = new WebDriver()
-			console.log(this.crawlerOut.length)
+
 			for (let i = 0; i < this.crawlerOut.length; i++) {
 				let url = this.crawlerOut[i][0]
 				if (await webDriver.isHtml(url)) {
 					//skip if url is not html content
 					await webDriver.goToSafe(url)
 					let hasInjs = await webDriver.hasInlineScript()
-					console.log(hasInjs + ' | ' + url)
+					console.log(hasInjs + ' | ' + this._parseUrl(url))
 					if (hasInjs) {
 						logData.data.push({
 							text: ['InlineJS on: ', url].join(''),
@@ -168,14 +168,14 @@ module.exports = class OtherTask extends taskParent {
 			let webDriver = new WebDriver()
 
 			for (let i = 0; i < toTest.length; i++) {
-				console.log(['Testing ', toTest[i][1]].join(''))
+				console.log(['Testing ', this._parseUrl(toTest[i][1])].join(''))
 				webDriver.goTo(toTest[i][1])
 				require('deasync').sleep(1000)
 				let r = await webDriver.getActionFromForm()
 				for (let i = 0; i < r.length; i++) {
 					if (r[i] === FORM_ACTION_HIJACING_KEY) {
 						logData.data.push({
-							text: ['Possible Form Action Hijacking on: ', toTest[i][1], ' original url: ' + toTest[i][0]].join(''),
+							text: ['Possible Form Action Hijacking on: ', this._parseUrl(toTest[i][1]), ' original url: ' + this._parseUrl(toTest[i][0])].join(''),
 							vulnerability: 0,
 						})
 						break
@@ -215,7 +215,7 @@ module.exports = class OtherTask extends taskParent {
 				return location.protocol
 			})
 			protocol = protocol.replace(':', '')
-			console.log(['Server ', this.serverHome, ' using ', protocol, ' protocol'].join(''))
+			console.log(['Server ', this._parseUrl(this.serverHome), ' using ', protocol, ' protocol'].join(''))
 
 			if (protocol.toLowerCase() !== 'https') {
 				logData.data.push({
@@ -295,7 +295,7 @@ module.exports = class OtherTask extends taskParent {
 			for (let i = 0; i < data.length; i++) {
 				let url = [homeUrl, data[i]].join('')
 				let wdRes = await webDriver.goToSafe(url)
-				console.log(['GitChecker: checking ', url].join(''))
+				console.log(['GitChecker: checking ', this._parseUrl(url)].join(''))
 				let res = -1
 				//if was error, or url is file, or 404, 403....
 				if (!wdRes.wasHtml || wdRes.statusCode !== 200) {
@@ -305,7 +305,7 @@ module.exports = class OtherTask extends taskParent {
 					let actDoc = await webDriver.getDocumentText()
 					res = stringSimilarity.compareTwoStrings(firstDoc, actDoc) * 100
 				}
-				console.log([url, res, "%"].join(' '))
+				console.log([this._parseUrl(url), res, "%"].join(' '))
 				resV.push({
 					url: url,
 					ppst: res,
@@ -324,10 +324,10 @@ module.exports = class OtherTask extends taskParent {
 		ppst = parseInt(ppst)
 		Object.keys(resV).forEach((key) => {
 			if (resV[key].ppst < ppst) {
-				console.log(['GitChecker: found git config file on ', resV[key].url].join(''))
+				console.log(['GitChecker: found git config file on ', this._parseUrl(resV[key].url)].join(''))
 
 				logData.data.push({
-					text: ['Find part of git config on ', resV[key].url].join(''),
+					text: ['Find part of git config on ', this._parseUrl(resV[key].url)].join(''),
 					vulnerability: 0,
 				})
 			}

@@ -2,9 +2,10 @@ const fs = require('fs')
 const jetpack = require('fs-jetpack')
 const stringSimilarity = require('string-similarity')
 
+const taskParent = require('./task-parent.js')
 const WebDriver = require('../utils/web-driver')
 
-class BruteForceSubTask {
+class BruteForceSubTask extends taskParent {
 
 	async start(path, configPath, serverHome, id) {
 
@@ -33,16 +34,16 @@ class BruteForceSubTask {
 				let similarity = stringSimilarity.compareTwoStrings(errorPage, tmp)
 				console.log([data[i][0], ':', data[i][1], ' - ', similarity * 100, '%'].join(''))
 				if ((similarity * 100) < this.jsonconfig.taskdata.bruteforcetab.data.percentageDiff) {
-					console.log(['Bruteforce probably found credentials: ', data[i][0], ': ', data[i][1], ' on urn ', serverHome].join(''))
-					console.log(['!!--|0|', 'Bruteforce probably found credentials: ', data[i][0], ': ', data[i][1], ' on urn ', serverHome].join(''))
+					console.log(['Bruteforce probably found credentials: ', data[i][0], ': ', data[i][1], ' on urn ', this._parseUrl(serverHome)].join(''))
+					console.log(['!!--|0|', 'Bruteforce probably found credentials: ', data[i][0], ': ', data[i][1], ' on urn ', this._parseUrl(serverHome)].join(''))
 				}
 				if (forceExit) {
 					break
 				}
 			}
 		} else {
-			console.log(['BruteforceWorker:', id, , '|', 'ERROR: Some xpaths wasn\'t found.Please, check your xpaths or repeat action', '- on urn', serverHome].join(' '))
-			console.log(['!!--|3|', ['Bruteforce Worker:', id, , ':', 'ERROR: Some xpaths wasn\'t found.Please, check your xpaths or repeat action', ' on urn ', serverHome].join(' ')].join(''))
+			console.log(['BruteforceWorker:', id, , '|', 'ERROR: Some xpaths wasn\'t found.Please, check your xpaths or repeat action', '- on urn', this._parseUrl(serverHome)].join(' '))
+			console.log(['!!--|3|', ['Bruteforce Worker:', id, , ':', 'ERROR: Some xpaths wasn\'t found.Please, check your xpaths or repeat action', ' on urn ', this._parseUrl(serverHome)].join(' ')].join(''))
 		}
 
 		await webDriver.closeDriver()
