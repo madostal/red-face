@@ -49,16 +49,16 @@ export default class SQLTab extends BodyParent {
 					onChange={(d, e) => this._componentOnChangeCheck(d, e)}
 					checked={this.props.data.data.testParams}
 					id={'testParams'}
-					label={<label>testParams</label>}
+					label={<label>Test url params</label>}
 				/>
 				<Divider hidden />
-				<Checkbox
+				{/* <Checkbox
 					onChange={(d, e) => this._componentOnChangeCheck(d, e)}
 					checked={this.props.data.data.testForms}
 					id={'testForms'}
 					label={<label>testForms</label>}
 				/>
-				<Divider hidden />
+				<Divider hidden /> */}
 				<Input
 					onChange={(d, e) => this._componentOnChangeText(d, e)}
 					value={this.props.data.data.testSqlInjPpst}

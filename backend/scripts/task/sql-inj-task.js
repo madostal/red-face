@@ -17,10 +17,6 @@ module.exports = class SqlInjTask extends taskParent {
 
 	start() {
 		console.log('SQLinj: Starting')
-		console.log(this.jsonconfig.taskdata.sqltab.data)
-		if (this.jsonconfig.taskdata.sqltab.data.testForms) {
-			this._testInputs()
-		}
 
 		if (this.jsonconfig.taskdata.sqltab.data.testParams) {
 			this._testParams()
@@ -28,19 +24,6 @@ module.exports = class SqlInjTask extends taskParent {
 
 		console.log('SQLinj: Finished')
 		return this.taskRes
-	}
-
-	_testInputs() {
-		console.log('SQLinj: Starting scanning inputs')
-
-		let state = false;
-		(async () => {
-			await this.webDriver.closeDriver()
-			state = true
-		})()
-
-		require('deasync').loopWhile(() => { return !state })
-		console.log('SQLinj: Scanning inputs finished')
 	}
 
 	_testParams() {
@@ -95,7 +78,7 @@ module.exports = class SqlInjTask extends taskParent {
 					if (!founded.includes(toTest[i][0])) {
 						if (await this._testUrl(toTest[i])) {
 							logData.data.push({
-								text: ['Possible XSS on url params: ', toTest[i]].join(''),
+								text: ['Possible XSS on url params: ', this._parseUrl(toTest[i][0]), ' - ', this._parseUrl(toTest[i][1])].join(''),
 								vulnerability: 0,
 							})
 							founded.push(toTest[i][0])
@@ -119,7 +102,7 @@ module.exports = class SqlInjTask extends taskParent {
 	}
 
 	async _testUrl(url) {
-		console.log('TESTING URL')
+		console.log(['Testing url ', this._parseUrl(url[0])].join(''))
 		//go to default www
 		await this.webDriver.goTo(url[0])
 		require('deasync').sleep(1000)
@@ -131,11 +114,11 @@ module.exports = class SqlInjTask extends taskParent {
 		let second = await this.webDriver.getDocumentText()
 
 		let similarity = stringSimilarity.compareTwoStrings(first, second)
-		console.log(similarity)
+		console.log([this._parseUrl(url[0]), similarity].join(''))
 
 		let wasFound = false
 		if ((similarity * 100) < this.jsonconfig.taskdata.sqltab.data.testSqlInjPpst) {
-			console.log(['Possible sql in on', url[0], '-', url[1]].join(' '))
+			console.log(['Possible sql in on', this._parseUrl(url[0]), ' - ', this._parseUrl(url[1])].join(' '))
 			wasFound = true
 		}
 		return wasFound

@@ -6,17 +6,9 @@ module.exports = class ParentTask {
 			header: name,
 			data: [],
 		}
+	}
 
-		/**
-			data: {
-				header: HEADER,
-				data: [
-					{
-						text : string,
-						vulnerability: {0 - true, 1 - false, 2 - default}
-					}
-				],
-			}
-		*/
+	_parseUrl(url) {
+		return url.split(' ').join('%20')
 	}
 }
