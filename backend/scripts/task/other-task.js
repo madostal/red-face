@@ -180,8 +180,6 @@ module.exports = class OtherTask extends taskParent {
 				}
 			}
 
-			await this.webDriver.closeDriver()
-
 			if (logData.data.length === 0) {
 				//not found
 				logData.data.push({
