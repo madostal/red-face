@@ -64,7 +64,7 @@ module.exports = class WebDriver {
 	}
 
 	async goTo(url) {
-		await this.driver.get(url)
+		await this.driver.get(url).catch(() => { })
 	}
 
 	/**
