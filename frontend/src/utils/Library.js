@@ -1,10 +1,10 @@
 const moment = require('moment')
 
-exports.msToHumanReadable = function (time) {
+exports.msToHumanReadable = (time) => {
 	return moment(time).format('HH:mm:ss.SSS')
 }
 
-exports.timeToHumanReadable = function (time) {
+exports.timeToHumanReadable = (time) => {
 	return moment(time).format('DD/MM/YYYY HH:mm:ss')
 }
 

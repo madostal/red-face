@@ -71,7 +71,7 @@ export default class Footer extends React.Component {
 				<Sidebar as={Menu} animation="overlay" direction="bottom" visible={this.state.visible} inverted>
 					<Menu.Item name="home">
 						<Icon name="power cord" />
-						We are sorry, it"s seems that server is down
+						We are sorry, it's seems that server is down
 				</Menu.Item>
 				</Sidebar>
 				<ToastContainer

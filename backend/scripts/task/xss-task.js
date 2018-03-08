@@ -4,7 +4,6 @@ const queryString = require('query-string')
 const taskParent = require('./task-parent.js')
 const WebDriver = require('../utils/web-driver')
 
-
 const TASK_GLOBAL_NAME = 'XSS task'
 
 module.exports = class XSSTask extends taskParent {
