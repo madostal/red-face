@@ -15,12 +15,12 @@ import { browserHistory } from 'react-router'
 import Helper from '../common/popup/Helper'
 import Api from 'utils/Api'
 
-import Parent from './../common/createTaskSection/Parent'
+import Parent from './../common/createtasksection/Parent'
 
-import BruteForceTab from './../common/createTaskSection/childs/BruteForceTab'
-import XSSTab from './../common/createTaskSection/childs/XSSTab'
+import BruteForceTab from './../common/createtasksection/childs/BruteForceTab'
+import XSSTab from './../common/createtasksection/childs/XSSTab'
 import SQLTab from './../common/createtasksection/childs/SQLTab'
-import OtherTab from './../common/createTaskSection/childs/OtherTab'
+import OtherTab from './../common/createtasksection/childs/OtherTab'
 import PtaTab from './../common/createtasksection/childs/PtaTab'
 
 const defaultXPathForm = '//form//input[@type=\'text\' or @type=\'email\']//ancestor::form//input[@type=\'password\']//ancestor::form'
