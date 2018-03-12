@@ -104,7 +104,7 @@ module.exports = class XSSTask extends taskParent {
 									console.log(lastXpath)
 
 									logData.data.push({
-										text: ['Possible XSS on: ', this._parseUrl(url), '(', lastXpath, ')'].join(''),
+										text: ['Possible XSS on: ', this._parseUrl(url), ' - (', lastXpath, ')'].join(''),
 										vulnerability: 0,
 									})
 

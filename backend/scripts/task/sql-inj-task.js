@@ -83,7 +83,7 @@ module.exports = class SqlInjTask extends taskParent {
 					if (!founded.includes(toTest[i][0])) {
 						if (await this._testUrl(toTest[i])) {
 							logData.data.push({
-								text: ['Possible XSS on url params: ', this._parseUrl(toTest[i][0]), ' - ', this._parseUrl(toTest[i][1])].join(''),
+								text: ['Possible SQL injection on url params: ', this._parseUrl(toTest[i][0]), ' - ', this._parseUrl(toTest[i][1])].join(''),
 								vulnerability: 0,
 							})
 							founded.push(toTest[i][0])
