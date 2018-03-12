@@ -110,9 +110,11 @@ io.on('connection', (socket) => {
 					return
 				}
 				fields = fields[0]
+
+				fields.log = jetpack.read(fields.logPath)
+
 				delete fields.configPath
 				delete fields.logPath
-				fields.log = jetpack.read(fields.logPath)
 				io.emit('there-is-task-detail', fields)
 			})
 		}
