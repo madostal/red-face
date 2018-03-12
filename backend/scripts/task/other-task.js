@@ -69,7 +69,7 @@ module.exports = class OtherTask extends taskParent {
 			}], (err) => {
 				if (err) {
 					console.error(err)
-					throw err
+					return
 				}
 				state = true
 			})

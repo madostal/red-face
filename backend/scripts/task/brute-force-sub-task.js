@@ -53,7 +53,7 @@ class BruteForceSubTask extends taskParent {
 		await webDriver.closeDriver()
 		fs.unlink(path, (err) => {
 			if (err) {
-				throw err
+				return
 			}
 			console.log(['Closing worker id', id].join(' '))
 			process.exit()

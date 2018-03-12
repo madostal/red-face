@@ -28,7 +28,7 @@ const checkDeadTasks = () => {
 	database.connection.query('UPDATE task SET state = ?, endTime = ? WHERE (state = ? OR state = ?)', params, (err) => {
 		if (err) {
 			logger.log('error', err)
-			throw err
+			return
 		}
 	})
 }
@@ -45,12 +45,12 @@ io.on('connection', (socket) => {
 		cpuStat.usagePercent((err, percent) => {
 			if (err) {
 				logger.log('error', err)
-				throw err
+				return
 			}
 			database.connection.query('select state, count(*) as count from task group by state', (err, fields) => {
 				if (err) {
 					logger.log('error', err)
-					throw err
+					return
 				}
 				socket.emit('system-stats', {
 					cpu: percent,
@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
 		database.connection.query('SELECT * FROM task', (err, fields) => {
 			if (err) {
 				logger.log('error', err)
-				throw err
+				return
 			}
 			io.emit('there-are-tasks', fields)
 		})
@@ -107,7 +107,7 @@ io.on('connection', (socket) => {
 			database.connection.query('SELECT * FROM task WHERE ID = ? AND TASKKEY = ?', params, (err, fields) => {
 				if (err) {
 					logger.log('error', err)
-					throw err
+					return
 				}
 				fields = fields[0]
 				delete fields.configPath
