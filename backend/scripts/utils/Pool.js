@@ -85,7 +85,7 @@ module.exports = class Pool {
 				})
 			},
 		], () => {
-			this.io.emit('taskstart', 'TASK ' + id + ' STARTED :-)')
+			this.io.emit('task-start', { id: id })
 
 			const process = spawn('node', ['task/core.js', id], {
 				stdio: ['ipc', 'pipe', 'pipe'],
@@ -123,13 +123,7 @@ module.exports = class Pool {
 				this.activeProcess--
 				this.processMap.delete(id)
 
-				this.io.emit('taskdone', {
-					running: this.activeProcess,
-					pending: this.poolQueue.length,
-					taskdone: id,
-					endTime: endTime,
-				})
-				this.io.emit('update-overview', {
+				this.io.emit('task-done', {
 					running: this.activeProcess,
 					pending: this.poolQueue.length,
 					taskdone: id,

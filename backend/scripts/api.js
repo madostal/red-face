@@ -77,9 +77,9 @@ io.on('connection', (socket) => {
 	/**
 	 * On create new task
 	 */
-	socket.on('taskcreate', (input) => {
+	socket.on('task-create', (input) => {
 		let json = JSON.parse(input)
-		io.emit('taskcreate', json.taskname)
+		io.emit('task-create', json.taskname)
 		poolInstance.insertNewTask(json)
 	})
 
@@ -110,6 +110,8 @@ io.on('connection', (socket) => {
 					throw err
 				}
 				fields = fields[0]
+				delete fields.configPath
+				delete fields.logPath
 				fields.log = jetpack.read(fields.logPath)
 				io.emit('there-is-task-detail', fields)
 			})
@@ -135,6 +137,9 @@ io.on('connection', (socket) => {
 	})
 })
 
+/**
+ * Called before server start up
+*/
 const beforeStartUp = () => {
 	jetpack.dir('writable')
 	jetpack.dir('writable/config')

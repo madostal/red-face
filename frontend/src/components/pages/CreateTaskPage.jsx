@@ -249,10 +249,10 @@ export default class CrreateTaskPage extends React.Component {
 				let toSend = stateTmp
 				toSend.serverHome = el
 				iterator++
-				Api.socketRequest('taskcreate', JSON.stringify(toSend))
+				Api.socketRequest('task-create', JSON.stringify(toSend))
 			})
 		} else {
-			Api.socketRequest('taskcreate', JSON.stringify(lastState))
+			Api.socketRequest('task-create', JSON.stringify(lastState))
 		}
 
 		browserHistory.push('/overview')

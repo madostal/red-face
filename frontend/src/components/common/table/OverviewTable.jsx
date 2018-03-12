@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
+import { toast } from 'react-toastify'
 import {
 	Icon,
 	Button,
@@ -50,7 +51,9 @@ export default class OverviewTable extends React.Component {
 
 		Api.socketRequest('give-me-tasks', {})
 
-		Api.getSocket().on('update-overview', (data) => {
+		Api.getSocket().on('task-done', (data) => {
+			toast.success('Task done')
+
 			let lastRowData = this.state.result
 			lastRowData.forEach((loop) => {
 				if (loop.id === data.taskdone) {
@@ -140,7 +143,7 @@ export default class OverviewTable extends React.Component {
 	componentWillUnmount = () => {
 		clearInterval(this.interval)
 		Api.getSocket().removeAllListeners('there-are-tasks')
-		Api.getSocket().removeAllListeners('update-overview')
+		Api.getSocket().removeAllListeners('task-done')
 	}
 
 	_modalAction = (itemid, open, modalstate) => {

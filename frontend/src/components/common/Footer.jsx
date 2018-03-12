@@ -49,16 +49,12 @@ export default class Footer extends React.Component {
 			this.setState({ visible: false })
 		})
 
-		Api.getSocket().on('taskcreate', (data) => {
+		Api.getSocket().on('task-create', (data) => {
 			this._toastInfo('The task ' + data + ' was scheduled')
 		})
 
-		Api.getSocket().on('taskdone', () => {
-			this._toastSuccess('Task done')
-		})
-
-		Api.getSocket().on('taskstart', () => {
-			this._toastInfo('Task start')
+		Api.getSocket().on('task-start', (data) => {
+			this._toastInfo(['Task', data.id, 'was stared'].join(' '))
 		})
 	}
 
