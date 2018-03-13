@@ -108,7 +108,7 @@ export default class OverviewTable extends React.Component {
 
 	_repeat = (item) => {
 		Api.socketRequest('repeat-task', { id: item.id })
-		//TODO UPDATE VIEW
+		Api.socketRequest('give-me-tasks', {})
 	}
 
 	_removeAll = () => {
@@ -126,6 +126,7 @@ export default class OverviewTable extends React.Component {
 
 	_stop = (item) => {
 		Api.socketRequest('stop-task', { id: item.id })
+		Api.socketRequest('give-me-tasks', {})
 	}
 
 	_delete = (item) => {
@@ -137,7 +138,7 @@ export default class OverviewTable extends React.Component {
 		if (index > -1) {
 			result.splice(index, 1)
 		}
-		this.forceUpdate()
+		Api.socketRequest('give-me-tasks', {})
 	}
 
 	componentWillUnmount = () => {
