@@ -1,4 +1,5 @@
 const jetpack = require('fs-jetpack')
+const request = require('request')
 const url = require('url')
 const queryString = require('query-string')
 const stringSimilarity = require('string-similarity')
@@ -235,18 +236,17 @@ module.exports = class OtherTask extends taskParent {
 			data: [],
 		}
 
-		let res
-		let state = false;
+		let state = false
+		let res = false
 
-		(async () => {
-			console.log(['Testing cross on', this.serverHome].join(' '))
-			//get some error page
-			await this.webDriver.goTo('https://google.com')
-
-			res = await this.webDriver.hasCrossOriginAllowed(this.serverHome)
-			console.log(res)
+		request(this.serverHome, function (error, response, body) {
+			if (response.headers['access-control-allow-origin']
+				&& response.headers['access-control-allow-origin'] === '*') {
+				res = true
+			}
 			state = true
-		})()
+		})
+
 		require('deasync').loopWhile(() => { return !state })
 
 		if (!res) {
