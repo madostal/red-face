@@ -2,6 +2,14 @@
  * Websocket port
  */
 const SERVER_PORT = 4200
+/**
+ * Web server port
+ */
+const weServerPort = process.env.PORT || 80
+
+const express = require('express')
+const path = require('path')
+const webServerApplication = express()
 
 const jetpack = require('fs-jetpack')
 const server = require('http')
@@ -150,3 +158,12 @@ const beforeStartUp = () => {
 
 beforeStartUp()
 checkDeadTasks()
+
+/* start web server */
+webServerApplication.listen(weServerPort)
+webServerApplication.use(express.static(path.resolve(__dirname, 'client', 'build')))
+webServerApplication.get('*', (req, res) => {
+	res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+})
+
+console.log(['Web server running on localhost:', weServerPort].join(''))
