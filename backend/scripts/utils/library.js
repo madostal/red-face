@@ -39,6 +39,11 @@ exports.urlExists = (url, cb) => {
 	})
 }
 
+/**
+ * Return diff time with actual time and input time
+ *
+ * @param {Date} timeToDiff
+ */
 exports.timeDiffNow = (timeToDiff) => {
 	return moment.utc(moment(new Date()).diff(moment(timeToDiff))).format('HH:mm:ss')
 }

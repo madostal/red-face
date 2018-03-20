@@ -49,6 +49,9 @@ module.exports = class Pool {
 		})
 	}
 
+	/**
+	 *  Insert new task to db and start it
+	 */
 	insertNewTaskToDb(params) {
 		database.connection.query('INSERT INTO task SET ?', params, (err, result) => {
 			if (err) {
@@ -134,10 +137,20 @@ module.exports = class Pool {
 		})
 	}
 
+	/**
+	 * Add time stamp to row log
+	 *
+	 * @param {string} data
+	 */
 	_formatLogRow(data) {
 		return [moment().format('DD.MM.YYYY HH:MM:SS'), ': ', data].join('')
 	}
 
+	/**
+	 * Create path to config file
+	 *
+	 * @param {string} taskname
+	 */
 	_createConfigFile(taskname) {
 		return [
 			'writable',
@@ -154,6 +167,11 @@ module.exports = class Pool {
 		].join('')
 	}
 
+	/**
+	 * Create path to log file
+	 *
+	 * @param {string} taskname
+	 */
 	_createLogFile(taskname) {
 		let file = [
 			'writable',
@@ -171,6 +189,9 @@ module.exports = class Pool {
 		return file
 	}
 
+	/**
+	 * Create path to bruteforce config file
+	 */
 	_createBruteForcePswFile() {
 		return [
 			'writable',
@@ -186,10 +207,21 @@ module.exports = class Pool {
 		].join('')
 	}
 
+	/**
+	 * Append new row to log file
+	 *
+	 * @param {string} message
+	 * @param {string} file
+	 */
 	_appendDataToFile(message, file) {
 		fs.appendFileSync(file, message)
 	}
 
+	/**
+	 * Kill proces by id
+	 *
+	 * @param {int} taskId
+	 */
 	killTask(taskId) {
 		let proc = this.processMap.get(taskId)
 		if (!proc) {
@@ -202,6 +234,11 @@ module.exports = class Pool {
 		}, 5000)
 	}
 
+	/**
+	 * Repeat task by id
+	 *
+	 * @param {int} id
+	 */
 	repeatTask(id) {
 		database.connection.query('SELECT * FROM task WHERE ID = ?', [id], (err, result) => {
 			if (err) {
