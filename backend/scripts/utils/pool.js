@@ -143,7 +143,7 @@ module.exports = class Pool {
 	 * @param {string} data
 	 */
 	_formatLogRow(data) {
-		return [moment().format('DD.MM.YYYY HH:MM:SS'), ': ', data].join('')
+		return [moment().format('DD.MM.YYYY hh:mm:ss'), ': ', data].join('')
 	}
 
 	/**
