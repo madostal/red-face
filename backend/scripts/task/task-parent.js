@@ -9,6 +9,7 @@ module.exports = class ParentTask {
 			data: [],
 		}
 		this.needWd = needWd
+		this.wdIsAlive = needWd
 		if (needWd) {
 			this.webDriver = new WebDriver()
 		}
@@ -20,7 +21,10 @@ module.exports = class ParentTask {
 
 	killDriver() {
 		if (!this.needWd) return
+		if (!this.wdIsAlive) return
+		this.wdIsAlive = false
 		let state = false;
+		console.log('Closing webdriver')
 		require('deasync').sleep(1000);
 		(async () => {
 			this.webDriver.closeDriver()

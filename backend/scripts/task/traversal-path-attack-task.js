@@ -111,7 +111,6 @@ module.exports = class TraversalPathAttack extends taskParent {
 						}
 					}
 				}
-				await this.webDriver.closeDriver()
 				state = true
 			})()
 
